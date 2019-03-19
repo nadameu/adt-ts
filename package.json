@@ -1,0 +1,33 @@
+{
+  "name": "pure-ts",
+  "version": "0.1.0",
+  "description": "PureScript translated to TypeScript",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nadameu/pure-ts.git"
+  },
+  "keywords": [
+    "purescript",
+    "typescript"
+  ],
+  "author": "nadameu",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/nadameu/pure-ts/issues"
+  },
+  "homepage": "https://github.com/nadameu/pure-ts#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.4.2",
+    "@typescript-eslint/parser": "^1.4.2",
+    "eslint": "^5.15.3",
+    "eslint-config-prettier": "^4.1.0",
+    "jest": "^24.5.0",
+    "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.3333"
+  }
+}
