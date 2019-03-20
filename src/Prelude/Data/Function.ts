@@ -1,4 +1,4 @@
-export { compose, identity } from '../Control/Category';
+export { compose, identity } from '../../Prim/Fn';
 export const flip: <a, b, c>(_: (_: a) => (_: b) => c) => (_: b) => (_: a) => c = f => y => x =>
 	f(x)(y);
 const _const: <a, b>(_: a) => (_: b) => a = x => _ => x;
