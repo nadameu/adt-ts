@@ -1,5 +1,4 @@
 import { SemigroupoidInstances } from '../../TypesDictionary';
-export { compose } from '../../Prim/Fn';
 
 export interface Semigroupoid<a extends keys> {
 	compose: <acd extends SemigroupoidInstance<a>>(

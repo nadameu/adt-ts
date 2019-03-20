@@ -1,7 +1,5 @@
 import { CategoryInstances } from '../../TypesDictionary';
 import { Semigroupoid } from './Semigroupoid';
-export { identity } from '../../Prim/Fn';
-export { compose } from './Semigroupoid';
 
 export interface Category<a extends keys> extends Semigroupoid<a> {
 	identity: CategoryIdentity<a>;
