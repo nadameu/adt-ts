@@ -1,6 +1,6 @@
 # pure-ts - Translating PureScript to TypeScript
 
-## Type classes
+## Example
 
 In PureScript:
 
@@ -36,7 +36,11 @@ export const functorArray: Functor<Desc<'Array'>> = {
 const mapArray = functorArray.map; // <A, B>(_: (_: A) => B) => <_0, _1, _2, _3>(_: A[]) => B[]
 ```
 
+## How does it work?
+
 ### Type description
+
+From given example:
 
 ```typescript
 import { TypeDesc, Desc } from 'pure-ts/Type';
@@ -53,6 +57,17 @@ export interface TypeDesc {
 
 - `URI` is a string that uniquely identifies the type.
 - `VarDescs` is an array of the descriptions of the type variables.
+
+`Desc` provides an easy way to construct a `TypeDesc`:
+
+```typescript
+export interface Desc<URI extends string, VarDescs extends TypeDesc[] = never[]> {
+  URI: URI;
+  VarDescs: VarDescs;
+}
+```
+
+So `Desc<'Array', [Desc<'Number'>]>` would become `{ URI: 'Array'; VarDescs: [{ URI: 'Number'; VarDescs: never; }]; }`
 
 #### URI
 
@@ -72,62 +87,50 @@ convention: `'<namespace>/<name>[@<version>]'` (_e.g._ `'@my-scope/my-package/My
 
 The `VarDescs` parameter should only describe *concrete* type variables, _i.e._:
 
-For a function like `<A>(xs: Array<A>): number`, the type description of `xs` would
-be `{ URI: 'Array'; VarDescs: never }`, because the type `A` is not concrete.
+- For a function like `<A>(xs: Array<A>): number`, the type description of `xs`
+  would be `Desc<'Array'>`, because the type `A` is not concrete.
+- In a case like `(xs: Array<number>): number`, the description of the type of
+  `xs` would be `Desc<'Array', [Desc<'Number'>]>`,
+  because `number` is a concrete type.
 
-A `Promise` has one type variable `T` (`interface Promise<T> { ... }`), so its
-`VarDescs` should be an array with one `TypeDesc`.
+The length of the array in `VarDescs` depends on the number of type variables
+the base type has.
+- For a type like `number`, its `VarDescs` would be empty, because it has no type
+  variables: `Desc<'Number'>`;
+- A `Promise` has only one type variable, `T` (`interface Promise<T> { ... }`),
+  so its `VarDescs` should be an array with one `TypeDesc`. The description of
+	`Promise<string>` would be `Desc<'Promise', [Desc<'String'>]>`;
+- A `Map` has two type variables, `K` and `V` (`interface Map<K, V> { ... }`).
+  Its description's `VarDescs` should be an array with two `TypeDesc`s.
+	`Map<string, Date>` would be `Desc<'Map', [Desc<'String'>, Desc<'Date'>]>`.
 
 A type like `Promise<Map<string, number>>[]` would be described as something like:
 
 ```typescript
-type MyType = {
-  outer: 'Array';
-  inner: [
-    {
-      outer: 'Promise';
-      inner: [
-        {
-          outer: 'Map';
-          inner: [
-            {
-              outer: 'String';
-              inner: never;
-            },
-            {
-              outer: 'Number';
-              inner: never;
-            }
-          ];
-        }
-      ];
-    }
-  ];
-};
-```
-
-`TypeCons` provides an easy way to construct a `Type`:
-
-```typescript
-export interface TypeCons<outer extends string, inner extends Type[] = never[]> {
-  outer: outer;
-  inner: inner;
-}
-```
-
-The above example would be:
-
-```typescript
-type MyType = TypeCons<'Array', [
-  TypeCons<'Promise', [
-    TypeCons<'Map', [
-      TypeCons<'String'>,
-      TypeCons<'Number'>,
-    ]
+type MyType = Desc<'Array', [
+  Desc<'Promise', [
+    Desc<'Map', [
+      Desc<'String'>,
+      Desc<'Number'>,
+    ]>
   ]>
 ]>;
 ```
 
+### Type class definition
+
+From given example:
+
+```typescript
+export interface Functor<T extends TypeDesc> {
+  map: <A, B>(_: (_: A) => B)
+    => <_0, _1, _2, _3>(_: Type<T, [A, _0, _1, _2, _3]>)
+    => Type<T, [B, _0, _1, _2, _3]>;
+}
+```
+
+- `T extends TypeDesc` makes sure the `map` function of an instance is applied to
+  a specific type.
 
 - Type class definition
 -
@@ -139,13 +142,6 @@ type MyType = TypeCons<'Array', [
 - The `Instance` helper determines the concrete instance that will be used.
   \*/
 
-```typescript
-export interface Functor<f extends Type> {
-  map: <a, b>(_: (_: a) => b)
-    => <_0, _1, _2, _3>(_: Instance<f, [a, _0, _1, _2, _3]>)
-    => Instance<f, [b, _0, _1, _2, _3]>;
-}
-```
 
 /\*
 
