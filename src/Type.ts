@@ -1,11 +1,11 @@
-export interface Type {
-	outer: string;
-	inner: Type[];
+export interface TypeDesc {
+	URI: string;
+	VarDescs: TypeDesc[];
 }
 
-export interface TypeCons<outer extends string, inner extends Type[] = never[]> {
-	outer: outer;
-	inner: inner;
+export interface Desc<URI extends string, VarDescs extends TypeDesc[] = never[]> {
+	URI: URI;
+	VarDescs: VarDescs;
 }
 
 export type PickEven<args extends any[]> = [args[0], args[2], args[4], args[6], args[8]];
