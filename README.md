@@ -14,6 +14,7 @@ instance functorArray :: Functor Array where
 
 In TypeScript:
 
+<!-- prettier-ignore -->
 ```typescript
 import { TypeDesc, Desc } from 'pure-ts/Type';
 
@@ -27,7 +28,7 @@ export interface Dict<VarDescs extends TypeDesc[] = never, Vars extends any[] = 
   Array: Vars[0][];
 }
 export type Type<T extends TypeDesc, Vars extends any[]> = {
-  result: T['URI'] extends keyof Dict ? Dict<T['VarDescs'], Vars>[T['URI']] : never
+  result: T['URI'] extends keyof Dict ? Dict<T['VarDescs'], Vars>[T['URI']] : never;
 }['result'];
 
 export const functorArray: Functor<Desc<'Array'>> = {
@@ -71,8 +72,7 @@ So `Desc<'Array', [Desc<'Number'>]>` would become `{ URI: 'Array'; VarDescs: [{ 
 
 #### URI
 
-The URI of native JavaScript types should be the same string returned by
-`Object.prototype.toString.call(...)` (minus the `[object ` prefix and `]` suffix):
+The URI of native JavaScript types should be the same string returned by `Object.prototype.toString.call(...)` (minus the `[object` prefix and `]` suffix):
 
 ```javascript
 const array = [];
@@ -80,32 +80,24 @@ const arrayURI = Object.prototype.toString.call(array).slice(8, -1);
 console.log(arrayURI); // 'Array'
 ```
 
-For user-defined types, it should follow the [sanctuary-js](https://github.com/sanctuary-js/sanctuary-type-identifiers)
-convention: `'<namespace>/<name>[@<version>]'` (_e.g._ `'@my-scope/my-package/MyFunctor'` or `'my-package/MyFunctor@3'`).
+For user-defined types, it should follow the [sanctuary-js](https://github.com/sanctuary-js/sanctuary-type-identifiers) convention: `'<namespace>/<name>[@<version>]'` (_e.g._ `'@my-scope/my-package/MyFunctor'` or `'my-package/MyFunctor@3'`).
 
 #### Type variables
 
-The `VarDescs` parameter should only describe *concrete* type variables, _i.e._:
+The `VarDescs` parameter should only describe _concrete_ type variables, _i.e._:
 
-- For a function like `<A>(xs: Array<A>): number`, the type description of `xs`
-  would be `Desc<'Array'>`, because the type `A` is not concrete.
-- In a case like `(xs: Array<number>): number`, the description of the type of
-  `xs` would be `Desc<'Array', [Desc<'Number'>]>`,
-  because `number` is a concrete type.
+- For a function like `<A>(xs: Array<A>): number`, the type description of `xs` would be `Desc<'Array'>`, because the type `A` is not concrete.
+- In a case like `(xs: Array<number>): number`, the description of the type of `xs` would be `Desc<'Array', [Desc<'Number'>]>`, because `number` is a concrete type.
 
-The length of the array in `VarDescs` depends on the number of type variables
-the base type has.
-- For a type like `number`, its `VarDescs` would be empty, because it has no type
-  variables: `Desc<'Number'>`;
-- A `Promise` has only one type variable, `T` (`interface Promise<T> { ... }`),
-  so its `VarDescs` should be an array with one `TypeDesc`. The description of
-	`Promise<string>` would be `Desc<'Promise', [Desc<'String'>]>`;
-- A `Map` has two type variables, `K` and `V` (`interface Map<K, V> { ... }`).
-  Its description's `VarDescs` should be an array with two `TypeDesc`s.
-	`Map<string, Date>` would be `Desc<'Map', [Desc<'String'>, Desc<'Date'>]>`.
+The length of the array in `VarDescs` depends on the number of type variables the base type has.
+
+- For a type like `number`, its `VarDescs` would be empty, because it has no type variables: `Desc<'Number'>`;
+- A `Promise` has only one type variable, `T` (`interface Promise<T> { ... }`), so its `VarDescs` should be an array with one `TypeDesc`. The description of `Promise<string>` would be `Desc<'Promise', [Desc<'String'>]>`;
+- A `Map` has two type variables, `K` and `V` (`interface Map<K, V> { ... }`). Its description's `VarDescs` should be an array with two `TypeDesc`s. `Map<string, Date>` would be `Desc<'Map', [Desc<'String'>, Desc<'Date'>]>`.
 
 A type like `Promise<Map<string, number>>[]` would be described as something like:
 
+<!-- prettier-ignore -->
 ```typescript
 type MyType = Desc<'Array', [
   Desc<'Promise', [
@@ -121,6 +113,7 @@ type MyType = Desc<'Array', [
 
 From given example:
 
+<!-- prettier-ignore -->
 ```typescript
 export interface Functor<T extends TypeDesc> {
   map: <A, B>(_: (_: A) => B)
@@ -129,8 +122,7 @@ export interface Functor<T extends TypeDesc> {
 }
 ```
 
-- `T extends TypeDesc` makes sure the `map` function of an instance is applied to
-  a specific type.
+- `T extends TypeDesc` ensures the `map` function of a `Functor` instance is applied to a specific type.
 
 - Type class definition
 -
@@ -139,14 +131,11 @@ export interface Functor<T extends TypeDesc> {
 - `_0`, `_1`, `_2` and `_3` are extra type variables that instances might need,
 - but are not affected by this type class.
 -
-- The `Instance` helper determines the concrete instance that will be used.
-  \*/
-
+- The `Instance` helper determines the concrete instance that will be used. \*/
 
 /\*
 
-- Dictionary of instances
-  \*/
+- Dictionary of instances \*/
 
 ```typescript
 export interface Dict<inner extends Type[] = never, args extends any[] = never> {
@@ -159,8 +148,7 @@ export interface Dict<inner extends Type[] = never, args extends any[] = never> 
 - Instance constructor
 -
 - Converts `Type` descriptions to a concrete TypeScript type using the provided
-- Dictionary.
-  \*/
+- Dictionary. \*/
 
 ```typescript
 export type Instance<t extends Type, args extends any[]> = {
@@ -170,8 +158,7 @@ export type Instance<t extends Type, args extends any[]> = {
 
 /\*
 
-- Functor instance for the Array type
-  \*/
+- Functor instance for the Array type \*/
 
 ```typescript
 export const functorArray: Functor<TypeCons<'Array'>> = {
