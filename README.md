@@ -15,25 +15,25 @@ instance functorArray :: Functor Array where
 In TypeScript:
 
 ```typescript
-import { Type, TypeCons } from 'pure-ts/Type';
+import { TypeDesc, Desc } from 'pure-ts/Type';
 
-export interface Functor<f extends Type> {
-  map: <a, b>(_: (_: a) => b)
-    => <_0, _1, _2, _3>(_: Instance<f, [a, _0, _1, _2, _3]>)
-    => Instance<f, [b, _0, _1, _2, _3]>;
+export interface Functor<T extends TypeDesc> {
+  map: <A, B>(_: (_: A) => B)
+    => <_0, _1, _2, _3>(_: Type<T, [A, _0, _1, _2, _3]>)
+    => Type<T, [B, _0, _1, _2, _3]>;
 }
 
-export interface Dict<inner extends Type[] = never, args extends any[] = never> {
-  Array: Array<args[0]>;
+export interface Dict<VarDescs extends TypeDesc[] = never, Vars extends any[] = never> {
+  Array: Vars[0][];
 }
-export type Instance<t extends Type, args extends any[]> = {
-  [key in t['outer']]: key extends keyof Dict ? Dict<t['inner'], args>[key] : never
-}[t['outer']];
+export type Type<T extends TypeDesc, Vars extends any[]> = {
+  result: T['URI'] extends keyof Dict ? Dict<T['VarDescs'], Vars>[T['URI']] : never
+}['result'];
 
-export const functorArray: Functor<TypeCons<'Array'>> = {
+export const functorArray: Functor<Desc<'Array'>> = {
   map: f => xs => xs.map(x => f(x)),
 };
-// functorArray.map's type is `<a, b>(_: (_: a) => b) => <_0, _1, _2, _3>(_: a[]) => b[]`.
+const mapArray = functorArray.map; // <A, B>(_: (_: A) => B) => <_0, _1, _2, _3>(_: A[]) => B[]
 ```
 
 ### Type description
@@ -50,6 +50,9 @@ export interface Type {
   inner: Type[];
 }
 ```
+
+- `outer` is a string that identifies the type.
+- `inner` is an array of type descriptors of the type variables.
 
 A type like `Promise<Map<string, number>>[]` would be described as something like:
 
