@@ -39,20 +39,44 @@ const mapArray = functorArray.map; // <A, B>(_: (_: A) => B) => <_0, _1, _2, _3>
 ### Type description
 
 ```typescript
-import { Type, TypeCons } from 'pure-ts/Type';
+import { TypeDesc, Desc } from 'pure-ts/Type';
 ```
 
-`Type` is a description of a concrete TypeScript type:
+`TypeDesc` is a description of a concrete TypeScript type:
 
 ```typescript
-export interface Type {
-  outer: string;
-  inner: Type[];
+export interface TypeDesc {
+  URI: string;
+  VarDescs: TypeDesc[];
 }
 ```
 
-- `outer` is a string that identifies the type.
-- `inner` is an array of type descriptors of the type variables.
+- `URI` is a string that uniquely identifies the type.
+- `VarDescs` is an array of the descriptions of the type variables.
+
+#### URI
+
+The URI of native JavaScript types should be the same string returned by
+`Object.prototype.toString.call(...)` (minus the `[object ` prefix and `]` suffix):
+
+```javascript
+const array = [];
+const arrayURI = Object.prototype.toString.call(array).slice(8, -1);
+console.log(arrayURI); // 'Array'
+```
+
+For user-defined types, it should follow the [sanctuary-js](https://github.com/sanctuary-js/sanctuary-type-identifiers)
+convention: `'<namespace>/<name>[@<version>]'` (_e.g._ `'@my-scope/my-package/MyFunctor'` or `'my-package/MyFunctor@3'`).
+
+#### Type variables
+
+The `VarDescs` parameter should only describe *concrete* type variables, _i.e._:
+
+For a function like `<A>(xs: Array<A>): number`, the type description of `xs` would
+be `{ URI: 'Array'; VarDescs: never }`, because the type `A` is not concrete.
+
+A `Promise` has one type variable `T` (`interface Promise<T> { ... }`), so its
+`VarDescs` should be an array with one `TypeDesc`.
 
 A type like `Promise<Map<string, number>>[]` would be described as something like:
 
