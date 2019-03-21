@@ -122,28 +122,28 @@ export interface Functor<T extends TypeDesc> {
 }
 ```
 
-- `T extends TypeDesc` ensures the `map` function of a `Functor` instance is applied to a specific type.
+- `T extends TypeDesc` ensures the `map` function of a `Functor` instance is applied to a specific type;
+- `A` and `B` are equivalent to `a` and `b` from PureScript;
+- `_0`, `_1`, `_2` and `_3` are extra type variables that instances might need, but are not affected by this type class (_e.g._ the functor instance for `Map<K, V>` would only change the `V` value, so one of these extra variables would be used to represent `K`);
+- `Type<T, [A, _0, _1, _2, _3]>` converts the type description `T` and the type variables `A`, `_0`, `_1`, `_2` and `_3` into a concrete type. Notice that, in the result of the `map` function, the only change is from `A` to `B`, which is the purpose of the `Functor` class. As a convention, the extra type variables (`_0`, `_1`, `_2` and `_3`) should come after the ones needed by the class (`A` or `B`).
 
-- Type class definition
--
-- `a` and `b` are the same from PureScript.
--
-- `_0`, `_1`, `_2` and `_3` are extra type variables that instances might need,
-- but are not affected by this type class.
--
-- The `Instance` helper determines the concrete instance that will be used. \*/
+### Types dictionary
 
-/\*
-
-- Dictionary of instances \*/
+From given example:
 
 ```typescript
-export interface Dict<inner extends Type[] = never, args extends any[] = never> {
-  Array: Array<args[0]>;
+export interface Dict<VarDescs extends TypeDesc[] = never, Vars extends any[] = never> {
+  Array: Vars[0][];
 }
 ```
 
-/\*
+For each instance of a type class, an entry should be added to the types dictionary, so that the `Type` constructor knows how to convert a `TypeDesc` into a concrete TypeScript type. The key of the entry should correspond to the `URI` property of the description.
+
+The types dictionary can be thought of as a collection of functions which can operate on the values they are given.
+
+The `VarDescs` parameter corresponds to the property with the same name in the `TypeDesc` type, _i.e._, when the description `Desc<'Array', [Desc<'Number'>]>` is being converted to a concrete type, the `Array` "function" will be given `[Desc<'Number'>]` as its `VarDescs` parameter. Its use will become clearer in the section about [superclasses](#superclasses).
+
+The `Vars` parameter is the array of type variables passed to the `Type` constructor in the type class definition. In the example above, the `Functor` instance of the `Array` type will operate on its only type variable, so the constructed type should use the first such variable (the one concerning the `Functor` class).
 
 - Instance constructor
 -
@@ -165,3 +165,5 @@ export const functorArray: Functor<TypeCons<'Array'>> = {
   map: f => xs => xs.map(x => f(x));
 };
 ```
+
+## Superclasses
