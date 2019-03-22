@@ -1,5 +1,85 @@
 # pure-ts - Translating PureScript to TypeScript
 
+## Acknowledgements
+
+This project is based on these previous works:
+
+- [Haskell](https://www.haskell.org/);
+- [PureScript](http://www.purescript.org/);
+- [Fantasy Land](https://github.com/fantasyland/fantasy-land);
+- [Static Land](https://github.com/rpominov/static-land);
+- [fp-ts](https://github.com/gcanti/fp-ts);
+- [TypeProps](https://github.com/SimonMeskens/TypeProps);
+- [sanctuary-type-classes](https://github.com/sanctuary-js/sanctuary-type-classes)
+
+## Motivation
+
+In Haskell and PureScript, there are type classes, which define the signature of a function:
+
+```purescript
+class Functor f where
+  map :: forall a b. (a -> b) -> f a -> f b
+```
+
+This code declares a type class called `Functor`, which is parameterized by the type variable `'f'`.
+
+`'f'` must represent a type constructor that takes another type variable as its parameter (otherwise `'f a'` and `'f b'` would not be possible).
+
+```purescript
+instance functorArray :: Functor Array where
+  map = arrayMap -- arrayMap defined elsewhere
+```
+
+> A type class instance contains implementations of the functions defined in a type class, specialized to a particular type. &mdash; [PureScript by Example](https://leanpub.com/purescript/read)
+
+Other functions can be defined _once_, and will work with _any_ instance of the type class:
+
+```purescript
+flap :: forall f a b. Functor f => f (a -> b) -> a -> f b
+flap ff x = map (\f -> f x) ff
+```
+
+### How to implement this in TypeScript?
+
+The [Static Land](https://github.com/rpominov/static-land) specification defines a functor module as a JavaScript object having this signature:
+
+```
+Functor<T> {
+  map: <a, b>(a => b, T<a>) => T<b>
+}
+```
+
+In the pseudo-code snippet above, `T` is a type constructor which accepts a type variable (such as `a` and `b` in `T<a>` and `T<b>`) and returns a concrete type.
+
+As an example, `T` could be `Array`, and `T<a>` would be `Array<a>` (or the shorthand `a[]`). The corresponding functor would be:
+
+```typescript
+const functorArray = {
+  map: <A, B>(f: (_: A) => B, xs: A[]): B[] => xs.map(x => f(x)),
+};
+```
+
+The goal is to define `Functor` in such a way that a signature like the following would be correctly inferred (WARNING: **not** valid TypeScript):
+
+```typescript
+declare const functorArray: Functor<Array>;
+// should be inferred as `{
+//   map: <A, B>(f: (_: A) => B, fa: A[]) => B[]
+// }`
+```
+
+Translating the Static Land pseudo-code directly does not produce valid TypeScript:
+
+```typescript
+interface Functor<T> {
+  map: <a, b>(f: (_: a) => b, fa: T<a>) => T<b>;
+}
+
+const flap = <T>(F: Functor<T>) => <a, b>(ff: T<(_: a) => b>, a: a): T<b> => F.map(f => f(a), ff);
+
+// ERROR: Type 'T' is not generic
+```
+
 ## Example
 
 In PureScript:
@@ -19,9 +99,9 @@ In TypeScript:
 import { TypeDesc, Desc } from 'pure-ts/Type';
 
 export interface Functor<T extends TypeDesc> {
-  map: <A, B>(_: (_: A) => B)
-    => <_0, _1, _2, _3>(_: Type<T, [A, _0, _1, _2, _3]>)
-    => Type<T, [B, _0, _1, _2, _3]>;
+  map: <A, B>(_: (_: A) => B) =>
+    <_0, _1, _2, _3>(_: Type<T, [A, _0, _1, _2, _3]>) =>
+      Type<T, [B, _0, _1, _2, _3]>;
 }
 
 export interface Dict<VarDescs extends TypeDesc[] = never, Vars extends any[] = never> {
