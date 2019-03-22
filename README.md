@@ -30,18 +30,22 @@ instance functorArray :: Functor Array where
   map = arrayMap -- arrayMap defined elsewhere
 ```
 
-> A type class instance contains implementations of the functions defined in a type class, specialized to a particular type. &mdash; [PureScript by Example](https://leanpub.com/purescript/read)
+Here, an instance of the type class `Functor` is provided for the type constructor `Array`.
 
-Other functions can be defined _once_, and will work with _any_ instance of the type class:
+> "A type class instance contains implementations of the functions defined in a type class, specialized to a particular type" ([PureScript by Example](https://leanpub.com/purescript/read)).
+
+Other functions can be defined _once_, and will work on _any_ given instance of the type class:
 
 ```purescript
 flap :: forall f a b. Functor f => f (a -> b) -> a -> f b
 flap ff x = map (\f -> f x) ff
 ```
 
+Here, a function called `flap`, which can be applied to any type `'f'` whose `Functor` instance has been defined.
+
 ### How to implement this in TypeScript?
 
-The [Static Land](https://github.com/rpominov/static-land) specification defines a functor module as a JavaScript object having this signature:
+The [Static Land](https://github.com/rpominov/static-land) specification defines a functor module as a JavaScript object having this signature (NOT actual code):
 
 ```
 Functor<T> {
@@ -49,35 +53,57 @@ Functor<T> {
 }
 ```
 
-In the pseudo-code snippet above, `T` is a type constructor which accepts a type variable (such as `a` and `b` in `T<a>` and `T<b>`) and returns a concrete type.
+In the snippet above, `'T'`, `'T<a>'` and `'T<b>'` are equivalent to PureScript's `'f'`, `'f a'` and `'f b'`, respectively.
 
-As an example, `T` could be `Array`, and `T<a>` would be `Array<a>` (or the shorthand `a[]`). The corresponding functor would be:
+How to define `Functor` such that the following instance definition would be correctly inferred?
 
 ```typescript
-const functorArray = {
-  map: <A, B>(f: (_: A) => B, xs: A[]): B[] => xs.map(x => f(x)),
+const functorArray: Functor</* something representing our type */> = {
+  map: (f, xs) => xs.map(x => f(x)),
 };
-```
-
-The goal is to define `Functor` in such a way that a signature like the following would be correctly inferred (WARNING: **not** valid TypeScript):
-
-```typescript
-declare const functorArray: Functor<Array>;
 // should be inferred as `{
 //   map: <A, B>(f: (_: A) => B, fa: A[]) => B[]
 // }`
 ```
 
-Translating the Static Land pseudo-code directly does not produce valid TypeScript:
+To implement this, we should define a types dictionary:
+
+```typescript
+interface Dict<A> {
+  Array: A[];
+}
+```
+
+If we define `'A'` to be the concrete type `string`, we could construct an array of strings:
+
+```typescript
+type ArrayOfStrings = Dict<string>['Array']; // string[]
+```
+
+Let's create a helper called `Type`, which takes a key from our types dictionary and a type variable, and returns the concrete type:
+
+```typescript
+type Type<Key, Var> = Key extends keyof Dict<any> ? Dict<Var>[Key] : never;
+```
+
+Now we can implement our `Functor`:
 
 ```typescript
 interface Functor<T> {
-  map: <a, b>(f: (_: a) => b, fa: T<a>) => T<b>;
+  map: <a, b>(f: (_: a) => b, fa: Type<T, a>) => Type<T, b>;
 }
 
-const flap = <T>(F: Functor<T>) => <a, b>(ff: T<(_: a) => b>, a: a): T<b> => F.map(f => f(a), ff);
+const functorArray: Functor<'Array'> = {
+  map: (f, xs) => xs.map(x => f(x)),
+};
 
-// ERROR: Type 'T' is not generic
+const mapArray = functorArray.map;
+// correctly inferred as <a, b>(f: (_: a) => b, fa: a[]) => b[]
+
+const flap = <T>(F: Functor<T>) => <a, b>(ff: Type<T, (_: a) => b>, a: a) => F.map(f => f(a), ff); // no need to explicitly inform the return type
+
+const flapArray = flap(functorArray);
+// correctly inferred as <a, b>(ff: ((_: a) => b)[], a: a) => b[]
 ```
 
 ## Example
