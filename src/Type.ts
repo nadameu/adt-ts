@@ -1,11 +1,13 @@
-export interface TypeDesc {
-	URI: string;
-	VarDescs: TypeDesc[];
+export type TypeDesc = string | RecursiveTypeDesc;
+
+export interface RecursiveTypeDesc {
+	key: string;
+	descs: TypeDesc[];
 }
 
-export interface Desc<URI extends string, VarDescs extends TypeDesc[] = never[]> {
-	URI: URI;
-	VarDescs: VarDescs;
+export interface Desc<key extends string, descs extends TypeDesc[]> extends RecursiveTypeDesc {
+	key: key;
+	descs: descs;
 }
 
 export type PickEven<args extends any[]> = [args[0], args[2], args[4], args[6], args[8]];
