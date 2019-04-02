@@ -1,9 +1,11 @@
 import { Eq } from '../Prelude/Data/Eq';
+import { TypeDesc } from '../Type';
 
-export const eq: Eq<'Boolean'>['eq'] = x => y => x === y;
+export const eqBoolean: Eq<'Boolean'> = { eq: x => y => x === y };
+export const eq = eqBoolean.eq;
 
-declare module '../TypesDictionary' {
-	export interface EqInstances<Params extends any[] = any[]> {
-		Boolean: { instance: boolean };
+declare module '../Prelude/Data/Eq' {
+	export interface Dict<params extends any[] = any[], descs extends TypeDesc[] = never[]> {
+		Boolean: boolean;
 	}
 }

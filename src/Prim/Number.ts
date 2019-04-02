@@ -1,9 +1,11 @@
 import { Eq } from '../Prelude/Data/Eq';
+import { TypeDesc } from '../Type';
 
-export const eq: Eq<'Number'>['eq'] = x => y => (isNaN(x) ? isNaN(y) : x === y);
+export const eqNumber: Eq<'Number'> = { eq: x => y => (isNaN(x) ? isNaN(y) : x === y) };
+export const eq = eqNumber.eq;
 
-declare module '../TypesDictionary' {
-	export interface EqInstances<Params extends any[] = any[]> {
-		Number: { instance: number };
+declare module '../Prelude/Data/Eq' {
+	export interface Dict<params extends any[] = any[], descs extends TypeDesc[] = never[]> {
+		Number: number;
 	}
 }

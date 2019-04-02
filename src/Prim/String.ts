@@ -1,9 +1,11 @@
 import { Eq } from '../Prelude/Data/Eq';
+import { TypeDesc } from '../Type';
 
-export const eq: Eq<'String'>['eq'] = x => y => x === y;
+export const eqString: Eq<'String'> = { eq: x => y => x === y };
+export const eq = eqString.eq;
 
-declare module '../TypesDictionary' {
-	export interface EqInstances<Params extends any[] = any[]> {
-		String: { instance: string };
+declare module '../Prelude/Data/Eq' {
+	export interface Dict<params extends any[] = any[], descs extends TypeDesc[] = never[]> {
+		String: string;
 	}
 }
