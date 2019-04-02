@@ -9,6 +9,7 @@ export const eq1Array: E.Eq1<'Array'> = {
 		return xs.every((x, i) => E.eq(x)(ys[i]));
 	},
 };
+export const eq1 = eq1Array.eq1;
 export const eqArray: <a extends TypeDesc>(_: E.Eq<a>) => E.Eq<Desc<'Array', [a]>> = E => ({
 	eq: eq1Array.eq1(E),
 });
