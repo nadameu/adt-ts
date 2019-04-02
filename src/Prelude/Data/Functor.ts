@@ -1,5 +1,7 @@
 import { Desc, TypeDesc } from '../../Type';
 import * as Fn from './Function';
+export { functorArray } from '../../Prim/Array';
+export { functorFn } from '../../Prim/Fn';
 
 export interface Dict<params extends any[] = any[], descs extends TypeDesc[] = never[]> {
 	never: never;

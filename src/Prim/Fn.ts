@@ -16,7 +16,7 @@ export const categoryFn: C.Category<'Fn'> = { ...semigroupoidFn, identity: x => 
 export const identity = categoryFn.identity;
 
 // Functor
-const functorFn: F.Functor<'Fn'> = { map: compose };
+export const functorFn: F.Functor<'Fn'> = { map: compose };
 export const map = functorFn.map;
 export const mapFlipped = F.mapFlipped(functorFn);
 const _void = F.void(functorFn);
