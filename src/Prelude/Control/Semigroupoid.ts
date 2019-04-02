@@ -1,7 +1,8 @@
 import { Desc, TypeDesc } from '../../Type';
+export { semigroupoidFn } from '../../Prim/Fn';
 
 export interface Dict<params extends any[] = any[], descs extends TypeDesc[] = never[]> {
-	Fn: (_: params[0]) => params[1];
+	never: never;
 }
 export type Type<a extends TypeDesc, params extends any[] = any[]> = a extends keyof Dict
 	? Dict<params>[a]
@@ -14,10 +15,6 @@ export type Type<a extends TypeDesc, params extends any[] = any[]> = a extends k
 export interface Semigroupoid<a extends TypeDesc> {
 	compose: <c, d>(_: Type<a, [c, d]>) => <b>(_: Type<a, [b, c]>) => Type<a, [b, d]>;
 }
-
-export const semigroupoidFn: Semigroupoid<'Fn'> = {
-	compose: f => g => x => f(g(x)),
-};
 
 export const composeFlipped: <a extends TypeDesc>(
 	S: Semigroupoid<a>,
