@@ -12,6 +12,7 @@ export const eq1Array: E.Eq1<'Array'> = {
 export const eqArray: <a extends TypeDesc>(_: E.Eq<a>) => E.Eq<Desc<'Array', [a]>> = E => ({
 	eq: eq1Array.eq1(E),
 });
+export const notEq1 = E.notEq1(eq1Array);
 
 // Functor
 export const functorArray: F.Functor<'Array'> = { map: f => xs => xs.map(x => f(x)) };
