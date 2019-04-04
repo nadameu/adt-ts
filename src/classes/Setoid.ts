@@ -1,6 +1,7 @@
 import { Desc, GetKey, Info, MakeInfo } from '../Desc';
+import { Dict as OrdDict } from './Ord';
 
-export interface Dict<info extends Info> {
+export interface Dict<info extends Info> extends OrdDict<info> {
 	never: never;
 }
 export type Type<desc extends Desc, params extends any[]> = Dict<MakeInfo<desc, params>>[GetKey<
