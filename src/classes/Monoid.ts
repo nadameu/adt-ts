@@ -9,4 +9,6 @@ export interface MonoidConstructor<M extends Keys> {
 	[fl.empty]: <a = never, b = never, c = never, d = never>() => Type<M, a, b, c, d>;
 }
 
-export const empty = <M extends Keys>(M: MonoidConstructor<M>) => M[fl.empty];
+export const empty = <M extends Keys, a = never, b = never, c = never, d = never>(
+	M: MonoidConstructor<M>,
+) => M[fl.empty]<a, b, c, d>();
