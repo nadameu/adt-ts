@@ -24,3 +24,6 @@ export { C as flip };
 export const P = <b, c>(f: fn2<b, b, c>) => <a>(g: fn<a, b>): fn2<a, a, c> => x => y =>
 	f(g(x))(g(y));
 export { P as on };
+
+export const T = <a>(x: a) => <b>(f: fn<a, b>) => f(x);
+export { T as thrush };
