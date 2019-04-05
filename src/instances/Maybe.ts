@@ -1,13 +1,10 @@
 import { equals, Setoid } from '../classes/Setoid';
 import * as fl from '../fantasy-land';
+import { HKT } from '../HKT';
 import { Keys, Type } from '../Types';
 
-class MaybeBase<a> {
-	'@@URI'!: 'Maybe';
-	'@@A'!: a;
-	'@@B'!: never;
-	'@@C'!: never;
-	'@@D'!: never;
+class MaybeBase<a> implements HKT<'Maybe', a> {
+	'@@HKT': ['Maybe', a, never, never, never];
 	get isNothing(this: Maybe<a>) {
 		return !this.isJust;
 	}
