@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-import * as fl from 'fantasy-land';
+import * as fl from '../fantasy-land';
 
 Boolean.prototype[fl.equals] = function equals(that) {
 	return this === that;
@@ -10,7 +9,7 @@ export default {};
 declare global {
 	interface Boolean {
 		'@@URI': 'Boolean';
-		[fl.equals]: (this: boolean, _: boolean) => boolean;
+		['fantasy-land/equals']: (this: boolean, _: boolean) => boolean;
 	}
 }
 

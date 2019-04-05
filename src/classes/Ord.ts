@@ -1,4 +1,4 @@
-import * as fl from 'fantasy-land';
+import * as fl from '../fantasy-land';
 import { Ordering } from '../instances/Ordering';
 import { Keys, Type } from '../Types';
 import { Setoid } from './Setoid';

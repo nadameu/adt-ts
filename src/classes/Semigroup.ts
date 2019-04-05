@@ -1,4 +1,4 @@
-import * as fl from 'fantasy-land';
+import * as fl from '../fantasy-land';
 import { HKT } from '../HKT';
 import { Keys, Type } from '../Types';
 

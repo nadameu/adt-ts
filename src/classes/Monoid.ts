@@ -1,4 +1,4 @@
-import * as fl from 'fantasy-land';
+import * as fl from '../fantasy-land';
 import { Keys, Type } from '../Types';
 import { Semigroup } from './Semigroup';
 
