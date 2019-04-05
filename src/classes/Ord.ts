@@ -31,7 +31,7 @@ export const compare = <O extends Keys, a = never, b = never, c = never, d = nev
 	!y[fl.lte](x) ? Ordering.LT : !x[fl.lte](y) ? Ordering.GT : Ordering.EQ;
 
 export const comparing = <a, O extends Keys, b = never, c = never, d = never, e = never>(
-	f: (_: a) => Type<O, b, c, d, e> & Ord<O, b, c, d, e>,
+	f: (_: a) => TO<O, b, c, d, e>,
 ) => (x: a) => (y: a) => compare<O, b, c, d, e>(f(x))(f(y));
 
 export const min = <O extends Keys, a = never, b = never, c = never, d = never>(
