@@ -24,12 +24,12 @@ interface Just<a> extends MaybeBase<a> {
 	isNothing: false;
 	value: a;
 }
-export const Just: <a>(value: a) => Just<a>;
+export const Just: <a>(value: a) => Maybe<a>;
 export interface Nothing<a = never> extends MaybeBase<a> {
 	isJust: false;
 	isNothing: true;
 }
-export const Nothing: Nothing;
+export const Nothing: Maybe<never>;
 export type Maybe<a> = Just<a> | Nothing<a>;
 
 declare module '../Types' {
