@@ -12,6 +12,10 @@ export default {};
 declare global {
 	interface Number {
 		'@@URI': 'Number';
+		'@@A': never;
+		'@@B': never;
+		'@@C': never;
+		'@@D': never;
 		['fantasy-land/equals']: (this: number, _: number) => boolean;
 		['fantasy-land/lte']: (this: number, _: number) => boolean;
 	}

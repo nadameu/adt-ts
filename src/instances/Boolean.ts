@@ -9,6 +9,10 @@ export default {};
 declare global {
 	interface Boolean {
 		'@@URI': 'Boolean';
+		'@@A': never;
+		'@@B': never;
+		'@@C': never;
+		'@@D': never;
 		['fantasy-land/equals']: (this: boolean, _: boolean) => boolean;
 	}
 }
