@@ -14,7 +14,7 @@ class MaybeBase<a> implements HKT<'Maybe', a> {
 		that: Maybe<Type<S, a, b, c, d> & Setoid<S, a, b, c, d>>,
 	): boolean {
 		return this.isJust && that.isJust
-			? equals(this.value as any)(that.value as any)
+			? equals<any>(this.value)(that.value)
 			: this.isJust === that.isJust;
 	}
 }
@@ -23,12 +23,8 @@ export interface Just<a> extends MaybeBase<a> {
 	isNothing: false;
 	value: a;
 }
-export const Just = <a>(value: a): Just<a> => {
-	const just = new MaybeBase() as any;
-	just.isJust = true;
-	just.value = value;
-	return just;
-};
+export const Just = <a>(value: a): Just<a> =>
+	Object.assign(new MaybeBase() as any, { isJust: true, value });
 export interface Nothing<a = never> extends MaybeBase<a> {
 	isJust: false;
 	isNothing: true;
