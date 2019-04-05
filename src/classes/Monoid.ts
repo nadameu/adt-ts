@@ -1,16 +1,12 @@
-import { Desc, GetKey, Info, MakeInfo } from '../Desc';
+import * as fl from 'fantasy-land';
+import { Keys, Type } from '../Types';
 import { Semigroup } from './Semigroup';
 
-export interface Dict<info extends Info> {
-	never: never;
-}
-export type Type<desc extends Desc, params extends any[]> = Dict<MakeInfo<desc, params>>[GetKey<
-	desc,
-	keyof Dict<never>
->];
-
-export interface Monoid<m extends Desc> extends Semigroup<m> {
-	empty: <_0 = unknown>() => Type<m, [_0]>;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Monoid<M extends Keys, a = any, b = any> extends Semigroup<M> {}
+export interface MonoidConstructor<M extends Keys> {
+	prototype: Monoid<M>;
+	[fl.empty]: <a = never, b = never>() => Type<M, a, b>;
 }
 
-export const empty = <m extends Desc>(S: Monoid<m>) => S.empty;
+export const empty = <M extends Keys>(M: MonoidConstructor<M>) => M[fl.empty];

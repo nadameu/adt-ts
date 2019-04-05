@@ -1,28 +1,28 @@
-import { Monoid } from '../classes/Monoid';
-import { Semigroup } from '../classes/Semigroup';
-import { equals, Setoid } from '../classes/Setoid';
-import { CompositeDesc, Desc, Info } from '../Desc';
+/* eslint-disable no-undef */
+import * as fl from 'fantasy-land';
 
-export const setoidArray: <s extends Desc>(
-	_: Setoid<s>,
-) => Setoid<CompositeDesc<'Array', [s]>> = S => ({
-	equals: xs => ys => {
-		if (xs.length !== ys.length) return false;
-		const eq = equals(S);
-		return xs.every((x, i) => eq(x)(ys[i]));
-	},
-});
-export const concat: Semigroup<'Array'>['concat'] = xs => ys => xs.concat(ys);
-export const empty: Monoid<'Array'>['empty'] = () => [];
+Array.prototype[fl.concat] = function concat(that) {
+	return this.concat(that);
+};
 
-declare module '../classes/Setoid' {
-	export interface Dict<info extends Info> {
-		Array: Type<info['descs'][0], info['params']>[];
+Array[fl.empty] = function() {
+	return [];
+};
+
+export default {};
+
+declare global {
+	interface Array<T> {
+		readonly [Symbol.toStringTag]: 'Array';
+		[fl.concat]: (_: T[]) => T[];
+	}
+	interface ArrayConstructor {
+		[fl.empty]: <T>() => T[];
 	}
 }
 
-declare module '../classes/Monoid' {
-	export interface Dict<info extends Info> {
-		Array: info['params'][0][];
+declare module '../Types' {
+	export interface Types<a, b> {
+		Array: a[];
 	}
 }
