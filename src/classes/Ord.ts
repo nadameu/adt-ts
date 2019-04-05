@@ -1,58 +1,51 @@
-import { B1, flip, on } from '../combinators';
-import { Desc, GetKey, Info, MakeInfo } from '../Desc';
-import { not } from '../instances/Boolean';
+import * as fl from 'fantasy-land';
 import { Ordering } from '../instances/Ordering';
+import { Keys, Type } from '../Types';
 import { Setoid } from './Setoid';
 
-export interface Dict<info extends Info> {
-	never: never;
-}
-export type Type<desc extends Desc, params extends any[]> = Dict<MakeInfo<desc, params>>[GetKey<
-	desc,
-	keyof Dict<never>
->];
-
-export interface Ord<o extends Desc> extends Setoid<o> {
-	lte: <_0 = unknown>(_: Type<o, [_0]>) => (_: Type<o, [_0]>) => boolean;
+export interface Ord<O extends Keys, a, b, c, d> extends Setoid<O, a, b, c, d> {
+	[fl.lte]: (this: Type<O, a, b, c, d>, _: TO<O, a, b, c, d>) => boolean;
 }
 
-export const lte = <o extends Desc>(O: Ord<o>) => O.lte;
-export const gt: <o extends Desc>(
-	_: Ord<o>,
-) => <_0 = unknown>(_: Type<o, [_0]>) => (_: Type<o, [_0]>) => boolean = O => B1(not)(lte(O));
+type TO<O extends Keys, a, b, c, d> = Type<O, a, b, c, d> & Ord<O, a, b, c, d>;
 
-export const lt: <o extends Desc>(
-	_: Ord<o>,
-) => <_0 = unknown>(_: Type<o, [_0]>) => (_: Type<o, [_0]>) => boolean = O => B1(not)(flip(lte(O)));
+export const lte = <O extends Keys, a = never, b = never, c = never, d = never>(
+	x: TO<O, a, b, c, d>,
+) => (y: TO<O, a, b, c, d>) => x[fl.lte](y);
 
-export const gte: <o extends Desc>(
-	_: Ord<o>,
-) => <_0 = unknown>(_: Type<o, [_0]>) => (_: Type<o, [_0]>) => boolean = O => flip(lte(O));
+export const gt = <O extends Keys, a = never, b = never, c = never, d = never>(
+	x: TO<O, a, b, c, d>,
+) => (y: TO<O, a, b, c, d>): boolean => !x[fl.lte](y);
 
-export const compare: <o extends Desc>(
-	_: Ord<o>,
-) => <_0 = unknown>(_: Type<o, [_0]>) => (_: Type<o, [_0]>) => Ordering = O => x => y =>
-	lt(O)(x)(y) ? Ordering.LT : gt(O)(x)(y) ? Ordering.GT : Ordering.EQ;
+export const lt = <O extends Keys, a = never, b = never, c = never, d = never>(
+	x: TO<O, a, b, c, d>,
+) => (y: TO<O, a, b, c, d>): boolean => !y[fl.lte](x);
 
-export const comparing: <o extends Desc>(
-	_: Ord<o>,
-) => <a, _0 = unknown>(_: (_: a) => Type<o, [_0]>) => (_: a) => (_: a) => Ordering = O =>
-	on(compare(O));
+export const gte = <O extends Keys, a = never, b = never, c = never, d = never>(
+	x: TO<O, a, b, c, d>,
+) => (y: TO<O, a, b, c, d>): boolean => y[fl.lte](x);
 
-export const min: <o extends Desc>(
-	_: Ord<o>,
-) => <_0 = unknown>(_: Type<o, [_0]>) => (_: Type<o, [_0]>) => Type<o, [_0]> = O => x => y =>
-	lt(O)(x)(y) ? x : y;
+export const compare = <O extends Keys, a = never, b = never, c = never, d = never>(
+	x: TO<O, a, b, c, d>,
+) => (y: TO<O, a, b, c, d>): Ordering =>
+	!y[fl.lte](x) ? Ordering.LT : !x[fl.lte](y) ? Ordering.GT : Ordering.EQ;
 
-export const max: <o extends Desc>(
-	_: Ord<o>,
-) => <_0 = unknown>(_: Type<o, [_0]>) => (_: Type<o, [_0]>) => Type<o, [_0]> = O => x => y =>
-	gt(O)(x)(y) ? x : y;
+export const comparing = <a, O extends Keys, b = never, c = never, d = never, e = never>(
+	f: (_: a) => Type<O, b, c, d, e> & Ord<O, b, c, d, e>,
+) => (x: a) => (y: a) => compare<O, b, c, d, e>(f(x))(f(y));
 
-export const clamp = <o extends Desc>(O: Ord<o>) => <_0 = unknown>(lo: Type<o, [_0]>) => (
-	hi: Type<o, [_0]>,
-) => (x: Type<o, [_0]>): Type<o, [_0]> => min(O)(hi)(max(O)(lo)(x));
+export const min = <O extends Keys, a = never, b = never, c = never, d = never>(
+	x: TO<O, a, b, c, d>,
+) => (y: TO<O, a, b, c, d>): TO<O, a, b, c, d> => (lte<O, a, b, c, d>(x)(y) ? x : y);
 
-export const between = <o extends Desc>(O: Ord<o>) => <_0 = unknown>(lo: Type<o, [_0]>) => (
-	hi: Type<o, [_0]>,
-) => (x: Type<o, [_0]>): boolean => (lt(O)(x)(lo) || gt(O)(x)(hi) ? false : true);
+export const max = <O extends Keys, a = never, b = never, c = never, d = never>(
+	x: TO<O, a, b, c, d>,
+) => (y: TO<O, a, b, c, d>): TO<O, a, b, c, d> => (gte<O, a, b, c, d>(x)(y) ? x : y);
+
+export const clamp = <O extends Keys, a = never, b = never, c = never, d = never>(
+	lo: TO<O, a, b, c, d>,
+) => (hi: TO<O, a, b, c, d>) => (x: TO<O, a, b, c, d>): TO<O, a, b, c, d> => min(hi)(max(lo)(x));
+
+export const between = <O extends Keys, a = never, b = never, c = never, d = never>(
+	lo: TO<O, a, b, c, d>,
+) => (hi: TO<O, a, b, c, d>) => (x: TO<O, a, b, c, d>): boolean => gte(x)(lo) && lte(x)(hi);
