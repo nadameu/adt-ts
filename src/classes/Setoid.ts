@@ -1,20 +1,11 @@
-import { Desc, GetKey, Info, MakeInfo } from '../Desc';
-import { Dict as OrdDict } from './Ord';
+import * as fl from 'fantasy-land';
+import { HasStringTag } from '../HasStringTag';
+import { Keys, Type } from '../Types';
 
-export interface Dict<info extends Info> extends OrdDict<info> {
-	never: never;
-}
-export type Type<desc extends Desc, params extends any[]> = Dict<MakeInfo<desc, params>>[GetKey<
-	desc,
-	keyof Dict<never>
->];
-
-export interface Setoid<s extends Desc> {
-	equals: <_0 = unknown>(_: Type<s, [_0]>) => (_: Type<s, [_0]>) => boolean;
+export interface Setoid<S extends Keys, a = any, b = any> extends HasStringTag<S> {
+	[fl.equals]: (_: Type<S, a, b>) => boolean;
 }
 
-export const equals = <s extends Desc>(S: Setoid<s>) => S.equals;
-export const notEquals: <s extends Desc>(
-	S: Setoid<s>,
-) => <_0 = unknown>(_: Type<s, [_0]>) => (_: Type<s, [_0]>) => boolean = S => x => y =>
-	!equals(S)(x)(y);
+export const equals = <S extends Keys, a = any, b = any>(x: Type<S, a, b> & Setoid<S, a, b>) => (
+	y: Type<S, a, b>,
+) => x[fl.equals](y);
