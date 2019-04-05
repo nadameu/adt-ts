@@ -1,4 +1,10 @@
 import { Keys } from './Types';
-export interface HKT<URI extends Keys, A = never, B = never, C = never, D = never> {
+
+// eslint-disable-next-line @typescript-eslint/class-name-casing
+interface _ {
+	empty: true;
+}
+
+export interface HKT<URI extends Keys, A = _, B = _, C = _, D = _> {
 	'@@HKT': [URI, A, B, C, D];
 }
