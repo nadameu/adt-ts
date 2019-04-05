@@ -13,7 +13,8 @@ export default {};
 
 declare global {
 	interface Array<T> {
-		readonly [Symbol.toStringTag]: 'Array';
+		'@@URI': 'Array';
+		'@@A': T;
 		[fl.concat]: (_: T[]) => T[];
 	}
 	interface ArrayConstructor {
@@ -22,7 +23,7 @@ declare global {
 }
 
 declare module '../Types' {
-	export interface Types<a, b> {
+	export interface Types<a, b, c, d> {
 		Array: a[];
 	}
 }
