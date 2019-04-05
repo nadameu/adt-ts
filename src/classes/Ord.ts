@@ -32,15 +32,15 @@ export const compare = <O extends Keys, a = never, b = never, c = never, d = nev
 
 export const comparing = <a, O extends Keys, b = never, c = never, d = never, e = never>(
 	f: (_: a) => TO<O, b, c, d, e>,
-) => (x: a) => (y: a) => compare<O, b, c, d, e>(f(x))(f(y));
+) => (x: a) => (y: a) => compare<any>(f(x))(f(y));
 
 export const min = <O extends Keys, a = never, b = never, c = never, d = never>(
 	x: TO<O, a, b, c, d>,
-) => (y: TO<O, a, b, c, d>): TO<O, a, b, c, d> => (lte<O, a, b, c, d>(x)(y) ? x : y);
+) => (y: TO<O, a, b, c, d>): TO<O, a, b, c, d> => (lte<any>(x)(y) ? x : y);
 
 export const max = <O extends Keys, a = never, b = never, c = never, d = never>(
 	x: TO<O, a, b, c, d>,
-) => (y: TO<O, a, b, c, d>): TO<O, a, b, c, d> => (gte<O, a, b, c, d>(x)(y) ? x : y);
+) => (y: TO<O, a, b, c, d>): TO<O, a, b, c, d> => (gte<any>(x)(y) ? x : y);
 
 export const clamp = <O extends Keys, a = never, b = never, c = never, d = never>(
 	lo: TO<O, a, b, c, d>,
