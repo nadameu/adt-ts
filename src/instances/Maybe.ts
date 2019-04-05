@@ -1,40 +1,46 @@
-import { Monoid } from '../classes/Monoid';
-import { concat, Semigroup, Type as SemigroupType } from '../classes/Semigroup';
-import { CompositeDesc, Desc, Info } from '../Desc';
-import { Setoid, equals } from '../classes/Setoid';
+import { equals, Setoid } from '../classes/Setoid';
+import * as fl from '../fantasy-land';
+import { Keys, Type } from '../Types';
 
-export type Maybe<a> = Just<a> | Nothing;
-export interface Just<a> {
-	value: a;
-}
-export const Just: <a>(_: a) => Just<a> = value => ({ value });
-export type Nothing = null;
-export const Nothing: Nothing = null;
+class MaybeBase<a> {
+	'@@URI'!: 'Maybe';
+	'@@A'!: a;
+	'@@B'!: never;
+	'@@C'!: never;
+	'@@D'!: never;
+	get isNothing(this: Maybe<a>) {
+		return !this.isJust;
+	}
 
-export const setoidMaybe: <s extends Desc>(
-	_: Setoid<s>,
-) => Setoid<CompositeDesc<'Maybe', [s]>> = S => ({
-	equals: mx => my => (!mx || !my ? !mx === !my : equals(S)(mx.value)(my.value)),
-});
-export const semigroupMaybe: <s extends Desc>(
-	S: Semigroup<s>,
-) => Semigroup<CompositeDesc<'Maybe', [s]>> = S => ({
-	concat: mx => my => (mx && my ? Just(concat(S)(mx.value)(my.value)) : Nothing),
-});
-export const monoidMaybe: <s extends Desc>(
-	S: Semigroup<s>,
-) => Monoid<CompositeDesc<'Maybe', [s]>> = S => ({
-	...semigroupMaybe(S),
-	empty: () => Nothing,
-});
-
-declare module '../classes/Setoid' {
-	export interface Dict<info extends Info> {
-		Maybe: Maybe<Type<info['descs'][0], info['params']>>;
+	[fl.equals]<S extends Keys, a = never, b = never, c = never, d = never>(
+		this: Maybe<Type<S, a, b, c, d> & Setoid<S, a, b, c, d>>,
+		that: Maybe<Type<S, a, b, c, d> & Setoid<S, a, b, c, d>>,
+	): boolean {
+		return this.isJust && that.isJust
+			? equals(this.value as any)(that.value as any)
+			: this.isJust === that.isJust;
 	}
 }
-declare module '../classes/Monoid' {
-	export interface Dict<info extends Info> {
-		Maybe: Maybe<SemigroupType<info['descs'][0], info['params']>>;
+export interface Just<a> extends MaybeBase<a> {
+	isJust: true;
+	isNothing: false;
+	value: a;
+}
+export const Just = <a>(value: a): Just<a> => {
+	const just = new MaybeBase() as any;
+	just.isJust = true;
+	just.value = value;
+	return just;
+};
+export interface Nothing<a = never> extends MaybeBase<a> {
+	isJust: false;
+	isNothing: true;
+}
+export const Nothing: Nothing = Object.assign(new MaybeBase() as any, { isJust: false });
+export type Maybe<a> = Just<a> | Nothing<a>;
+
+declare module '../Types' {
+	export interface Types<a, b, c, d> {
+		Maybe: Maybe<a>;
 	}
 }
