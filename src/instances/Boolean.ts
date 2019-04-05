@@ -9,13 +9,13 @@ export default {};
 
 declare global {
 	interface Boolean {
-		readonly [Symbol.toStringTag]: 'Boolean';
-		[fl.equals]: (_: boolean) => boolean;
+		'@@URI': 'Boolean';
+		[fl.equals]: (this: boolean, _: boolean) => boolean;
 	}
 }
 
 declare module '../Types' {
-	export interface Types<a, b> {
+	export interface Types<a, b, c, d> {
 		Boolean: boolean;
 	}
 }
