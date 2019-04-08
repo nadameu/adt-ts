@@ -25,6 +25,9 @@ export { C as flip };
 export const K = <a>(x: a) => <b>(y: b) => x;
 export { K as constant };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const Ki = <a>(x: a) => <b>(y: b) => y;
+
 export const P = <b, c>(f: fn2<b, b, c>) => <a>(g: fn<a, b>): fn2<a, a, c> => x => y =>
 	f(g(x))(g(y));
 export { P as on };
