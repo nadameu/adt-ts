@@ -24,6 +24,9 @@ const JustConstructor = class Just extends Maybe {
 	[fl.equals](that) {
 		return that.isJust && equals(this.value)(that.value);
 	}
+	[fl.map](f) {
+		return Just(f(this.value));
+	}
 };
 export const Just = x => new JustConstructor(x);
 const NothingConstructor = class Nothing extends Maybe {
@@ -36,6 +39,9 @@ const NothingConstructor = class Nothing extends Maybe {
 	}
 	[fl.equals](that) {
 		return that.isNothing;
+	}
+	[fl.map](_) {
+		return this;
 	}
 };
 export const Nothing = new NothingConstructor();

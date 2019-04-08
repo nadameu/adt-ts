@@ -6,6 +6,7 @@ import { HKT, _ } from '../HKT';
 interface MaybeBase<a> extends HKT<'Maybe', _, _, _, a> {
 	[fl.concat]<b extends Semigroup<b>>(this: Maybe<b>, that: Maybe<b>): Maybe<b>;
 	[fl.equals]<b extends Setoid<b>>(this: Maybe<b>, that: Maybe<b>): boolean;
+	[fl.map]<b>(f: (_: a) => b): Maybe<b>;
 }
 interface MaybeConstructor {
 	prototype: Maybe<any>;

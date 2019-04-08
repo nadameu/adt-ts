@@ -9,6 +9,9 @@ Array.prototype[fl.equals] = function equals(that) {
 	if (this.length !== that.length) return false;
 	return this.every((x, i) => eq(x as any)(that[i] as any));
 };
+Array.prototype[fl.map] = function map(f) {
+	return this.map(x => f(x));
+};
 
 Array[fl.empty] = function() {
 	return [];
@@ -20,6 +23,7 @@ declare global {
 	interface Array<T> extends HKT<'Array', _, _, _, T> {
 		['fantasy-land/concat']: (_: T[]) => T[];
 		['fantasy-land/equals']: <U extends Setoid<U>>(this: U[], _: U[]) => boolean;
+		['fantasy-land/map']: <U>(f: (_: T) => U) => U[];
 	}
 	interface ArrayConstructor {
 		['fantasy-land/empty']: <T>() => T[];
