@@ -1,5 +1,6 @@
 import { concat } from '../classes/Semigroup';
 import { equals } from '../classes/Setoid';
+import { T } from '../combinators';
 import * as fl from '../fantasy-land';
 
 export class Maybe {
@@ -18,6 +19,9 @@ const JustConstructor = class Just extends Maybe {
 		this.value = value;
 	}
 
+	[fl.ap](that) {
+		return that[fl.map](T(this.value));
+	}
 	[fl.concat](that) {
 		return that.isNothing ? this : Just(concat(this.value)(that.value));
 	}
@@ -33,6 +37,9 @@ const NothingConstructor = class Nothing extends Maybe {
 	constructor() {
 		super();
 		this.isJust = false;
+	}
+	[fl.ap](_) {
+		return this;
 	}
 	[fl.concat](that) {
 		return that;

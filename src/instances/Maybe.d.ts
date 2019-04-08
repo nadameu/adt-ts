@@ -1,8 +1,10 @@
 import { Semigroup } from '../classes/Semigroup';
 import { Setoid } from '../classes/Setoid';
+import { fn } from '../combinators';
 import * as fl from '../fantasy-land';
 
 interface MaybeBase<a> {
+	[fl.ap]<b>(that: Maybe<fn<a, b>>): Maybe<b>;
 	[fl.concat]<b extends Semigroup<b>>(this: Maybe<b>, that: Maybe<b>): Maybe<b>;
 	[fl.equals]<b extends Setoid<b>>(this: Maybe<b>, that: Maybe<b>): boolean;
 	[fl.map]<b>(f: (_: a) => b): Maybe<b>;
