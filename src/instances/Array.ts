@@ -25,7 +25,7 @@ declare global {
 		['fantasy-land/map']: <U>(f: (_: T) => U) => U[];
 	}
 	interface ArrayConstructor {
-		['fantasy-land/empty']: <T>() => T[];
+		['fantasy-land/empty']: <T = never>() => T[];
 	}
 }
 
