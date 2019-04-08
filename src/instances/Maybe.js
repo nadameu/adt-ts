@@ -11,6 +11,9 @@ export class Maybe {
 	static [fl.empty]() {
 		return Nothing;
 	}
+	static [fl.of](value) {
+		return Just(value);
+	}
 }
 const JustConstructor = class Just extends Maybe {
 	constructor(value) {

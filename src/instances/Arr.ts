@@ -30,6 +30,9 @@ export class Arr<a> extends Array<a> {
 	static [fl.empty]<a = never>(): Arr<a> {
 		return new Arr([]);
 	}
+	static [fl.of]<a>(value: a): Arr<a> {
+		return new Arr([value]);
+	}
 }
 
 declare module '../Types' {

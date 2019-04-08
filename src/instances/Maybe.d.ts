@@ -12,6 +12,7 @@ interface MaybeBase<a> {
 interface MaybeConstructor {
 	prototype: Maybe<any>;
 	[fl.empty]<a extends Semigroup<a> = never>(): Maybe<a>;
+	[fl.of]<a>(value: a): Maybe<a>;
 }
 export const Maybe: MaybeConstructor;
 interface Just<a> extends MaybeBase<a> {
