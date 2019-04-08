@@ -1,9 +1,10 @@
 import { Keys } from './Types';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
-const UNUSED = Symbol();
-export type _ = typeof UNUSED;
+export interface _ {
+	readonly unused: unique symbol;
+}
 
-export interface HKT<URI extends Keys, W = _, X = _, Y = _, Z = _> {
+export interface HKT<URI extends Keys, W, X, Y, Z> {
 	'@@HKT': [URI, W, X, Y, Z];
 }

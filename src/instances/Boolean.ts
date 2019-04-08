@@ -1,5 +1,5 @@
 import * as fl from '../fantasy-land';
-import { HKT } from '../HKT';
+import { HKT, _ } from '../HKT';
 
 Boolean.prototype[fl.equals] = function equals(that) {
 	return this === that;
@@ -8,7 +8,7 @@ Boolean.prototype[fl.equals] = function equals(that) {
 export default {};
 
 declare global {
-	interface Boolean extends HKT<'Boolean'> {
+	interface Boolean extends HKT<'Boolean', _, _, _, _> {
 		['fantasy-land/equals']: (this: boolean, _: boolean) => boolean;
 	}
 }

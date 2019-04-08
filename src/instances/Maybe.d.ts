@@ -1,9 +1,9 @@
 import { Semigroup } from '../classes/Semigroup';
 import { Setoid } from '../classes/Setoid';
 import * as fl from '../fantasy-land';
-import { HKT } from '../HKT';
+import { HKT, _ } from '../HKT';
 
-interface MaybeBase<a> extends HKT<'Maybe', a> {
+interface MaybeBase<a> extends HKT<'Maybe', _, _, _, a> {
 	[fl.concat]<b extends Semigroup<b>>(this: Maybe<b>, that: Maybe<b>): Maybe<b>;
 	[fl.equals]<b extends Setoid<b>>(this: Maybe<b>, that: Maybe<b>): boolean;
 }

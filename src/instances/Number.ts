@@ -1,5 +1,5 @@
 import * as fl from '../fantasy-land';
-import { HKT } from '../HKT';
+import { HKT, _ } from '../HKT';
 
 Number.prototype[fl.equals] = function equals(that) {
 	return isNaN(this) ? isNaN(that) : this === that;
@@ -11,7 +11,7 @@ Number.prototype[fl.lte] = function lte(that) {
 export default {};
 
 declare global {
-	interface Number extends HKT<'Number'> {
+	interface Number extends HKT<'Number', _, _, _, _> {
 		['fantasy-land/equals']: (this: number, _: number) => boolean;
 		['fantasy-land/lte']: (this: number, _: number) => boolean;
 	}

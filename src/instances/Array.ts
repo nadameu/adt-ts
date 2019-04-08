@@ -1,7 +1,6 @@
 import { equals as eq, Setoid } from '../classes/Setoid';
 import * as fl from '../fantasy-land';
-import { HKT } from '../HKT';
-import { Keys, Type } from '../Types';
+import { HKT, _ } from '../HKT';
 
 Array.prototype[fl.concat] = function concat(that) {
 	return this.concat(that);
@@ -18,7 +17,7 @@ Array[fl.empty] = function() {
 export default {};
 
 declare global {
-	interface Array<T> extends HKT<'Array', T> {
+	interface Array<T> extends HKT<'Array', _, _, _, T> {
 		['fantasy-land/concat']: (_: T[]) => T[];
 		['fantasy-land/equals']: <U extends Setoid<U>>(this: U[], _: U[]) => boolean;
 	}
