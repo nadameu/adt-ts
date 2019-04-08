@@ -8,7 +8,7 @@ export interface Functor<fa extends Functor<fa, a>, a> {
 
 type Derive<fa extends Functor<fa, any>, b> = {} & {
 	[key in Keys]: fa extends Type<key, infer w, infer x, infer y, any>
-		? Extract<Type<key, w, x, y, b>, any>
+		? Type<key, w, x, y, b>
 		: never
 }[Keys];
 type Param<fa extends Functor<fa, any>> = fa extends Functor<fa, infer a> ? a : never;
