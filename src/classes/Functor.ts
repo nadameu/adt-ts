@@ -26,6 +26,6 @@ const _void = <fa extends Functor<fa, any>>(fa: fa) => fa[fl.map](() => {});
 export { _void as void };
 
 type ParamType<T extends fn<any, any>> = T extends fn<infer U, any> ? U : any;
-export const flap = <ff extends Functor<ff, (_: any) => any>>(ff: ff) => (
-	x: ParamType<Param<ff>>,
-) => ff[fl.map](T(x)) as Derive<ff, ReturnType<Param<ff>>>;
+export const flap = <f extends Param<ff>, ff extends Functor<ff, fn<any, any>>>(ff: ff) => (
+	x: ParamType<f>,
+) => ff[fl.map](T(x)) as Derive<ff, ReturnType<f>>;
