@@ -21,6 +21,10 @@ export const B3 = <c, d>(f: fn<c, d>) => <b>(g: fn<b, c>) => <a>(h: fn<a, b>): f
 export const C = <a, b, c>(f: fn2<a, b, c>): fn2<b, a, c> => y => x => f(x)(y);
 export { C as flip };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const K = <a>(x: a) => <b>(y: b) => x;
+export { K as constant };
+
 export const P = <b, c>(f: fn2<b, b, c>) => <a>(g: fn<a, b>): fn2<a, a, c> => x => y =>
 	f(g(x))(g(y));
 export { P as on };
