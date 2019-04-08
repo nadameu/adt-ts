@@ -2,17 +2,10 @@ import { Semigroup } from '../classes/Semigroup';
 import { Setoid } from '../classes/Setoid';
 import * as fl from '../fantasy-land';
 import { HKT } from '../HKT';
-import { Keys, Type } from '../Types';
 
 interface MaybeBase<a> extends HKT<'Maybe', a> {
-	[fl.concat]<S extends Keys, a = never, b = never, c = never, d = never>(
-		this: Maybe<Type<S, a, b, c, d> & Semigroup<S, a, b, c, d>>,
-		that: Maybe<Type<S, a, b, c, d> & Semigroup<S, a, b, c, d>>,
-	): Maybe<Type<S, a, b, c, d> & Semigroup<S, a, b, c, d>>;
-	[fl.equals]<S extends Keys, a = never, b = never, c = never, d = never>(
-		this: Maybe<Type<S, a, b, c, d> & Setoid<S, a, b, c, d>>,
-		that: Maybe<Type<S, a, b, c, d> & Setoid<S, a, b, c, d>>,
-	): boolean;
+	[fl.concat]<b extends Semigroup<b>>(this: Maybe<b>, that: Maybe<b>): Maybe<b>;
+	[fl.equals]<b extends Setoid<b>>(this: Maybe<b>, that: Maybe<b>): boolean;
 }
 interface MaybeConstructor {
 	prototype: Maybe<any>;
@@ -33,7 +26,7 @@ export const Nothing: Maybe<never>;
 export type Maybe<a> = Just<a> | Nothing<a>;
 
 declare module '../Types' {
-	export interface Types<a, b, c, d> {
-		Maybe: Maybe<a>;
+	export interface Types<w, x, y, z> {
+		Maybe: Maybe<z>;
 	}
 }

@@ -14,7 +14,7 @@ declare global {
 }
 
 declare module '../Types' {
-	export interface Types<a, b, c, d> {
+	export interface Types<w, x, y, z> {
 		Boolean: boolean;
 	}
 }

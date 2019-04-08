@@ -20,10 +20,7 @@ export default {};
 declare global {
 	interface Array<T> extends HKT<'Array', T> {
 		['fantasy-land/concat']: (_: T[]) => T[];
-		['fantasy-land/equals']: <S extends Keys, a, b, c, d>(
-			this: (Type<S, a, b, c, d> & Setoid<S, a, b, c, d>)[],
-			_: (Type<S, a, b, c, d> & Setoid<S, a, b, c, d>)[],
-		) => boolean;
+		['fantasy-land/equals']: <U extends Setoid<U>>(this: U[], _: U[]) => boolean;
 	}
 	interface ArrayConstructor {
 		['fantasy-land/empty']: <T>() => T[];
@@ -31,7 +28,7 @@ declare global {
 }
 
 declare module '../Types' {
-	export interface Types<a, b, c, d> {
-		Array: a[];
+	export interface Types<w, x, y, z> {
+		Array: z[];
 	}
 }
