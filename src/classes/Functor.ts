@@ -1,31 +1,37 @@
-import { fn, K, T } from '../combinators';
+import { compose, constant, flip, fn, thrush } from '../combinators';
 import * as fl from '../fantasy-land';
 import { Keys, Type } from '../Types';
 
-export interface Functor<fa extends Functor<fa, a>, a> {
-	[fl.map]<b>(this: fa, f: (_: a) => b): Derive<fa, b>;
+export interface Functor<fa extends Functor<any, a>, a> {
+	[fl.map]<b>(this: fa, f: (_: a) => b): DeriveType<fa, b>;
 }
 
-type Derive<fa extends Functor<fa, any>, b> = {} & {
+type DeriveType<fa extends Functor<any, any>, b> = {} & {
 	[key in Keys]: fa extends Type<key, infer w, infer x, infer y, any>
 		? Type<key, w, x, y, b>
 		: never
 }[Keys];
-type Param<fa extends Functor<fa, any>> = fa extends Functor<fa, infer a> ? a : never;
+type Derive<fa extends Functor<any, any>, b> = {} & Extract<DeriveType<fa, b>, Functor<any, b>>;
+type Param<fa extends Functor<any, any>> = fa extends Functor<any, infer a> ? a : never;
+type ParamType<T extends fn<any, any>> = T extends fn<infer U, any> ? U : any;
 
-export const map = <a, b>(f: (_: a) => b) => <fa extends Functor<fa, a>>(fa: fa) => fa[fl.map](f);
+export const map = <a, b>(f: (_: a) => b) => <fa extends Functor<any, a>>(fa: fa) =>
+	fa[fl.map](f) as Derive<fa, b>;
 
-export const mapFlipped = <fa extends Functor<fa, any>>(fa: fa) => <b>(f: (_: Param<fa>) => b) =>
-	fa[fl.map](f);
+export const mapFlipped: <fa extends Functor<any, any>>(
+	fa: fa,
+) => <b>(f: (_: Param<fa>) => b) => Derive<fa, b> = flip(map);
 
-export const voidLeft = <fa extends Functor<fa, any>>(fa: fa) => <b>(y: b) => fa[fl.map](K(y));
+export const voidLeft = <fa extends Functor<any, any>>(
+	fa: fa,
+): (<b>(y: b) => Derive<fa, Param<fa>>) => compose<any, any>(mapFlipped(fa))(constant);
 
-export const voidRight = <a>(x: a) => <fb extends Functor<fb, any>>(fb: fb) => fb[fl.map](K(x));
+export const voidRight = <a>(x: a): (<fb extends Functor<any, any>>(fb: fb) => Derive<fb, a>) =>
+	map(constant(x));
 
-const _void = <fa extends Functor<fa, any>>(fa: fa) => fa[fl.map](() => {});
+const _void: <fa extends Functor<any, any>>(fa: fa) => Derive<fa, void> = map(() => {});
 export { _void as void };
 
-type ParamType<T extends fn<any, any>> = T extends fn<infer U, any> ? U : any;
-export const flap = <f extends Param<ff>, ff extends Functor<ff, fn<any, any>>>(ff: ff) => (
-	x: ParamType<f>,
-) => ff[fl.map](T(x)) as Derive<ff, ReturnType<f>>;
+export const flap = <f extends Param<ff>, ff extends Functor<any, fn<any, any>>>(
+	ff: ff,
+): ((x: ParamType<f>) => Derive<ff, ReturnType<f>>) => compose<any, any>(mapFlipped(ff))(thrush);
