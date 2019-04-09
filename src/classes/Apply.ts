@@ -1,4 +1,4 @@
-import { flip, fn, fn2, fn3, constant, identity, compose, B1, B2 } from '../combinators';
+import { B1, B2, constant, flip, fn, fn2, fn3, identity } from '../combinators';
 import * as fl from '../fantasy-land';
 import { Keys, Type } from '../Types';
 import { Functor, map } from './Functor';
