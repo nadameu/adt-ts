@@ -1,4 +1,4 @@
-import { constant, flip, fn, identity, pipe_, thrush } from '../combinators';
+import { compose, constant, flip, identity, thrush } from '../combinators';
 import * as fl from '../fantasy-land';
 import { Keys, Type } from '../Types';
 
@@ -13,25 +13,23 @@ type Derive<fa, b> = {} & {
 }[Keys];
 type Accept<fa, a> = fa & Functor<a>;
 
-export const mapFlipped = <a, fa>(fa: Accept<fa, a>) => <b>(f: (_: a) => b) =>
-	fa[fl.map](f) as Derive<fa, b>;
+export const map: {
+	<a, b>(f: (_: a) => b): <fa>(fa: Accept<fa, a>) => Derive<fa, b>;
+} = (f: any) => (fa: any): any => fa[fl.map](f);
 
-export const map: <a, b>(f: (_: a) => b) => <fa>(fa: Accept<fa, a>) => Derive<fa, b> = flip(
-	mapFlipped,
-);
+export const voidRight: {
+	<a>(x: a): <fb>(fb: Accept<fb, any>) => Derive<fb, a>;
+} = compose(map)(constant) as any;
 
-export const voidRight: <a>(x: a) => <b, fb>(fb: Accept<fb, b>) => Derive<fb, a> = pipe_(
-	constant,
-	map,
-);
+export const voidLeft: {
+	<fa>(fa: Accept<fa, any>): <b>(y: b) => Derive<fa, b>;
+} = flip(compose(map)(constant(identity)));
 
-export const voidLeft: <a, fa>(fa: Accept<fa, a>) => <b>(y: b) => Derive<fa, b> = flip(
-	pipe_(constant(identity), map),
-);
-
-const _void: <a, fa>(fa: Accept<fa, a>) => Derive<fa, void> = map(() => {});
+const _void: {
+	<fa>(fa: Accept<fa, any>): Derive<fa, void>;
+} = map(constant(undefined));
 export { _void as void };
 
-export const flap: <a, b, ff>(ff: Accept<ff, fn<a, b>>) => (x: a) => Derive<ff, b> = flip(
-	pipe_(thrush, map),
-);
+export const flap: {
+	<a, b, ff>(ff: Accept<ff, (_: a) => b>): (x: a) => Derive<ff, b>;
+} = flip(compose(map)(thrush)) as any;
