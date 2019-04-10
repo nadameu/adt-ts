@@ -55,7 +55,6 @@ export const pipe_: <a, b, c>(f: (_: a) => b, g: (_: b) => c) => (_: a) => c = (
 	g(f(x));
 
 export const T: {
-	<a, b>(x: a): (f: (_: a) => b) => b;
 	<a>(x: a): <b>(f: (_: a) => b) => b;
 } = C(A) as any;
 export { T as thrush };
