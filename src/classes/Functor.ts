@@ -1,35 +1,30 @@
-import { compose, constant, flip, identity, thrush } from '../combinators';
-import * as fl from '../fantasy-land';
-import { Keys, Type } from '../Types';
+import { constant, flip } from '../combinators';
+import { Type1, Placeholder as _ } from '../Types';
 
-export interface Functor<a> {
-	[fl.map]<b>(f: (_: a) => b): Functor<b>;
+export interface Functor<f> {
+	map: <a, b>(f: (_: a) => b) => <y, x, w>(fa: Type1<f, w, x, y, a>) => Type1<f, w, x, y, b>;
 }
 
-type Derive<fa, b> = {} & {
-	[key in Keys]: fa extends Type<key, infer w, infer x, infer y, any>
-		? Extract<Type<key, w, x, y, b>, Functor<b>>
-		: never
-}[Keys];
-type Accept<fa, a> = fa & Functor<a>;
+export const map: <f>(F: Functor<f>) => Functor<f>['map'] = F => F.map;
 
-export const map: {
-	<a, b>(f: (_: a) => b): <fa>(fa: Accept<fa, a>) => Derive<fa, b>;
-} = (f: any) => (fa: any): any => fa[fl.map](f);
+export const mapFlipped: <f>(
+	F: Functor<f>,
+) => <a, y, x, w>(
+	fa: Type1<f, w, x, y, a>,
+) => <b>(f: (_: a) => b) => Type1<f, w, x, y, b> = F => fa => f => map(F)(f)(fa);
 
-export const voidRight: {
-	<a>(x: a): <fb>(fb: Accept<fb, any>) => Derive<fb, a>;
-} = compose(map)(constant) as any;
+export const voidLeft: <f>(
+	F: Functor<f>,
+) => <y, x, w>(fa: Type1<f, w, x, y, any>) => <b>(y: b) => Type1<f, w, x, y, b> = F =>
+	flip<any, any, any>(y => map(F)(constant(y)));
 
-export const voidLeft: {
-	<fa>(fa: Accept<fa, any>): <b>(y: b) => Derive<fa, b>;
-} = flip(compose(map)(constant(identity)));
+export const voidRight: <f>(
+	F: Functor<f>,
+) => <a>(x: a) => <y, x, w>(fb: Type1<f, w, x, y, any>) => Type1<f, w, x, y, a> = F => x =>
+	map(F)(constant(x));
 
-const _void: {
-	<fa>(fa: Accept<fa, any>): Derive<fa, void>;
-} = map(constant(undefined));
+const _void: <f>(
+	F: Functor<f>,
+) => <y, x, w>(fa: Type1<f, w, x, y, any>) => Type1<f, w, x, y, void> = F =>
+	map(F)(constant(undefined));
 export { _void as void };
-
-export const flap: {
-	<a, b, ff>(ff: Accept<ff, (_: a) => b>): (x: a) => Derive<ff, b>;
-} = flip(compose(map)(thrush)) as any;
