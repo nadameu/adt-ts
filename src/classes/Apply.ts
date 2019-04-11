@@ -1,56 +1,50 @@
-import { B1, B2, constant, flip, fn, fn2, fn3, identity } from '../combinators';
-import * as fl from '../fantasy-land';
-import { Keys, Type } from '../Types';
+import { B1, B2, constant, flip, identity } from '../combinators';
+import { Type1 } from '../Types';
 import { Functor, map } from './Functor';
 
-export interface Apply<fa extends Apply<any, a>, a> extends Functor<fa, a> {
-	[fl.ap]<b>(this: fa, that: Apply<any, fn<a, b>>): DeriveType<fa, b>;
+export interface Apply<f> extends Functor<f> {
+	ap: <a, b, y, x, w>(
+		ff: Type1<f, w, x, y, (_: a) => b>,
+	) => (fa: Type1<f, w, x, y, a>) => Type1<f, w, x, y, b>;
 }
 
-type DeriveType<fa extends Apply<any, any>, b> = {} & {
-	[key in Keys]: fa extends Type<key, infer w, infer x, infer y, any>
-		? Type<key, w, x, y, b>
-		: never
-}[Keys];
-type Derive<fa extends Apply<any, any>, b> = {} & Extract<DeriveType<fa, b>, Apply<any, b>>;
-type Param<fa extends Apply<any, any>> = fa extends Apply<any, infer a> ? a : never;
-type ParamType<T extends fn<any, any>> = T extends fn<infer U, any> ? U : any;
+export const ap: <f>(A: Apply<f>) => Apply<f>['ap'] = A => A.ap;
 
-export const apFlipped = <a extends Param<fa>, fa extends Apply<any, any>>(fa: fa) => <b>(
-	ff: Derive<fa, fn<a, b>>,
-) => fa[fl.ap](ff) as Derive<fa, b>;
+export const apFlipped: <f>(
+	A: Apply<f>,
+) => <a, y, x, w>(
+	fa: Type1<f, w, x, y, a>,
+) => <b>(ff: Type1<f, w, x, y, (_: a) => b>) => Type1<f, w, x, y, b> = A =>
+	flip<any, any, any>(A.ap);
 
-export const ap: <
-	a extends ParamType<Param<ff>>,
-	b extends ReturnType<Param<ff>>,
-	ff extends Apply<any, fn<any, any>>
->(
-	ff: ff,
-) => (fa: Derive<ff, a>) => Derive<ff, b> = flip(apFlipped) as any;
+export const applyFirst: <f>(
+	A: Apply<f>,
+) => <a, y, x, w>(
+	fa: Type1<f, w, x, y, a>,
+) => (fb: Type1<f, w, x, y, any>) => Type1<f, w, x, y, a> = A => lift2(A)<any, any, any>(constant);
 
-export const applyFirst = <a extends Param<fa>, fa extends Apply<any, any>>(fa: fa) =>
-	ap(map(constant)(fa) as Derive<fa, <b>(_: b) => a>) as <b>(fb: Derive<fa, b>) => fa;
+export const applySecond: <f>(
+	A: Apply<f>,
+) => <y, x, w>(
+	fa: Type1<f, w, x, y, any>,
+) => <a>(fb: Type1<f, w, x, y, a>) => Type1<f, w, x, y, a> = A =>
+	lift2(A)<any, any, any>(constant(identity));
 
-export const applySecond = <fa extends Apply<any, any>>(fa: fa) =>
-	ap(map(constant(identity))(fa) as Derive<fa, <b>(_: b) => b>) as <b>(
-		fb: Derive<fa, b>,
-	) => Derive<fa, b>;
+export const lift1: <f>(A: Apply<f>) => Functor<f>['map'] = map;
 
-export const lift1: <a, b>(
-	f: fn<a, b>,
-) => <fa extends Apply<any, a>>(fa: fa) => Derive<fa, b> = map as any;
+export const lift2: <f>(
+	A: Apply<f>,
+) => <a, b, c>(
+	f: (_: a) => (_: b) => c,
+) => <y, x, w>(
+	fa: Type1<f, w, x, y, a>,
+) => (fb: Type1<f, w, x, y, b>) => Type1<f, w, x, y, c> = A => B1<any, any>(A.ap)<any, any>(A.map);
 
-export const lift2: <a, b, c>(
-	f: fn2<a, b, c>,
-) => <fa extends Apply<any, a>>(fa: fa) => (fb: Derive<fa, b>) => Derive<fa, c> = B1(ap as fn<
-	any,
-	any
->)(lift1);
-
-export const lift3: <a, b, c, d>(
-	f: fn3<a, b, c, d>,
-) => <fa extends Apply<any, a>>(
-	fa: fa,
-) => (fb: Derive<fa, b>) => (fc: Derive<fa, c>) => Derive<fa, d> = B2(ap as fn<any, any>)(
-	lift2,
-) as any;
+export const lift3: <f>(
+	A: Apply<f>,
+) => <a, b, c, d>(
+	f: (_: a) => (_: b) => (_: c) => d,
+) => <y, x, w>(
+	fa: Type1<f, w, x, y, a>,
+) => (fb: Type1<f, w, x, y, b>) => (fc: Type1<f, w, x, y, c>) => Type1<f, w, x, y, d> = A =>
+	B2<any, any>(A.ap)<any, any, any>(lift2(A));
