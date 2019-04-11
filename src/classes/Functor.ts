@@ -1,5 +1,5 @@
 import { constant, flip } from '../combinators';
-import { Type1, Placeholder as _ } from '../Types';
+import { Type1 } from '../Types';
 
 export interface Functor<f> {
 	map: <a, b>(f: (_: a) => b) => <y, x, w>(fa: Type1<f, w, x, y, a>) => Type1<f, w, x, y, b>;
