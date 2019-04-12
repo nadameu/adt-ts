@@ -1,11 +1,8 @@
-import * as fl from '../fantasy-land';
+import { Type0 } from '../Types';
 import { Semigroup } from './Semigroup';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Monoid<a extends Monoid<a>> extends Semigroup<a> {}
-export interface MonoidConstructor<a extends Monoid<a>> {
-	prototype: Monoid<a>;
-	[fl.empty]: () => a;
+export interface Monoid<a> extends Semigroup<a> {
+	empty: <z = never, y = never, x = never, w = never>() => Type0<a, w, x, y, z>;
 }
 
-export const empty = <a extends Monoid<a>>(M: MonoidConstructor<a>) => M[fl.empty]();
+export const empty: <a>(M: Monoid<a>) => Monoid<a>['empty'] = M => M.empty;
