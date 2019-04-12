@@ -10,3 +10,17 @@ export const pure: <f>(A: Applicative<f>) => Applicative<f>['pure'] = A => A.pur
 
 export const liftA1: <f>(A: Pick<Applicative<f>, 'apply' | 'pure'>) => Functor<f>['map'] = A => f =>
 	A.apply(A.pure(f));
+
+export const when: <f>(
+	A: Applicative<f>,
+) => (
+	p: boolean,
+) => <y, x, w>(fa: Type1<f, w, x, y, void>) => Type1<f, w, x, y, void> = A => p => fa =>
+	p ? fa : A.pure(undefined);
+
+export const unless: <f>(
+	A: Applicative<f>,
+) => (
+	p: boolean,
+) => <y, x, w>(fa: Type1<f, w, x, y, void>) => Type1<f, w, x, y, void> = A => p => fa =>
+	p ? A.pure(undefined) : fa;
