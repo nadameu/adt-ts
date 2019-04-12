@@ -16,12 +16,10 @@ type Type<f, w, x, y, z, z_ = unknown, y_ = unknown, x_ = unknown, w_ = unknown>
 		: never
 }[Keys];
 
-type IfNotNever<x, y> = x extends never ? never : y;
-
 export type Type0<f, w, x, y, z> = Type<f, w, x, y, z, _> extends never
 	? Type<f, w, x, y, z>
 	: Type<f, w, x, y, z, _>;
-export type Type1<f, w, x, y, z> = IfNotNever<f, Type<f, w, x, y, z, _>>;
-export type Type2<f, w, x, y, z> = IfNotNever<f, Type<f, w, x, y, z, _, _>>;
-export type Type3<f, w, x, y, z> = IfNotNever<f, Type<f, w, x, y, z, _, _, _>>;
-export type Type4<f, w, x, y, z> = IfNotNever<f, Type<f, w, x, y, z, _, _, _, _>>;
+export type Type1<f, w, x, y, z> = f extends never ? never : Type<f, w, x, y, z, _>;
+export type Type2<f, w, x, y, z> = f extends never ? never : Type<f, w, x, y, z, _, _>;
+export type Type3<f, w, x, y, z> = f extends never ? never : Type<f, w, x, y, z, _, _, _>;
+export type Type4<f, w, x, y, z> = f extends never ? never : Type<f, w, x, y, z, _, _, _, _>;
