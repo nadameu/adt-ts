@@ -1,7 +1,5 @@
-import * as fl from '../fantasy-land';
-
-export interface Semigroup<a extends Semigroup<a>> {
-	[fl.concat]: (this: a, _: a) => a;
+export interface Semigroup<a> {
+	concat: (x: a) => (y: a) => a;
 }
 
-export const concat = <a extends Semigroup<a>>(x: a) => (y: a) => x[fl.concat](y);
+export const concat: <a>(S: Semigroup<a>) => Semigroup<a>['concat'] = S => S.concat;
