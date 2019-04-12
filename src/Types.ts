@@ -5,7 +5,7 @@ export type Keys = keyof Types<never, never, never, never>;
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 interface _ {
-	readonly unused: unique symbol;
+	placeholder: never;
 }
 export type Placeholder = _;
 
