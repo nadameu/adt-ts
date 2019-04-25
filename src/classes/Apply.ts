@@ -48,4 +48,32 @@ export const lift3: <f extends Prop1>(
 ) => (fb: Type<f, v, w, x, y, b>) => (fc: Type<f, v, w, x, y, c>) => Type<f, v, w, x, y, d> = ({
 	apply,
 	map,
-}) => f => fa => fb => apply(apply(map(f)(fa))(fb));
+}) => f => fa => fb => apply(lift2({ apply, map })(f)(fa)(fb));
+
+export const lift4: <f extends Prop1>(
+	A: Apply<f>,
+) => <a, b, c, d, e>(
+	f: (_: a) => (_: b) => (_: c) => (_: d) => e,
+) => <y, x, w, v>(
+	fa: Type<f, v, w, x, y, a>,
+) => (
+	fb: Type<f, v, w, x, y, b>,
+) => (fc: Type<f, v, w, x, y, c>) => (fd: Type<f, v, w, x, y, d>) => Type<f, v, w, x, y, e> = ({
+	apply,
+	map,
+}) => f => fa => fb => fc => apply(lift3({ apply, map })(f)(fa)(fb)(fc));
+
+export const lift5: <f extends Prop1>(
+	A: Apply<f>,
+) => <a, b, c, d, e, g>(
+	f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => g,
+) => <y, x, w, v>(
+	fa: Type<f, v, w, x, y, a>,
+) => (
+	fb: Type<f, v, w, x, y, b>,
+) => (
+	fc: Type<f, v, w, x, y, c>,
+) => (fd: Type<f, v, w, x, y, d>) => (fe: Type<f, v, w, x, y, e>) => Type<f, v, w, x, y, g> = ({
+	apply,
+	map,
+}) => f => fa => fb => fc => fd => apply(lift4({ apply, map })(f)(fa)(fb)(fc)(fd));
