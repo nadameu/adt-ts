@@ -10,10 +10,10 @@ export interface Eq1<f extends Prop1> {
 	eq1: <a>(
 		E: Eq<a>,
 	) => (
-		x: Type<f, never, never, never, never, a>,
-	) => (x: Type<f, never, never, never, never, a>) => boolean;
+		fx: Type<f, never, never, never, never, a>,
+	) => (fy: Type<f, never, never, never, never, a>) => boolean;
 }
 
 export const notEq1: <f extends Prop1>(E0: Eq1<f>) => Eq1<f>['eq1'] = ({ eq1 }) => ({
 	eq,
-}) => x => y => !eq1({ eq })(x)(y);
+}) => fx => fy => !eq1({ eq })(fx)(fy);
