@@ -1,5 +1,7 @@
-export interface Semigroup<a> {
-	append: (x: a) => (y: a) => a;
-}
+import { Prop0, Type } from '../Types';
 
-export const append: <a>(S: Semigroup<a>) => Semigroup<a>['append'] = S => S.append;
+export interface Semigroup<a extends Prop0> {
+	append: <z, y, x, w, v>(
+		x: Type<a, v, w, x, y, z>,
+	) => (y: Type<a, v, w, x, y, z>) => Type<a, v, w, x, y, z>;
+}

@@ -1,8 +1,6 @@
-import { Type0 } from '../Types';
+import { Prop0, Type } from '../Types';
 import { Semigroup } from './Semigroup';
 
-export interface Monoid<a> extends Semigroup<a> {
-	empty: <z = never, y = never, x = never, w = never>() => Type0<a, w, x, y, z>;
+export interface Monoid<a extends Prop0> extends Semigroup<a> {
+	empty: <z = never, y = never, x = never, w = never, v = never>() => Type<a, v, w, x, y, z>;
 }
-
-export const empty: <a>(M: Monoid<a>) => Monoid<a>['empty'] = M => M.empty;
