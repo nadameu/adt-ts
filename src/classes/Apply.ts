@@ -1,49 +1,51 @@
-import { B1, B2, constant, flip, identity } from '../combinators';
-import { Type1 } from '../Types';
+import { B1, B2, constant, flip, identity, apply } from '../combinators';
+import { Prop1, Type } from '../Types';
 import { Functor } from './Functor';
 
-export interface Apply<f> extends Functor<f> {
-	apply: <a, b, y, x, w>(
-		ff: Type1<f, w, x, y, (_: a) => b>,
-	) => (fa: Type1<f, w, x, y, a>) => Type1<f, w, x, y, b>;
+export interface Apply<f extends Prop1> extends Functor<f> {
+	apply: <a, b, y, x, w, v>(
+		ff: Type<f, v, w, x, y, (_: a) => b>,
+	) => (fa: Type<f, v, w, x, y, a>) => Type<f, v, w, x, y, b>;
 }
 
-export const apply: <f>(A: Pick<Apply<f>, 'apply'>) => Apply<f>['apply'] = A => A.apply;
-
-export const applyFlipped: <f>(
+export const applyFlipped: <f extends Prop1>(
 	A: Pick<Apply<f>, 'apply'>,
-) => <a, y, x, w>(
-	fa: Type1<f, w, x, y, a>,
-) => <b>(ff: Type1<f, w, x, y, (_: a) => b>) => Type1<f, w, x, y, b> = A =>
-	flip<any, any, any>(A.apply);
+) => <a, y, x, w, v>(
+	fa: Type<f, v, w, x, y, a>,
+) => <b>(ff: Type<f, v, w, x, y, (_: a) => b>) => Type<f, v, w, x, y, b> = ({
+	apply,
+}) => fa => ff => apply(ff)(fa);
 
-export const applyFirst: <f>(
-	A: Pick<Apply<f>, 'apply' | 'map'>,
-) => <a, y, x, w>(
-	fa: Type1<f, w, x, y, a>,
-) => (fb: Type1<f, w, x, y, any>) => Type1<f, w, x, y, a> = A => lift2(A)<any, any, any>(constant);
+export const applyFirst: <f extends Prop1>(
+	A: Apply<f>,
+) => <a, y, x, w, v>(
+	fa: Type<f, v, w, x, y, a>,
+) => (fb: Type<f, v, w, x, y, any>) => Type<f, v, w, x, y, a> = ({ apply, map }) =>
+	lift2({ apply, map })(constant);
 
-export const applySecond: <f>(
-	A: Pick<Apply<f>, 'apply' | 'map'>,
-) => <y, x, w>(
-	fa: Type1<f, w, x, y, any>,
-) => <a>(fb: Type1<f, w, x, y, a>) => Type1<f, w, x, y, a> = A =>
-	lift2(A)<any, any, any>(constant(identity));
+export const applySecond: <f extends Prop1>(
+	A: Apply<f>,
+) => <y, x, w, v>(
+	fa: Type<f, v, w, x, y, any>,
+) => <a>(fb: Type<f, v, w, x, y, a>) => Type<f, v, w, x, y, a> = ({ apply, map }) =>
+	lift2({ apply, map })(constant(identity));
 
-export const lift2: <f>(
-	A: Pick<Apply<f>, 'apply' | 'map'>,
+export const lift2: <f extends Prop1>(
+	A: Apply<f>,
 ) => <a, b, c>(
 	f: (_: a) => (_: b) => c,
-) => <y, x, w>(
-	fa: Type1<f, w, x, y, a>,
-) => (fb: Type1<f, w, x, y, b>) => Type1<f, w, x, y, c> = A =>
-	B1<any, any>(A.apply)<any, any>(A.map);
+) => <y, x, w, v>(
+	fa: Type<f, v, w, x, y, a>,
+) => (fb: Type<f, v, w, x, y, b>) => Type<f, v, w, x, y, c> = ({ apply, map }) => f => fa =>
+	apply(map(f)(fa));
 
-export const lift3: <f>(
-	A: Pick<Apply<f>, 'apply' | 'map'>,
+export const lift3: <f extends Prop1>(
+	A: Apply<f>,
 ) => <a, b, c, d>(
 	f: (_: a) => (_: b) => (_: c) => d,
-) => <y, x, w>(
-	fa: Type1<f, w, x, y, a>,
-) => (fb: Type1<f, w, x, y, b>) => (fc: Type1<f, w, x, y, c>) => Type1<f, w, x, y, d> = A =>
-	B2<any, any>(A.apply)<any, any, any>(lift2(A));
+) => <y, x, w, v>(
+	fa: Type<f, v, w, x, y, a>,
+) => (fb: Type<f, v, w, x, y, b>) => (fc: Type<f, v, w, x, y, c>) => Type<f, v, w, x, y, d> = ({
+	apply,
+	map,
+}) => f => fa => fb => apply(apply(map(f)(fa))(fb));
