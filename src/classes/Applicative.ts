@@ -1,26 +1,22 @@
-import { Type1 } from '../Types';
+import { Prop1, Type } from '../Types';
 import { Apply } from './Apply';
 
-export interface Applicative<f> extends Apply<f> {
-	pure: <a, y = never, x = never, w = never>(value: a) => Type1<f, w, x, y, a>;
+export interface Applicative<f extends Prop1> extends Apply<f> {
+	pure: <a, y = never, x = never, w = never, v = never>(value: a) => Type<f, v, w, x, y, a>;
 }
 
-export const pure: <f>(A: Pick<Applicative<f>, 'pure'>) => Applicative<f>['pure'] = A => A.pure;
-
-export const liftA1: <f>(
+export const liftA1: <f extends Prop1>(
 	A: Pick<Applicative<f>, 'apply' | 'pure'>,
-) => Applicative<f>['map'] = A => f => A.apply(A.pure(f));
+) => Applicative<f>['map'] = ({ apply, pure }) => f => apply(pure(f));
 
-export const when: <f>(
+export const when: <f extends Prop1>(
 	A: Pick<Applicative<f>, 'pure'>,
-) => (
-	p: boolean,
-) => <y, x, w>(fa: Type1<f, w, x, y, void>) => Type1<f, w, x, y, void> = A => p => fa =>
-	p ? fa : A.pure(undefined);
+) => (p: boolean) => <y, x, w, v>(fa: Type<f, v, w, x, y, void>) => Type<f, v, w, x, y, void> = ({
+	pure,
+}) => p => fa => (p ? fa : pure(undefined));
 
-export const unless: <f>(
+export const unless: <f extends Prop1>(
 	A: Pick<Applicative<f>, 'pure'>,
-) => (
-	p: boolean,
-) => <y, x, w>(fa: Type1<f, w, x, y, void>) => Type1<f, w, x, y, void> = A => p => fa =>
-	p ? A.pure(undefined) : fa;
+) => (p: boolean) => <y, x, w, v>(fa: Type<f, v, w, x, y, void>) => Type<f, v, w, x, y, void> = ({
+	pure,
+}) => p => fa => (p ? pure(undefined) : fa);
