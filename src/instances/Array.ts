@@ -9,7 +9,8 @@ import { Eq1 } from '../classes/Eq';
 import * as F from '../classes/Functor';
 import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
-import { Ord1 } from '../classes/Ord';
+import * as O from '../classes/Ord';
+import { Ord, Ord1 } from '../classes/Ord';
 import * as Num from '../instances/Number';
 import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
@@ -73,3 +74,12 @@ export const compare1: Ord1<PropArray>['compare1'] = ({ compare }) => xs => ys =
 	}
 	return Num.compare(xs.length)(ys.length);
 };
+export const lte1 = <a>(Oa: Ord<a>) => O.lte<a[]>({ compare: compare1(Oa) });
+export const gt1 = <a>(Oa: Ord<a>) => O.gt<a[]>({ compare: compare1(Oa) });
+export const lt1 = <a>(Oa: Ord<a>) => O.lt<a[]>({ compare: compare1(Oa) });
+export const gte1 = <a>(Oa: Ord<a>) => O.gte<a[]>({ compare: compare1(Oa) });
+export const comparing1 = <b>(Ob: Ord<b>) => O.comparing<b[]>({ compare: compare1(Ob) });
+export const min1 = <a>(Oa: Ord<a>) => O.min<a[]>({ compare: compare1(Oa) });
+export const max1 = <a>(Oa: Ord<a>) => O.max<a[]>({ compare: compare1(Oa) });
+export const clamp1 = <a>(Oa: Ord<a>) => O.clamp<a[]>({ compare: compare1(Oa) });
+export const between1 = <a>(Oa: Ord<a>) => O.between<a[]>({ compare: compare1(Oa) });
