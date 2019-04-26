@@ -20,3 +20,6 @@ export type Type5<f extends Prop5, a, b, c, d, e> = f extends never
 export type AnyFn1 = (_: any) => any;
 export type AnyFn2 = (_: any) => (_: any) => any;
 export type AnyFn3 = (_: any) => (_: any) => (_: any) => any;
+export type AnyFn4 = (_: any) => (_: any) => (_: any) => (_: any) => any;
+export type AnyFn5 = (_: any) => (_: any) => (_: any) => (_: any) => (_: any) => any;
+export type AnyFn6 = (_: any) => (_: any) => (_: any) => (_: any) => (_: any) => (_: any) => any;
