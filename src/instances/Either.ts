@@ -5,11 +5,12 @@ import { Apply2 } from '../classes/Apply';
 import * as B from '../classes/Bind';
 import { Bind2 } from '../classes/Bind';
 import * as E from '../classes/Eq';
-import { Eq1 } from '../classes/Eq';
+import { Eq } from '../classes/Eq';
 import * as F from '../classes/Functor';
 import { Functor2 } from '../classes/Functor';
 import * as M from '../classes/Monad';
-import { Ord1 } from '../classes/Ord';
+import * as O from '../classes/Ord';
+import { Ord } from '../classes/Ord';
 import { Prop2 } from '../Types';
 import { Ordering } from './Ordering';
 
@@ -67,19 +68,40 @@ export const ap = M.ap<PropEither>({ bind, pure });
 export const whenM = M.whenM<PropEither>({ bind, pure });
 export const unlessM = M.unlessM<PropEither>({ bind, pure });
 
-export const eq1: Eq1<PropEither>['eq1'] = ({ eq }) => xs => ys =>
-	xs.length !== ys.length ? false : xs.every((x, i) => eq(x)(ys[i]));
-export const notEq1 = E.notEq1<PropEither>({ eq1 });
+export const eq2: <a>(Ea: Eq<a>) => <b>(Eb: Eq<b>) => Eq<Either<a, b>>['eq'] = ({ eq: eqA }) => ({
+	eq: eqB,
+}) => fx => fy =>
+	fx.isLeft
+		? fy.isLeft && eqA(fx.leftValue)(fy.leftValue)
+		: !fy.isLeft && eqB(fx.rightValue)(fy.rightValue);
+export const notEq2 = <a>(Ea: Eq<a>) => <b>(Eb: Eq<b>) => E.notEq({ eq: eq2(Ea)(Eb) });
 
-export const compare1: Ord1<PropEither>['compare1'] = ({ compare }) => xs => ys => {
-	const minlen = Math.min(xs.length, ys.length);
-	for (let i = 0; i < minlen; i++) {
-		const x = xs[i];
-		const y = ys[i];
-		const result = compare(x)(y);
-		if (result !== Ordering.EQ) return result;
-	}
-	if (xs.length === ys.length) return Ordering.EQ;
-	if (xs.length > ys.length) return Ordering.GT;
-	return Ordering.LT;
-};
+export const compare2: <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) => Ord<Either<a, b>>['compare'] = ({
+	compare: cA,
+}) => ({ compare: cB }) => fx => fy =>
+	fx.isLeft
+		? fy.isLeft
+			? cA(fx.leftValue)(fy.leftValue)
+			: Ordering.LT
+		: fy.isLeft
+		? Ordering.GT
+		: cB(fx.rightValue)(fy.rightValue);
+
+export const lte2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.lte<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+export const gt2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.gt<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+export const lt2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.lt<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+export const gte2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.gte<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+export const comparing2 = <b>(Ob: Ord<b>) => <c>(Oc: Ord<c>) =>
+	O.comparing<Either<b, c>>({ compare: compare2(Ob)(Oc) });
+export const min2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.min<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+export const max2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.max<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+export const clamp2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.clamp<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+export const between2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
+	O.between<Either<a, b>>({ compare: compare2(Oa)(Ob) });
