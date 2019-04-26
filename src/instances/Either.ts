@@ -13,19 +13,19 @@ import { Ord1 } from '../classes/Ord';
 import { Prop2 } from '../Types';
 import { Ordering } from './Ordering';
 
-export type Either<a, b> = Left<a, b> | Right<b, a>;
+export type Either<a, b> = Left<a> | Right<b>;
 
-export interface Left<a, b = never> {
+export interface Left<a> {
 	isLeft: true;
 	leftValue: a;
 }
-export const Left = <a, b = never>(leftValue: a): Left<a, b> => ({ isLeft: true, leftValue });
+export const Left = <a>(leftValue: a): Left<a> => ({ isLeft: true, leftValue });
 
-export interface Right<b, a = never> {
+export interface Right<b> {
 	isLeft: false;
 	rightValue: b;
 }
-export const Right = <b, a = never>(rightValue: b): Right<b, a> => ({ isLeft: false, rightValue });
+export const Right = <b>(rightValue: b): Right<b> => ({ isLeft: false, rightValue });
 
 interface PropEither extends Prop2 {
 	type: Either<this['a'], this['b']>;
