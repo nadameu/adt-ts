@@ -1,14 +1,11 @@
-import { Prop2, Type } from '../Types';
+import { Prop2, Type2 } from '../Types';
 
-export interface Semigroupoid<f extends Prop2> {
-	compose: <b, c, x, w, v>(
-		f: Type<f, v, w, x, b, c>,
-	) => <a>(g: Type<f, v, w, x, a, b>) => Type<f, v, w, x, a, c>;
+export interface Semigroupoid2<f extends Prop2> {
+	compose: <b, c>(f: Type2<f, b, c>) => <a>(g: Type2<f, a, b>) => Type2<f, a, c>;
 }
 
-export const composeFlipped: <f extends Prop2>(
-	S: Semigroupoid<f>,
-) => <a, b, x, w, v>(
-	f: Type<f, v, w, x, a, b>,
-) => <c>(g: Type<f, v, w, x, b, c>) => Type<f, v, w, x, a, c> = ({ compose }) => f => g =>
-	compose(g)(f);
+export const composeFlipped: {
+	<f extends Prop2>(S: Semigroupoid2<f>): <a, b>(
+		f: Type2<f, a, b>,
+	) => <c>(g: Type2<f, b, c>) => Type2<f, a, c>;
+} = ({ compose }) => f => g => compose(g)(f);
