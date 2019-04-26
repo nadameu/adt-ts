@@ -1,7 +1,7 @@
-import * as Aa from '../classes/Applicative';
+import * as A from '../classes/Applicative';
 import { Applicative } from '../classes/Applicative';
-import * as A from '../classes/Apply';
-import { Apply } from '../classes/Apply';
+import * as Ap from '../classes/Apply';
+import { Apply1 } from '../classes/Apply';
 import * as B from '../classes/Bind';
 import { Bind } from '../classes/Bind';
 import * as E from '../classes/Eq';
@@ -9,8 +9,8 @@ import { Eq1 } from '../classes/Eq';
 import * as F from '../classes/Functor';
 import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
-import { Prop1 } from '../Types';
 import { Ord1 } from '../classes/Ord';
+import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
 
 interface PropArray extends Prop1 {
@@ -25,7 +25,7 @@ const _void = F.void<PropArray>({ map });
 export { _void as void };
 export const flap = F.flap<PropArray>({ map });
 
-export const apply: Apply<PropArray>['apply'] = fs => xs => {
+export const apply: Apply1<PropArray>['apply'] = fs => xs => {
 	const result = [];
 	for (const f of fs) {
 		for (const x of xs) {
@@ -34,13 +34,13 @@ export const apply: Apply<PropArray>['apply'] = fs => xs => {
 	}
 	return result;
 };
-export const applyFlipped = A.applyFlipped<PropArray>({ apply });
-export const applyFirst = A.applyFirst<PropArray>({ apply, map });
-export const applySecond = A.applySecond<PropArray>({ apply, map });
-export const lift2 = A.lift2<PropArray>({ apply, map });
-export const lift3 = A.lift3<PropArray>({ apply, map });
-export const lift4 = A.lift4<PropArray>({ apply, map });
-export const lift5 = A.lift5<PropArray>({ apply, map });
+export const applyFlipped = Ap.applyFlipped<PropArray>({ apply });
+export const applyFirst = Ap.applyFirst<PropArray>({ apply, map });
+export const applySecond = Ap.applySecond<PropArray>({ apply, map });
+export const lift2 = Ap.lift2<PropArray>({ apply, map });
+export const lift3 = Ap.lift3<PropArray>({ apply, map });
+export const lift4 = Ap.lift4<PropArray>({ apply, map });
+export const lift5 = Ap.lift5<PropArray>({ apply, map });
 
 export const bind: Bind<PropArray>['bind'] = xs => f =>
 	xs.reduce((acc, x) => (Array.prototype.push.apply(acc, f(x)), acc), [] as any[]);
@@ -51,9 +51,9 @@ export const composeKleisliFlipped = B.composeKleisliFlipped<PropArray>({ bind }
 export const ifM = B.ifM<PropArray>({ bind });
 
 export const pure: Applicative<PropArray>['pure'] = x => [x];
-export const liftA1 = Aa.liftA1<PropArray>({ apply, pure });
-export const when = Aa.when<PropArray>({ pure });
-export const unless = Aa.unless<PropArray>({ pure });
+export const liftA1 = A.liftA1<PropArray>({ apply, pure });
+export const when = A.when<PropArray>({ pure });
+export const unless = A.unless<PropArray>({ pure });
 
 export const liftM1 = M.liftM1<PropArray>({ bind, pure });
 export const ap = M.ap<PropArray>({ bind, pure });
