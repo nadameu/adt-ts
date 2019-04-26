@@ -22,9 +22,10 @@ export const gte: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => boolean
 	compare,
 }) => x => y => compare(x)(y) !== Ordering.LT;
 
-export const comparing: <b>(O: Ord<b>) => <a>(f: (_: a) => b) => (x: a) => (y: a) => Ordering = ({
-	compare,
-}) => f => x => y => compare(f(x))(f(y));
+export const comparing: <b>(
+	O: Pick<Ord<b>, 'compare'>,
+) => <a>(f: (_: a) => b) => (x: a) => (y: a) => Ordering = ({ compare }) => f => x => y =>
+	compare(f(x))(f(y));
 
 export const min: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => a = ({
 	compare,
