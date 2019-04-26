@@ -1,7 +1,11 @@
-import { Prop0, Type } from '../Types';
+import { Prop1, Prop2, Type1, Type2 } from '../Types';
 
-export interface Semigroup<a extends Prop0> {
-	append: <z, y, x, w, v>(
-		x: Type<a, v, w, x, y, z>,
-	) => (y: Type<a, v, w, x, y, z>) => Type<a, v, w, x, y, z>;
+export interface Semigroup<a> {
+	append: (x: a) => (y: a) => a;
+}
+export interface Semigroup1<f extends Prop1> {
+	append: <a>(fx: Type1<f, a>) => (fy: Type1<f, a>) => Type1<f, a>;
+}
+export interface Semigroup2<f extends Prop2> {
+	append: <a, b>(fx: Type2<f, a, b>) => (fy: Type2<f, a, b>) => Type2<f, a, b>;
 }
