@@ -1,6 +1,6 @@
-import { Prop2, Type } from '../Types';
-import { Semigroupoid } from './Semigroupoid';
+import { Prop2, Type2 } from '../Types';
+import { Semigroupoid2 } from './Semigroupoid';
 
-export interface Category<f extends Prop2> extends Semigroupoid<f> {
-	identity: <x = never, w = never, v = never>() => Type<f, v, w, x, any, any>;
+export interface Category2<f extends Prop2> extends Semigroupoid2<f> {
+	identity: Type2<f, any, any>;
 }
