@@ -16,18 +16,18 @@ export const mapFlipped: {
 } = (({ map }) => fa => f => map(f)(fa)) as AnyFn3;
 
 export const voidLeft: {
-	<f extends Prop2>(F: Functor2<f>): <a>(fa: Type2<f, a, any>) => <b>(y: b) => Type2<f, a, b>;
-	<f extends Prop1>(F: Functor1<f>): (fa: Type1<f, any>) => <b>(y: b) => Type1<f, b>;
+	<f extends Prop2>(F: Functor2<f>): <a, b>(fa: Type2<f, a, b>) => <c>(y: c) => Type2<f, a, c>;
+	<f extends Prop1>(F: Functor1<f>): <a>(fa: Type1<f, a>) => <b>(y: b) => Type1<f, b>;
 } = (({ map }) => fa => y => map(constant(y))(fa)) as AnyFn3;
 
 export const voidRight: {
-	<f extends Prop2>(F: Functor2<f>): <a>(x: a) => <b>(fb: Type2<f, b, any>) => Type2<f, b, a>;
-	<f extends Prop1>(F: Functor1<f>): <a>(x: a) => (fb: Type1<f, any>) => Type1<f, a>;
+	<f extends Prop2>(F: Functor2<f>): <c>(x: c) => <a, b>(fb: Type2<f, a, b>) => Type2<f, a, c>;
+	<f extends Prop1>(F: Functor1<f>): <b>(x: b) => <a>(fb: Type1<f, a>) => Type1<f, b>;
 } = (({ map }) => x => map(constant(x))) as AnyFn2;
 
 const _void: {
-	<f extends Prop2>(F: Functor2<f>): <a>(fa: Type2<f, a, any>) => Type2<f, a, void>;
-	<f extends Prop1>(F: Functor1<f>): (fa: Type1<f, any>) => Type1<f, void>;
+	<f extends Prop2>(F: Functor2<f>): <a, b>(fa: Type2<f, a, b>) => Type2<f, a, void>;
+	<f extends Prop1>(F: Functor1<f>): <a>(fa: Type1<f, a>) => Type1<f, void>;
 } = (({ map }) => map(constant(undefined))) as AnyFn1;
 export { _void as void };
 
