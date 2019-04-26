@@ -7,17 +7,17 @@ import { Bind } from '../classes/Bind';
 import * as E from '../classes/Eq';
 import { Eq1 } from '../classes/Eq';
 import * as F from '../classes/Functor';
-import { Functor } from '../classes/Functor';
+import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
 import { Prop1 } from '../Types';
 import { Ord1 } from '../classes/Ord';
 import { Ordering } from './Ordering';
 
 interface PropArray extends Prop1 {
-	type: this['z'][];
+	type: this['a'][];
 }
 
-export const map: Functor<PropArray>['map'] = f => xs => xs.map(x => f(x));
+export const map: Functor1<PropArray>['map'] = f => xs => xs.map(x => f(x));
 export const mapFlipped = F.mapFlipped<PropArray>({ map });
 export const voidLeft = F.voidLeft<PropArray>({ map });
 export const voidRight = F.voidRight<PropArray>({ map });
