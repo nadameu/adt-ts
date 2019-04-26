@@ -11,9 +11,9 @@ import { Functor2 } from '../classes/Functor';
 import * as M from '../classes/Monad';
 import * as O from '../classes/Ord';
 import { Ord } from '../classes/Ord';
-import { Prop2 } from '../Types';
+import { Semigroup, Semigroup1 } from '../classes/Semigroup';
+import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
 import { Ordering } from './Ordering';
-import { Semigroup } from '../classes/Semigroup';
 
 export type Either<a, b> = Left<a> | Right<b>;
 
@@ -29,8 +29,11 @@ export interface Right<b> {
 }
 export const Right = <b>(rightValue: b): Right<b> => ({ isLeft: false, rightValue });
 
-interface PropEither extends Prop2 {
+export interface PropEither extends Prop2 {
 	type: Either<this['a'], this['b']>;
+}
+export interface PropEither1<b> extends Prop1 {
+	type: Either<this['a'], b>;
 }
 
 export const map: Functor2<PropEither>['map'] = f => fa =>
@@ -107,15 +110,9 @@ export const clamp2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
 export const between2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
 	O.between<Either<a, b>>({ compare: compare2(Oa)(Ob) });
 
-export const append2: <a>(
-	Sa: Semigroup<a>,
-) => <b>(Sb: Semigroup<b>) => Semigroup<Either<a, b>>['append'] = ({ append: appendA }) => ({
-	append: appendB,
-}) => fx => fy =>
-	fx.isLeft
-		? fy.isLeft
-			? Left(appendA(fx.leftValue)(fy.leftValue))
-			: fx
-		: fy.isLeft
-		? fy
-		: Right(appendB(fx.rightValue)(fy.rightValue));
+export const append1: {
+	<f extends Prop1>(S: Semigroup1<f>): <a, b>(
+		fx: Either<a, Type1<f, b>>,
+	) => (fy: Either<a, Type1<f, b>>) => Either<a, Type1<f, b>>;
+	<b>(S: Semigroup<b>): Semigroup1<PropEither1<b>>['append'];
+} = (({ append }) => lift2(append)) as AnyFn1;

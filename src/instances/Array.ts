@@ -11,12 +11,12 @@ import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
 import * as O from '../classes/Ord';
 import { Ord, Ord1 } from '../classes/Ord';
+import { Semigroup1 } from '../classes/Semigroup';
 import * as Num from '../instances/Number';
 import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
-import { Semigroup, Semigroup1 } from '../classes/Semigroup';
 
-interface PropArray extends Prop1 {
+export interface PropArray extends Prop1 {
 	type: this['a'][];
 }
 
