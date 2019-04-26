@@ -10,10 +10,10 @@ import * as F from '../classes/Functor';
 import { Functor2 } from '../classes/Functor';
 import * as M from '../classes/Monad';
 import * as M1 from '../classes/Monoid';
-import { Monoid, Monoid1 } from '../classes/Monoid';
+import { Monoid, Monoid1, Monoid2 } from '../classes/Monoid';
 import * as O from '../classes/Ord';
 import { Ord } from '../classes/Ord';
-import { Semigroup, Semigroup1 } from '../classes/Semigroup';
+import { Semigroup, Semigroup1, Semigroup2 } from '../classes/Semigroup';
 import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
 import { Ordering } from './Ordering';
 
@@ -112,18 +112,16 @@ export const clamp2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
 export const between2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
 	O.between<Either<a, b>>({ compare: compare2(Oa)(Ob) });
 
+interface PropDerivedEither<f extends Prop1> extends Prop2 {
+	type: Either<this['a'], Type1<f, this['b']>>;
+}
 export const append1: {
-	<f extends Prop1>(S: Semigroup1<f>): <a, b>(
-		fx: Either<a, Type1<f, b>>,
-	) => (fy: Either<a, Type1<f, b>>) => Either<a, Type1<f, b>>;
+	<f extends Prop1>(S: Semigroup1<f>): Semigroup2<PropDerivedEither<f>>['append'];
 	<b>(S: Semigroup<b>): Semigroup1<PropEither1<b>>['append'];
 } = (({ append }) => lift2(append)) as AnyFn1;
 
 export const mempty1: {
-	<f extends Prop1>(S: Pick<Monoid1<f>, 'mempty'>): <a = never, b = never>() => Either<
-		a,
-		Type1<f, b>
-	>;
+	<f extends Prop1>(S: Pick<Monoid1<f>, 'mempty'>): Monoid2<PropDerivedEither<f>>['mempty'];
 	<b>(S: Pick<Monoid<b>, 'mempty'>): Monoid1<PropEither1<b>>['mempty'];
 } = (({ mempty }) => () => Right(mempty())) as AnyFn1;
 export const power1: {
