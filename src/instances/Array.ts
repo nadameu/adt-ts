@@ -10,6 +10,7 @@ import * as F from '../classes/Functor';
 import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
 import { Ord1 } from '../classes/Ord';
+import * as Num from '../instances/Number';
 import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
 
@@ -67,12 +68,8 @@ export const notEq1 = E.notEq1<PropArray>({ eq1 });
 export const compare1: Ord1<PropArray>['compare1'] = ({ compare }) => xs => ys => {
 	const minlen = Math.min(xs.length, ys.length);
 	for (let i = 0; i < minlen; i++) {
-		const x = xs[i];
-		const y = ys[i];
-		const result = compare(x)(y);
+		const result = compare(xs[i])(ys[i]);
 		if (result !== Ordering.EQ) return result;
 	}
-	if (xs.length === ys.length) return Ordering.EQ;
-	if (xs.length > ys.length) return Ordering.GT;
-	return Ordering.LT;
+	return Num.compare(xs.length)(ys.length);
 };
