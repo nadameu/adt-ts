@@ -15,6 +15,7 @@ import { Semigroup1 } from '../classes/Semigroup';
 import * as Num from '../instances/Number';
 import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
+import { Monoid1 } from '../classes/Monoid';
 
 export interface PropArray extends Prop1 {
 	type: this['a'][];
@@ -86,3 +87,5 @@ export const clamp1 = <a>(Oa: Ord<a>) => O.clamp<a[]>({ compare: compare1(Oa) })
 export const between1 = <a>(Oa: Ord<a>) => O.between<a[]>({ compare: compare1(Oa) });
 
 export const append: Semigroup1<PropArray>['append'] = xs => ys => xs.concat(ys);
+
+export const mempty: Monoid1<PropArray>['mempty'] = () => [];

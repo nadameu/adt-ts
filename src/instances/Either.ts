@@ -12,8 +12,9 @@ import * as M from '../classes/Monad';
 import * as O from '../classes/Ord';
 import { Ord } from '../classes/Ord';
 import { Semigroup, Semigroup1 } from '../classes/Semigroup';
-import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
+import { AnyFn1, Prop1, Prop2, Type1, AnyFn2 } from '../Types';
 import { Ordering } from './Ordering';
+import { Monoid, Monoid1 } from '../classes/Monoid';
 
 export type Either<a, b> = Left<a> | Right<b>;
 
@@ -116,3 +117,8 @@ export const append1: {
 	) => (fy: Either<a, Type1<f, b>>) => Either<a, Type1<f, b>>;
 	<b>(S: Semigroup<b>): Semigroup1<PropEither1<b>>['append'];
 } = (({ append }) => lift2(append)) as AnyFn1;
+
+export const mempty1: {
+	<f extends Prop1>(S: Monoid1<f>): <a = never, b = never>() => Either<a, Type1<f, b>>;
+	<b>(S: Monoid<b>): Monoid1<PropEither1<b>>['mempty'];
+} = (({ mempty }) => () => Right(mempty())) as AnyFn1;
