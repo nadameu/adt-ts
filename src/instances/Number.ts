@@ -1,23 +1,20 @@
-import * as fl from '../fantasy-land';
+import * as E from '../classes/Eq';
+import { Eq } from '../classes/Eq';
+import * as O from '../classes/Ord';
+import { Ord } from '../classes/Ord';
+import { Ordering } from './Ordering';
 
-Number.prototype[fl.equals] = function equals(that) {
-	return isNaN(this) ? isNaN(that) : this === that;
-};
-Number.prototype[fl.lte] = function lte(that) {
-	return this <= that;
-};
+export const eq: Eq<number>['eq'] = x => y => x === y;
+export const notEq = E.notEq<number>({ eq });
 
-export default {};
-
-declare global {
-	interface Number {
-		['fantasy-land/equals']: (this: number, _: number) => boolean;
-		['fantasy-land/lte']: (this: number, _: number) => boolean;
-	}
-}
-
-declare module '../Types' {
-	export interface Types<w, x, y, z> {
-		Number: number;
-	}
-}
+export const compare: Ord<number>['compare'] = x => y =>
+	eq(x)(y) ? Ordering.EQ : x < y ? Ordering.LT : Ordering.GT;
+export const lte = O.lte<number>({ compare });
+export const gt = O.gt<number>({ compare });
+export const lt = O.lt<number>({ compare });
+export const gte = O.gte<number>({ compare });
+export const comparing = O.comparing<number>({ compare });
+export const min = O.min<number>({ compare });
+export const max = O.max<number>({ compare });
+export const clamp = O.clamp<number>({ compare });
+export const between = O.between<number>({ compare });
