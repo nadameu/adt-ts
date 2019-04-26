@@ -3,7 +3,7 @@ import { Applicative } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
 import { Apply1 } from '../classes/Apply';
 import * as B from '../classes/Bind';
-import { Bind } from '../classes/Bind';
+import { Bind1 } from '../classes/Bind';
 import * as E from '../classes/Eq';
 import { Eq1 } from '../classes/Eq';
 import * as F from '../classes/Functor';
@@ -42,7 +42,7 @@ export const lift3 = Ap.lift3<PropArray>({ apply, map });
 export const lift4 = Ap.lift4<PropArray>({ apply, map });
 export const lift5 = Ap.lift5<PropArray>({ apply, map });
 
-export const bind: Bind<PropArray>['bind'] = xs => f =>
+export const bind: Bind1<PropArray>['bind'] = xs => f =>
 	xs.reduce((acc, x) => (Array.prototype.push.apply(acc, f(x)), acc), [] as any[]);
 export const bindFlipped = B.bindFlipped<PropArray>({ bind });
 export const join = B.join<PropArray>({ bind });

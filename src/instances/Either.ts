@@ -3,7 +3,7 @@ import { Applicative } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
 import { Apply2 } from '../classes/Apply';
 import * as B from '../classes/Bind';
-import { Bind } from '../classes/Bind';
+import { Bind2 } from '../classes/Bind';
 import * as E from '../classes/Eq';
 import { Eq1 } from '../classes/Eq';
 import * as F from '../classes/Functor';
@@ -50,8 +50,7 @@ export const lift3 = Ap.lift3<PropEither>({ apply, map });
 export const lift4 = Ap.lift4<PropEither>({ apply, map });
 export const lift5 = Ap.lift5<PropEither>({ apply, map });
 
-export const bind: Bind<PropEither>['bind'] = xs => f =>
-	xs.reduce((acc, x) => (Array.prototype.push.apply(acc, f(x)), acc), [] as any[]);
+export const bind: Bind2<PropEither>['bind'] = fa => f => (fa.isLeft ? fa : f(fa.rightValue));
 export const bindFlipped = B.bindFlipped<PropEither>({ bind });
 export const join = B.join<PropEither>({ bind });
 export const composeKleisli = B.composeKleisli<PropEither>({ bind });
