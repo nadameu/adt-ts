@@ -13,6 +13,7 @@ import * as O from '../classes/Ord';
 import { Ord } from '../classes/Ord';
 import { Prop2 } from '../Types';
 import { Ordering } from './Ordering';
+import { Semigroup } from '../classes/Semigroup';
 
 export type Either<a, b> = Left<a> | Right<b>;
 
@@ -105,3 +106,16 @@ export const clamp2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
 	O.clamp<Either<a, b>>({ compare: compare2(Oa)(Ob) });
 export const between2 = <a>(Oa: Ord<a>) => <b>(Ob: Ord<b>) =>
 	O.between<Either<a, b>>({ compare: compare2(Oa)(Ob) });
+
+export const append2: <a>(
+	Sa: Semigroup<a>,
+) => <b>(Sb: Semigroup<b>) => Semigroup<Either<a, b>>['append'] = ({ append: appendA }) => ({
+	append: appendB,
+}) => fx => fy =>
+	fx.isLeft
+		? fy.isLeft
+			? Left(appendA(fx.leftValue)(fy.leftValue))
+			: fx
+		: fy.isLeft
+		? fy
+		: Right(appendB(fx.rightValue)(fy.rightValue));
