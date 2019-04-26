@@ -51,4 +51,8 @@ export const ifM: {
 		cond: Type1<f, boolean>,
 	) => <a>(whenTrue: Type1<f, a>) => (whenFalse: Type1<f, a>) => Type1<f, a>;
 } = (({ bind }) => cond => whenTrue => whenFalse =>
-	bind(cond)((x => (x ? whenTrue : whenFalse)) as AnyFn1)) as AnyFn4;
+	bind(cond)(x => (x ? whenTrue : whenFalse))) as <f extends Prop1>(
+	B: Pick<Bind1<f>, 'bind'>,
+) => (
+	cond: Type1<f, boolean>,
+) => <a>(whenTrue: Type1<f, a>) => (whenFalse: Type1<f, a>) => Type1<f, a>;
