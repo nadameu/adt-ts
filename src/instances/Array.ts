@@ -1,5 +1,5 @@
 import * as A from '../classes/Applicative';
-import { Applicative } from '../classes/Applicative';
+import { Applicative1 } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
 import { Apply1 } from '../classes/Apply';
 import * as B from '../classes/Bind';
@@ -50,7 +50,7 @@ export const composeKleisli = B.composeKleisli<PropArray>({ bind });
 export const composeKleisliFlipped = B.composeKleisliFlipped<PropArray>({ bind });
 export const ifM = B.ifM<PropArray>({ bind });
 
-export const pure: Applicative<PropArray>['pure'] = x => [x];
+export const pure: Applicative1<PropArray>['pure'] = x => [x];
 export const liftA1 = A.liftA1<PropArray>({ apply, pure });
 export const when = A.when<PropArray>({ pure });
 export const unless = A.unless<PropArray>({ pure });

@@ -1,5 +1,5 @@
 import * as A from '../classes/Applicative';
-import { Applicative } from '../classes/Applicative';
+import { Applicative2 } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
 import { Apply2 } from '../classes/Apply';
 import * as B from '../classes/Bind';
@@ -57,7 +57,7 @@ export const composeKleisli = B.composeKleisli<PropEither>({ bind });
 export const composeKleisliFlipped = B.composeKleisliFlipped<PropEither>({ bind });
 export const ifM = B.ifM<PropEither>({ bind });
 
-export const pure: Applicative<PropEither>['pure'] = x => [x];
+export const pure: Applicative2<PropEither>['pure'] = Right;
 export const liftA1 = A.liftA1<PropEither>({ apply, pure });
 export const when = A.when<PropEither>({ pure });
 export const unless = A.unless<PropEither>({ pure });
