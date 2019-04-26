@@ -1,6 +1,6 @@
 import { Ordering } from '../instances/Ordering';
 import { Eq, Eq1 } from './Eq';
-import { Prop1, Type } from '../Types';
+import { Prop1, Type1 } from '../Types';
 
 export interface Ord<a> extends Eq<a> {
 	compare: (x: a) => (y: a) => Ordering;
@@ -44,9 +44,5 @@ export const between: <a>(
 	gte({ compare })(x)(lo) && lte({ compare })(x)(hi);
 
 export interface Ord1<f extends Prop1> extends Eq1<f> {
-	compare1: <a>(
-		O: Ord<a>,
-	) => (
-		fx: Type<f, never, never, never, never, a>,
-	) => (fy: Type<f, never, never, never, never, a>) => Ordering;
+	compare1: <a>(O: Ord<a>) => (fx: Type1<f, a>) => (fy: Type1<f, a>) => Ordering;
 }
