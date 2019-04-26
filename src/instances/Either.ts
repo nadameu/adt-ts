@@ -9,12 +9,13 @@ import { Eq } from '../classes/Eq';
 import * as F from '../classes/Functor';
 import { Functor2 } from '../classes/Functor';
 import * as M from '../classes/Monad';
+import * as M1 from '../classes/Monoid';
+import { Monoid, Monoid1 } from '../classes/Monoid';
 import * as O from '../classes/Ord';
 import { Ord } from '../classes/Ord';
 import { Semigroup, Semigroup1 } from '../classes/Semigroup';
-import { AnyFn1, Prop1, Prop2, Type1, AnyFn2 } from '../Types';
+import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
 import { Ordering } from './Ordering';
-import { Monoid, Monoid1 } from '../classes/Monoid';
 
 export type Either<a, b> = Left<a> | Right<b>;
 
@@ -119,6 +120,21 @@ export const append1: {
 } = (({ append }) => lift2(append)) as AnyFn1;
 
 export const mempty1: {
-	<f extends Prop1>(S: Monoid1<f>): <a = never, b = never>() => Either<a, Type1<f, b>>;
-	<b>(S: Monoid<b>): Monoid1<PropEither1<b>>['mempty'];
+	<f extends Prop1>(S: Pick<Monoid1<f>, 'mempty'>): <a = never, b = never>() => Either<
+		a,
+		Type1<f, b>
+	>;
+	<b>(S: Pick<Monoid<b>, 'mempty'>): Monoid1<PropEither1<b>>['mempty'];
 } = (({ mempty }) => () => Right(mempty())) as AnyFn1;
+export const power1: {
+	<f extends Prop1>(M: Monoid1<f>): <a, b>(
+		x: Either<a, Type1<f, b>>,
+	) => (p: number) => Either<a, Type1<f, b>>;
+	<b>(M: Monoid<b>): <a>(x: Either<a, b>) => (p: number) => Either<a, b>;
+} = (M => M1.power({ append: append1(M), mempty: mempty1(M) })) as AnyFn1;
+export const guard1: {
+	<f extends Prop1>(M: Pick<Monoid1<f>, 'mempty'>): (
+		p: boolean,
+	) => <a, b>(x: Either<a, Type1<f, b>>) => Either<a, Type1<f, b>>;
+	<b>(M: Pick<Monoid<b>, 'mempty'>): (p: boolean) => <a>(x: Either<a, b>) => Either<a, b>;
+} = (({ mempty }) => M1.guard({ mempty: mempty1({ mempty }) })) as AnyFn1;

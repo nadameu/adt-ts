@@ -9,13 +9,14 @@ import { Eq1 } from '../classes/Eq';
 import * as F from '../classes/Functor';
 import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
+import * as M1 from '../classes/Monoid';
+import { Monoid1 } from '../classes/Monoid';
 import * as O from '../classes/Ord';
 import { Ord, Ord1 } from '../classes/Ord';
 import { Semigroup1 } from '../classes/Semigroup';
 import * as Num from '../instances/Number';
 import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
-import { Monoid1 } from '../classes/Monoid';
 
 export interface PropArray extends Prop1 {
 	type: this['a'][];
@@ -89,3 +90,5 @@ export const between1 = <a>(Oa: Ord<a>) => O.between<a[]>({ compare: compare1(Oa
 export const append: Semigroup1<PropArray>['append'] = xs => ys => xs.concat(ys);
 
 export const mempty: Monoid1<PropArray>['mempty'] = () => [];
+export const power = M1.power<PropArray>({ append, mempty });
+export const guard = M1.guard<PropArray>({ mempty });
