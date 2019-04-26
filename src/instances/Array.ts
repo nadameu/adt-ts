@@ -14,6 +14,7 @@ import { Ord, Ord1 } from '../classes/Ord';
 import * as Num from '../instances/Number';
 import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
+import { Semigroup, Semigroup1 } from '../classes/Semigroup';
 
 interface PropArray extends Prop1 {
 	type: this['a'][];
@@ -83,3 +84,5 @@ export const min1 = <a>(Oa: Ord<a>) => O.min<a[]>({ compare: compare1(Oa) });
 export const max1 = <a>(Oa: Ord<a>) => O.max<a[]>({ compare: compare1(Oa) });
 export const clamp1 = <a>(Oa: Ord<a>) => O.clamp<a[]>({ compare: compare1(Oa) });
 export const between1 = <a>(Oa: Ord<a>) => O.between<a[]>({ compare: compare1(Oa) });
+
+export const append: Semigroup1<PropArray>['append'] = xs => ys => xs.concat(ys);
