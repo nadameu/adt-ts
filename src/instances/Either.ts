@@ -16,6 +16,7 @@ import { Ord } from '../classes/Ord';
 import { Semigroup, Semigroup1, Semigroup2 } from '../classes/Semigroup';
 import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
 import { Ordering } from './Ordering';
+import { Alt2 } from '../classes/Alt';
 
 export type Either<a, b> = Left<a> | Right<b>;
 
@@ -136,3 +137,5 @@ export const guard1: {
 	) => <a, b>(x: Either<a, Type1<f, b>>) => Either<a, Type1<f, b>>;
 	<b>(M: Pick<Monoid<b>, 'mempty'>): (p: boolean) => <a>(x: Either<a, b>) => Either<a, b>;
 } = (({ mempty }) => M1.guard({ mempty: mempty1({ mempty }) })) as AnyFn1;
+
+export const alt: Alt2<PropEither>['alt'] = ex => ey => (ex.isLeft ? ey : ex);
