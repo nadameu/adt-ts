@@ -1,5 +1,5 @@
-import { identity } from '../combinators';
-import { Prop1, Type1, Prop2, Type2, AnyFn3, AnyFn1, AnyFn4 } from '../Types';
+import { identity } from '../instances/Fn';
+import { AnyFn1, AnyFn3, AnyFn4, Prop1, Prop2, Type1, Type2 } from '../Types';
 import { Apply1, Apply2 } from './Apply';
 
 export interface Bind1<f extends Prop1> extends Apply1<f> {

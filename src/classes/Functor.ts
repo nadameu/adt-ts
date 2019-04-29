@@ -1,4 +1,4 @@
-import { constant, thrush } from '../combinators';
+import { constant, thrush } from '../instances/Fn';
 import { AnyFn1, AnyFn2, AnyFn3, Prop1, Prop2, Type1, Type2 } from '../Types';
 
 export interface Functor1<f extends Prop1> {

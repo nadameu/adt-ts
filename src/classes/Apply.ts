@@ -1,18 +1,5 @@
-import { B1, B2, constant, flip, identity, apply } from '../combinators';
-import {
-	Prop1,
-	Prop2,
-	Type1,
-	Type2,
-	Type5,
-	Prop5,
-	AnyFn3,
-	AnyFn1,
-	AnyFn2,
-	AnyFn4,
-	AnyFn5,
-	AnyFn6,
-} from '../Types';
+import { constant, identity } from '../instances/Fn';
+import { AnyFn1, AnyFn3, AnyFn4, AnyFn5, AnyFn6, Prop1, Prop2, Type1, Type2 } from '../Types';
 import { Functor1, Functor2 } from './Functor';
 
 export interface Apply1<f extends Prop1> extends Functor1<f> {
