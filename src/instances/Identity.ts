@@ -1,27 +1,54 @@
-import { Functor } from '../classes/Functor';
-import { Placeholder as _ } from '../Types';
-import { Apply } from '../classes/Apply';
-import { Applicative } from '../classes/Applicative';
-import { apply, identity, thrush } from '../combinators';
-import { Bind } from '../classes/Bind';
-import { Monad } from '../classes/Monad';
+import * as A from '../classes/Applicative';
+import { Applicative1 } from '../classes/Applicative';
+import * as Ap from '../classes/Apply';
+import { Apply1 } from '../classes/Apply';
+import * as B from '../classes/Bind';
+import { Bind1 } from '../classes/Bind';
+import * as F from '../classes/Functor';
+import { Functor1 } from '../classes/Functor';
+import * as M from '../classes/Monad';
+import { Prop1 } from '../Types';
 
-export const map: Functor<_>['map'] = apply;
-export const functorIdentity: Functor<_> = { map };
+declare const phantom: unique symbol;
+type Identity<a> = a & {
+	[phantom]: a;
+};
+export const Identity = <a>(value: a) => value as Identity<a>;
 
-export const ap: Apply<_>['ap'] = apply;
-export const applyIdentity: Apply<_> = { map, ap };
-
-export const pure: Applicative<_>['pure'] = identity;
-export const applicativeIdentity: Applicative<_> = { map, ap, pure };
-
-export const bind: Bind<_>['bind'] = thrush;
-export const bindIdentity: Bind<_> = { map, ap, bind };
-
-export const monadIdentity: Monad<_> = { map, ap, pure, bind };
-
-declare module '../Types' {
-	export interface Types<w, x, y, z> {
-		Identity: z;
-	}
+interface PropIdentity extends Prop1 {
+	type: Identity<this['a']>;
 }
+
+export const map: Functor1<PropIdentity>['map'] = f => x => Identity(f(x));
+export const mapFlipped = F.mapFlipped<PropIdentity>({ map });
+export const voidLeft = F.voidLeft<PropIdentity>({ map });
+export const voidRight = F.voidRight<PropIdentity>({ map });
+const _void = F.void<PropIdentity>({ map });
+export { _void as void };
+export const flap = F.flap<PropIdentity>({ map });
+
+export const apply: Apply1<PropIdentity>['apply'] = f => x => Identity(f(x));
+export const applyFlipped = Ap.applyFlipped<PropIdentity>({ apply });
+export const applyFirst = Ap.applyFirst<PropIdentity>({ apply, map });
+export const applySecond = Ap.applySecond<PropIdentity>({ apply, map });
+export const lift2 = Ap.lift2<PropIdentity>({ apply, map });
+export const lift3 = Ap.lift3<PropIdentity>({ apply, map });
+export const lift4 = Ap.lift4<PropIdentity>({ apply, map });
+export const lift5 = Ap.lift5<PropIdentity>({ apply, map });
+
+export const bind: Bind1<PropIdentity>['bind'] = x => f => f(x);
+export const bindFlipped = B.bindFlipped<PropIdentity>({ bind });
+export const join = B.join<PropIdentity>({ bind });
+export const composeKleisli = B.composeKleisli<PropIdentity>({ bind });
+export const composeKleisliFlipped = B.composeKleisliFlipped<PropIdentity>({ bind });
+export const ifM = B.ifM<PropIdentity>({ bind });
+
+export const pure: Applicative1<PropIdentity>['pure'] = Identity;
+export const liftA1 = A.liftA1<PropIdentity>({ apply, pure });
+export const when = A.when<PropIdentity>({ pure });
+export const unless = A.unless<PropIdentity>({ pure });
+
+export const liftM1 = M.liftM1<PropIdentity>({ bind, pure });
+export const ap = M.ap<PropIdentity>({ bind, pure });
+export const whenM = M.whenM<PropIdentity>({ bind, pure });
+export const unlessM = M.unlessM<PropIdentity>({ bind, pure });
