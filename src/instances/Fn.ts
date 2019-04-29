@@ -55,6 +55,8 @@ export const liftA1 = A.liftA1<PropFn>({ apply, pure });
 export const when = A.when<PropFn>({ pure });
 export const unless = A.unless<PropFn>({ pure });
 
+export { pure as constant };
+
 export const liftM1 = M.liftM1<PropFn>({ bind, pure });
 export const ap = M.ap<PropFn>({ bind, pure });
 export const whenM = M.whenM<PropFn>({ bind, pure });
@@ -84,3 +86,5 @@ export const guard1: {
 	) => <a, b>(x: (_: a) => Type1<f, b>) => (_: a) => Type1<f, b>;
 	<b>(M: Pick<Monoid<b>, 'mempty'>): (p: boolean) => <a>(x: (_: a) => b) => (_: a) => b;
 } = (({ mempty }) => M1.guard({ mempty: mempty1({ mempty }) })) as AnyFn1;
+
+export const thrush: <a>(x: a) => <b>(f: (_: a) => b) => b = x => f => f(x);
