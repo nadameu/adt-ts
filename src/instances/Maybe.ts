@@ -20,6 +20,7 @@ import { Semigroup, Semigroup1 } from '../classes/Semigroup';
 import { AnyFn3, Prop1, Type1 } from '../Types';
 import { identity } from './Fn';
 import { Ordering } from './Ordering';
+import { Alternative1 } from '../classes/Alternative';
 
 export type Maybe<a> = Just<a> | Nothing;
 
@@ -125,6 +126,13 @@ export const fromMaybeL: <a>(lazy: () => a) => (mx: Maybe<a>) => a = lazy => may
 export const isJust = <a>(mx: Maybe<a>): mx is Just<a> => !mx.isNothing;
 
 export const isNothing = <a>(mx: Maybe<a>): mx is Nothing => !mx.isNothing;
+
+export const fromJust: <a>(mx: Just<a>) => a = mx => mx.value;
+
+export const optional1: <f extends Prop1>(
+	A: Pick<Alternative1<f>, 'alt' | 'map' | 'pure'>,
+) => <a>(fx: Type1<f, a>) => Type1<f, Maybe<a>> = ({ alt, map, pure }) => fx =>
+	alt(map(Just)(fx))(pure(Nothing));
 
 export const alt: Alt1<PropMaybe>['alt'] = mx => my => (mx.isNothing ? my : mx);
 
