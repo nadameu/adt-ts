@@ -37,7 +37,6 @@ export const voidLeft = F.voidLeft<PropFn>({ map });
 export const voidRight = F.voidRight<PropFn>({ map });
 const _void = F.void<PropFn>({ map });
 export { _void as void };
-export { pure as constant };
 export const flap = F.flap<PropFn>({ map });
 
 export const apply: Apply2<PropFn>['apply'] = ff => fa => x => ff(x)(fa(x));
@@ -60,6 +59,7 @@ export const pure: Applicative2<PropFn>['pure'] = x => _ => x;
 export const liftA1 = A.liftA1<PropFn>({ apply, pure });
 export const when = A.when<PropFn>({ pure });
 export const unless = A.unless<PropFn>({ pure });
+export const constant: <a>(x: a) => <b>(y: b) => a = pure;
 
 export const liftM1 = M.liftM1<PropFn>({ bind, pure });
 export const ap = M.ap<PropFn>({ bind, pure });
