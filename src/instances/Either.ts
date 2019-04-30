@@ -3,6 +3,8 @@ import * as A from '../classes/Applicative';
 import { Applicative2 } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
 import { Apply2 } from '../classes/Apply';
+import * as Bi from '../classes/Bifunctor';
+import { Bifunctor2 } from '../classes/Bifunctor';
 import * as B from '../classes/Bind';
 import { Bind2 } from '../classes/Bind';
 import * as E from '../classes/Eq';
@@ -147,3 +149,8 @@ export const extendFlipped = Ex.extendFlipped<PropEither>({ extend });
 export const composeCoKleisli = Ex.composeCoKleisli<PropEither>({ extend });
 export const composeCoKleisliFlipped = Ex.composeCoKleisliFlipped<PropEither>({ extend });
 export const duplicate = Ex.duplicate<PropEither>({ extend });
+
+export const bimap: Bifunctor2<PropEither>['bimap'] = f => g => fx =>
+	fx.isLeft ? Left(f(fx.leftValue)) : Right(g(fx.rightValue));
+export const lmap = Bi.lmap<PropEither>({ bimap });
+export const rmap = map;
