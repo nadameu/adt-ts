@@ -10,7 +10,7 @@ import { Semigroupoid2 } from '../classes/Semigroupoid';
 import { Prop1, Prop2, Type2 } from '../Types';
 
 declare const phantom: unique symbol;
-type Endo<c extends Prop2, a> = Type2<c, a, a> & {
+export type Endo<c extends Prop2, a> = Type2<c, a, a> & {
 	[phantom]: Type2<c, a, a>;
 };
 export const Endo = <c extends Prop2, a>(value: Type2<c, a, a>) => value as Endo<c, a>;

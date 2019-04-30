@@ -102,3 +102,6 @@ export const extend1: {
 } = (({ append }) => f => g => fa => f((w2 => g(append(fa)(w2))) as AnyFn1)) as AnyFn4;
 
 export const defer: Lazy2<PropFn>['defer'] = f => x => f()(x);
+
+export const flip: <a, b, c>(f: (_: a) => (_: b) => c) => (y: b) => (x: a) => c = f => y => x =>
+	f(x)(y);
