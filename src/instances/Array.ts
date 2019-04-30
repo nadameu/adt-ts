@@ -19,6 +19,7 @@ import { Prop1 } from '../Types';
 import { Ordering } from './Ordering';
 import { Alt1 } from '../classes/Alt';
 import { Plus1 } from '../classes/Plus';
+import * as Z from '../classes/MonadZero';
 
 export interface PropArray extends Prop1 {
 	type: this['a'][];
@@ -93,8 +94,9 @@ export const append: Semigroup1<PropArray>['append'] = xs => ys => xs.concat(ys)
 
 export const mempty: Monoid1<PropArray>['mempty'] = () => [];
 export const power = M1.power<PropArray>({ append, mempty });
-export const guard = M1.guard<PropArray>({ mempty });
 
 export const alt: Alt1<PropArray>['alt'] = append;
 
 export const empty: Plus1<PropArray>['empty'] = mempty;
+
+export const guard = Z.guard<PropArray>({ empty, pure });
