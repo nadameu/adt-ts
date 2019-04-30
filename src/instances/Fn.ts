@@ -4,21 +4,25 @@ import * as Ap from '../classes/Apply';
 import { Apply2 } from '../classes/Apply';
 import * as B from '../classes/Bind';
 import { Bind2 } from '../classes/Bind';
+import { Extend1, Extend2 } from '../classes/Extend';
 import * as F from '../classes/Functor';
 import { Functor2 } from '../classes/Functor';
 import * as M from '../classes/Monad';
+import * as M1 from '../classes/Monoid';
+import { Monoid, Monoid1, Monoid2 } from '../classes/Monoid';
 import { Semigroup, Semigroup1, Semigroup2 } from '../classes/Semigroup';
 import * as S from '../classes/Semigroupoid';
 import { Semigroupoid2 } from '../classes/Semigroupoid';
-import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
-import { Monoid1, Monoid2, Monoid } from '../classes/Monoid';
-import * as M1 from '../classes/Monoid';
+import { AnyFn1, AnyFn4, Prop1, Prop2, Type1 } from '../Types';
 
 export interface PropFn extends Prop2 {
 	type: (_: this['a']) => this['b'];
 }
 export interface PropFn1<b> extends Prop1 {
 	type: (_: this['a']) => b;
+}
+export interface PropFn1R<a> extends Prop1 {
+	type: (_: a) => this['a'];
 }
 
 export const compose: Semigroupoid2<PropFn>['compose'] = f => g => x => f(g(x));
@@ -32,6 +36,7 @@ export const voidLeft = F.voidLeft<PropFn>({ map });
 export const voidRight = F.voidRight<PropFn>({ map });
 const _void = F.void<PropFn>({ map });
 export { _void as void };
+export { pure as constant };
 export const flap = F.flap<PropFn>({ map });
 
 export const apply: Apply2<PropFn>['apply'] = ff => fa => x => ff(x)(fa(x));
@@ -54,8 +59,6 @@ export const pure: Applicative2<PropFn>['pure'] = x => _ => x;
 export const liftA1 = A.liftA1<PropFn>({ apply, pure });
 export const when = A.when<PropFn>({ pure });
 export const unless = A.unless<PropFn>({ pure });
-
-export { pure as constant };
 
 export const liftM1 = M.liftM1<PropFn>({ bind, pure });
 export const ap = M.ap<PropFn>({ bind, pure });
@@ -88,3 +91,11 @@ export const guard1: {
 } = (({ mempty }) => M1.guard({ mempty: mempty1({ mempty }) })) as AnyFn1;
 
 export const thrush: <a>(x: a) => <b>(f: (_: a) => b) => b = x => f => f(x);
+
+interface PropDerivedFirstFn<f extends Prop1> extends Prop2 {
+	type: (_: Type1<f, this['a']>) => this['b'];
+}
+export const extend1: {
+	<f extends Prop1>(S: Semigroup1<f>): Extend2<PropDerivedFirstFn<f>>['extend'];
+	<c>(S: Semigroup<c>): Extend1<PropFn1R<c>>['extend'];
+} = (({ append }) => f => g => fa => f((w2 => g(append(fa)(w2))) as AnyFn1)) as AnyFn4;

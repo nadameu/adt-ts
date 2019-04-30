@@ -1,3 +1,4 @@
+import { Alt2 } from '../classes/Alt';
 import * as A from '../classes/Applicative';
 import { Applicative2 } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
@@ -6,6 +7,8 @@ import * as B from '../classes/Bind';
 import { Bind2 } from '../classes/Bind';
 import * as E from '../classes/Eq';
 import { Eq } from '../classes/Eq';
+import * as Ex from '../classes/Extend';
+import { Extend2 } from '../classes/Extend';
 import * as F from '../classes/Functor';
 import { Functor2 } from '../classes/Functor';
 import * as M from '../classes/Monad';
@@ -16,7 +19,6 @@ import { Ord } from '../classes/Ord';
 import { Semigroup, Semigroup1, Semigroup2 } from '../classes/Semigroup';
 import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
 import { Ordering } from './Ordering';
-import { Alt2 } from '../classes/Alt';
 
 export type Either<a, b> = Left<a> | Right<b>;
 
@@ -139,3 +141,9 @@ export const guard1: {
 } = (({ mempty }) => M1.guard({ mempty: mempty1({ mempty }) })) as AnyFn1;
 
 export const alt: Alt2<PropEither>['alt'] = ex => ey => (ex.isLeft ? ey : ex);
+
+export const extend: Extend2<PropEither>['extend'] = f => ex => (ex.isLeft ? ex : Right(f(ex)));
+export const extendFlipped = Ex.extendFlipped<PropEither>({ extend });
+export const composeCoKleisli = Ex.composeCoKleisli<PropEither>({ extend });
+export const composeCoKleisliFlipped = Ex.composeCoKleisliFlipped<PropEither>({ extend });
+export const duplicate = Ex.duplicate<PropEither>({ extend });

@@ -6,17 +6,19 @@ import * as B from '../classes/Bind';
 import { Bind1 } from '../classes/Bind';
 import * as E from '../classes/Eq';
 import { Eq1 } from '../classes/Eq';
+import * as Ex from '../classes/Extend';
+import { Extend1 } from '../classes/Extend';
 import * as F from '../classes/Functor';
 import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
 import * as O from '../classes/Ord';
 import { Ord, Ord1 } from '../classes/Ord';
-import { Prop1 } from '../Types';
 import { Semigroup1 } from '../classes/Semigroup';
+import { Prop1 } from '../Types';
 
 declare const phantom: unique symbol;
 type First<a> = a & {
-	[phantom]: never;
+	[phantom]: a;
 };
 export const First = <a>(value: a) => value as First<a>;
 
@@ -73,3 +75,9 @@ export const whenM = M.whenM<PropFirst>({ bind, pure });
 export const unlessM = M.unlessM<PropFirst>({ bind, pure });
 
 export const append: Semigroup1<PropFirst>['append'] = x => _ => x;
+
+export const extend: Extend1<PropFirst>['extend'] = f => x => First(f(x));
+export const extendFlipped = Ex.extendFlipped<PropFirst>({ extend });
+export const composeCoKleisli = Ex.composeCoKleisli<PropFirst>({ extend });
+export const composeCoKleisliFlipped = Ex.composeCoKleisliFlipped<PropFirst>({ extend });
+export const duplicate = Ex.duplicate<PropFirst>({ extend });

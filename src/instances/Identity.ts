@@ -4,6 +4,8 @@ import * as Ap from '../classes/Apply';
 import { Apply1 } from '../classes/Apply';
 import * as B from '../classes/Bind';
 import { Bind1 } from '../classes/Bind';
+import * as Ex from '../classes/Extend';
+import { Extend1 } from '../classes/Extend';
 import * as F from '../classes/Functor';
 import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
@@ -52,3 +54,9 @@ export const liftM1 = M.liftM1<PropIdentity>({ bind, pure });
 export const ap = M.ap<PropIdentity>({ bind, pure });
 export const whenM = M.whenM<PropIdentity>({ bind, pure });
 export const unlessM = M.unlessM<PropIdentity>({ bind, pure });
+
+export const extend: Extend1<PropIdentity>['extend'] = f => x => Identity(f(x));
+export const extendFlipped = Ex.extendFlipped<PropIdentity>({ extend });
+export const composeCoKleisli = Ex.composeCoKleisli<PropIdentity>({ extend });
+export const composeCoKleisliFlipped = Ex.composeCoKleisliFlipped<PropIdentity>({ extend });
+export const duplicate = Ex.duplicate<PropIdentity>({ extend });

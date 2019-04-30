@@ -1,3 +1,4 @@
+import { Alt1 } from '../classes/Alt';
 import * as A from '../classes/Applicative';
 import { Applicative1 } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
@@ -6,18 +7,19 @@ import * as B from '../classes/Bind';
 import { Bind1 } from '../classes/Bind';
 import * as E from '../classes/Eq';
 import { Eq1 } from '../classes/Eq';
+import * as Ex from '../classes/Extend';
+import { Extend1 } from '../classes/Extend';
 import * as F from '../classes/Functor';
 import { Functor1 } from '../classes/Functor';
 import * as M from '../classes/Monad';
 import { Monoid1 } from '../classes/Monoid';
 import * as O from '../classes/Ord';
 import { Ord, Ord1 } from '../classes/Ord';
+import { Plus1 } from '../classes/Plus';
 import { Semigroup, Semigroup1 } from '../classes/Semigroup';
 import { AnyFn3, Prop1, Type1 } from '../Types';
 import { identity } from './Fn';
 import { Ordering } from './Ordering';
-import { Alt1 } from '../classes/Alt';
-import { Plus1 } from '../classes/Plus';
 
 export type Maybe<a> = Just<a> | Nothing;
 
@@ -127,3 +129,9 @@ export const isNothing = <a>(mx: Maybe<a>): mx is Nothing => !mx.isNothing;
 export const alt: Alt1<PropMaybe>['alt'] = mx => my => (mx.isNothing ? my : mx);
 
 export const empty: Plus1<PropMaybe>['empty'] = mempty;
+
+export const extend: Extend1<PropMaybe>['extend'] = f => mx => (mx.isNothing ? mx : Just(f(mx)));
+export const extendFlipped = Ex.extendFlipped<PropMaybe>({ extend });
+export const composeCoKleisli = Ex.composeCoKleisli<PropMaybe>({ extend });
+export const composeCoKleisliFlipped = Ex.composeCoKleisliFlipped<PropMaybe>({ extend });
+export const duplicate = Ex.duplicate<PropMaybe>({ extend });

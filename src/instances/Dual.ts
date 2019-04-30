@@ -9,7 +9,7 @@ import { AnyFn1, AnyFn3, Prop1, Type1 } from '../Types';
 
 declare const phantom: unique symbol;
 type Dual<a> = a & {
-	[phantom]: never;
+	[phantom]: a;
 };
 export const Dual = <a>(value: a) => value as Dual<a>;
 
