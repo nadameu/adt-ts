@@ -1,4 +1,4 @@
-import { Alt2 } from '../classes/Alt';
+import { Alt1, Alt2 } from '../classes/Alt';
 import * as A from '../classes/Applicative';
 import { Applicative2 } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
@@ -20,6 +20,8 @@ import * as O from '../classes/Ord';
 import { Ord } from '../classes/Ord';
 import { Semigroup, Semigroup1, Semigroup2 } from '../classes/Semigroup';
 import { AnyFn1, Prop1, Prop2, Type1 } from '../Types';
+import { constant } from './Fn';
+import { Just, Maybe, maybe, maybeL, Nothing } from './Maybe';
 import { Ordering } from './Ordering';
 
 export type Either<a, b> = Left<a> | Right<b>;
@@ -154,3 +156,33 @@ export const bimap: Bifunctor2<PropEither>['bimap'] = f => g => fx =>
 	fx.isLeft ? Left(f(fx.leftValue)) : Right(g(fx.rightValue));
 export const lmap = Bi.lmap<PropEither>({ bimap });
 export const rmap = map;
+
+export const either: <a, c>(
+	f: (_: a) => c,
+) => <b>(g: (_: b) => c) => (fx: Either<a, b>) => c = f => g => fx =>
+	fx.isLeft ? f(fx.leftValue) : g(fx.rightValue);
+
+export const choose1: <m extends Prop1>(
+	A: Alt1<m>,
+) => <a>(ma: Type1<m, a>) => <b>(mb: Type1<m, b>) => Type1<m, Either<a, b>> = ({
+	alt,
+	map,
+}) => a => b => alt(map(Left)(a))(map(Right)(b));
+
+export const isLeft = <a, b>(fx: Either<a, b>): fx is Left<a> => fx.isLeft;
+
+export const isRight = <a, b>(fx: Either<a, b>): fx is Right<b> => !fx.isLeft;
+
+export const fromLeft: <a>(fx: Left<a>) => a = fx => fx.leftValue;
+
+export const fromRight: <b>(fx: Right<b>) => b = fx => fx.rightValue;
+
+export const note: <a>(x: a) => <b>(my: Maybe<b>) => Either<a, b> = x =>
+	maybe<Either<any, any>>(Left(x))(Right);
+
+export const noteL: <a>(x: () => a) => <b>(my: Maybe<b>) => Either<a, b> = f =>
+	maybeL<Either<any, any>>(() => Left(f()))(Right);
+
+export const hush: <a, b>(fx: Either<a, b>) => Maybe<b> = either(constant(Nothing as Maybe<any>))(
+	Just,
+);
