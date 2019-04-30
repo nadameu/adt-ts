@@ -4,6 +4,7 @@ import * as Ap from '../classes/Apply';
 import { Apply1 } from '../classes/Apply';
 import * as B from '../classes/Bind';
 import { Bind1 } from '../classes/Bind';
+import { Comonad1 } from '../classes/Comonad';
 import * as E from '../classes/Eq';
 import { Eq1 } from '../classes/Eq';
 import * as Ex from '../classes/Extend';
@@ -81,3 +82,5 @@ export const extendFlipped = Ex.extendFlipped<PropLast>({ extend });
 export const composeCoKleisli = Ex.composeCoKleisli<PropLast>({ extend });
 export const composeCoKleisliFlipped = Ex.composeCoKleisliFlipped<PropLast>({ extend });
 export const duplicate = Ex.duplicate<PropLast>({ extend });
+
+export const extract: Comonad1<PropLast>['extract'] = x => x;
