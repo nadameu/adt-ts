@@ -14,6 +14,7 @@ import { Semigroup, Semigroup1, Semigroup2 } from '../classes/Semigroup';
 import * as S from '../classes/Semigroupoid';
 import { Semigroupoid2 } from '../classes/Semigroupoid';
 import { AnyFn1, AnyFn4, Prop1, Prop2, Type1 } from '../Types';
+import { Lazy, Lazy2 } from '../classes/Lazy';
 
 export interface PropFn extends Prop2 {
 	type: (_: this['a']) => this['b'];
@@ -99,3 +100,5 @@ export const extend1: {
 	<f extends Prop1>(S: Semigroup1<f>): Extend2<PropDerivedFirstFn<f>>['extend'];
 	<c>(S: Semigroup<c>): Extend1<PropFn1R<c>>['extend'];
 } = (({ append }) => f => g => fa => f((w2 => g(append(fa)(w2))) as AnyFn1)) as AnyFn4;
+
+export const defer: Lazy2<PropFn>['defer'] = f => x => f()(x);
