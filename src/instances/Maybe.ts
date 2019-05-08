@@ -1,4 +1,5 @@
 import { Alt1 } from '../classes/Alt';
+import { Alternative1 } from '../classes/Alternative';
 import * as A from '../classes/Applicative';
 import { Applicative1 } from '../classes/Applicative';
 import * as Ap from '../classes/Apply';
@@ -17,10 +18,11 @@ import * as O from '../classes/Ord';
 import { Ord, Ord1 } from '../classes/Ord';
 import { Plus1 } from '../classes/Plus';
 import { Semigroup, Semigroup1 } from '../classes/Semigroup';
+import * as T from '../classes/Traversable';
+import { Traversable1 } from '../classes/Traversable';
 import { AnyFn3, Prop1, Type1 } from '../Types';
 import { identity } from './Fn';
 import { Ordering } from './Ordering';
-import { Alternative1 } from '../classes/Alternative';
 
 export type Maybe<a> = Just<a> | Nothing;
 
@@ -143,3 +145,11 @@ export const extendFlipped = Ex.extendFlipped<PropMaybe>({ extend });
 export const composeCoKleisli = Ex.composeCoKleisli<PropMaybe>({ extend });
 export const composeCoKleisliFlipped = Ex.composeCoKleisliFlipped<PropMaybe>({ extend });
 export const duplicate = Ex.duplicate<PropMaybe>({ extend });
+
+export const traverse: Traversable1<PropMaybe>['traverse'] = (({ pure }) => f => mx =>
+	mx.isNothing ? pure(Nothing) : map(Just)(f(mx.value))) as <m extends Prop1>(
+	A: Applicative1<m>,
+) => <a, b>(f: (_: a) => Type1<m, b>) => (ta: Maybe<a>) => Type1<m, Maybe<b>>;
+export const sequence = T.sequenceDefault<PropMaybe>({ traverse });
+const _for = T.for<PropMaybe>({ traverse });
+export { _for as for };
