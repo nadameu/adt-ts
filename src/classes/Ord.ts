@@ -6,42 +6,41 @@ export interface Ord<a> extends Eq<a> {
 	compare: (x: a) => (y: a) => Ordering;
 }
 
-export const lte: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => boolean = ({
-	compare,
-}) => x => y => compare(x)(y) !== Ordering.GT;
+interface Derived<a> extends Ord<a> {
+	'<>': (x: a) => (y: a) => boolean;
+	comparing: <b>(f: (_: b) => a) => (x: b) => (y: b) => Ordering;
+	minmax: (x: a) => (y: a) => a;
+	clamp: (lo: a) => (hi: a) => (x: a) => a;
+	between: (lo: a) => (hi: a) => (x: a) => boolean;
+}
 
-export const gt: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => boolean = ({
-	compare,
-}) => x => y => compare(x)(y) === Ordering.GT;
+type Derive<k extends keyof Ord<never>, r extends keyof Derived<never>> = <a>(
+	O: Pick<Ord<a>, k>,
+) => Derived<a>[r];
 
-export const lt: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => boolean = ({
-	compare,
-}) => x => y => compare(x)(y) === Ordering.LT;
+export const lte: Derive<'compare', '<>'> = ({ compare }) => x => y =>
+	compare(x)(y) !== Ordering.GT;
 
-export const gte: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => boolean = ({
-	compare,
-}) => x => y => compare(x)(y) !== Ordering.LT;
+export const gt: Derive<'compare', '<>'> = ({ compare }) => x => y => compare(x)(y) === Ordering.GT;
 
-export const comparing: <b>(
-	O: Pick<Ord<b>, 'compare'>,
-) => <a>(f: (_: a) => b) => (x: a) => (y: a) => Ordering = ({ compare }) => f => x => y =>
+export const lt: Derive<'compare', '<>'> = ({ compare }) => x => y => compare(x)(y) === Ordering.LT;
+
+export const gte: Derive<'compare', '<>'> = ({ compare }) => x => y =>
+	compare(x)(y) !== Ordering.LT;
+
+export const comparing: Derive<'compare', 'comparing'> = ({ compare }) => f => x => y =>
 	compare(f(x))(f(y));
 
-export const min: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => a = ({
-	compare,
-}) => x => y => (lte({ compare })(x)(y) ? x : y);
+export const min: Derive<'compare', 'minmax'> = ({ compare }) => x => y =>
+	lte({ compare })(x)(y) ? x : y;
 
-export const max: <a>(O: Pick<Ord<a>, 'compare'>) => (x: a) => (y: a) => a = ({
-	compare,
-}) => x => y => (gte({ compare })(x)(y) ? x : y);
+export const max: Derive<'compare', 'minmax'> = ({ compare }) => x => y =>
+	gte({ compare })(x)(y) ? x : y;
 
-export const clamp: <a>(O: Pick<Ord<a>, 'compare'>) => (lo: a) => (hi: a) => (x: a) => a = ({
-	compare,
-}) => lo => hi => x => min({ compare })(hi)(max({ compare })(lo)(x));
+export const clamp: Derive<'compare', 'clamp'> = ({ compare }) => lo => hi => x =>
+	min({ compare })(hi)(max({ compare })(lo)(x));
 
-export const between: <a>(
-	O: Pick<Ord<a>, 'compare'>,
-) => (lo: a) => (hi: a) => (x: a) => boolean = ({ compare }) => lo => hi => x =>
+export const between: Derive<'compare', 'between'> = ({ compare }) => lo => hi => x =>
 	gte({ compare })(x)(lo) && lte({ compare })(x)(hi);
 
 export interface Ord1<f extends Prop1> extends Eq1<f> {
