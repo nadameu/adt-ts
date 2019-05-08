@@ -1,4 +1,4 @@
-import { AnyFn2, AnyFn3, Prop1, Type1 } from '../Types';
+import { Prop1, Type1 } from '../Types';
 import { Semigroup, Semigroup1 } from './Semigroup';
 
 export interface Monoid<a> extends Semigroup<a> {
@@ -8,10 +8,24 @@ export interface Monoid1<f extends Prop1> extends Semigroup1<f> {
 	mempty: <a = never>() => Type1<f, a>;
 }
 
-export const power: {
-	<f extends Prop1>(M: Monoid1<f>): <a>(fx: Type1<f, a>) => (p: number) => Type1<f, a>;
-	<a>(M: Monoid<a>): (x: a) => (p: number) => a;
-} = (({ append, mempty }) => x => {
+interface Derived<a> extends Monoid<a> {
+	power: (x: a) => (p: number) => a;
+	guard: (p: boolean) => (x: a) => a;
+}
+interface Derived1<f extends Prop1> extends Monoid1<f> {
+	power: <a>(fx: Type1<f, a>) => (p: number) => Type1<f, a>;
+	guard: (p: boolean) => <a>(fx: Type1<f, a>) => Type1<f, a>;
+}
+
+type Derive<k extends keyof Monoid<never>, r extends keyof Derived<never>> = <a>(
+	M: Pick<Monoid<a>, k>,
+) => Derived<a>[r];
+interface DeriveAll<k extends keyof Monoid<never>, r extends keyof Derived<never>> {
+	<f extends Prop1>(M: Pick<Monoid1<f>, k>): Derived1<f>[r];
+	<a>(M: Pick<Monoid<a>, k>): Derived<a>[r];
+}
+
+export const power: DeriveAll<'append' | 'mempty', 'power'> = (({ append, mempty }) => x => {
 	const go: (p: number) => any = p => {
 		if (p <= 0) return mempty();
 		if (p === 1) return x;
@@ -23,11 +37,7 @@ export const power: {
 		return append(append(x2)(x2))(x);
 	};
 	return go;
-}) as AnyFn2;
+}) as Derive<'append' | 'mempty', 'power'>;
 
-export const guard: {
-	<f extends Prop1>(M: Pick<Monoid1<f>, 'mempty'>): (
-		p: boolean,
-	) => <a>(fx: Type1<f, a>) => Type1<f, a>;
-	<a>(M: Pick<Monoid<a>, 'mempty'>): (p: boolean) => (x: a) => a;
-} = (({ mempty }) => p => x => (p ? x : mempty())) as AnyFn3;
+export const guard: DeriveAll<'mempty', 'guard'> = (({ mempty }) => p => x =>
+	p ? x : mempty()) as Derive<'mempty', 'guard'>;
