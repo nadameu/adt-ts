@@ -12,22 +12,21 @@ interface Derived2<f extends Prop2> extends Monad2<f> {
 	'whenM/unlessM': <a>(fp: Type2<f, a, boolean>) => (fa: Type2<f, a, void>) => Type2<f, a, void>;
 }
 
-type Derive<k extends keyof Monad1<never>, r extends keyof Derived1<never>> = <f extends Prop1>(
-	M: Pick<Monad1<f>, k>,
-) => Derived1<f>[r];
-interface DeriveAll<k extends keyof Monad1<never>, r extends keyof Derived1<never>> {
-	<f extends Prop2>(M: Pick<Monad2<f>, k>): Derived2<f>[r];
-	<f extends Prop1>(M: Pick<Monad1<f>, k>): Derived1<f>[r];
+type Derive<r extends keyof Derived1<never>> = <f extends Prop1>(M: Monad1<f>) => Derived1<f>[r];
+interface DeriveAll<r extends keyof Derived1<never>> {
+	<f extends Prop2>(M: Monad2<f>): Derived2<f>[r];
+	<f extends Prop1>(M: Monad1<f>): Derived1<f>[r];
 }
 
-export const liftM1: DeriveAll<'bind' | 'pure', 'map'> = (({ bind, pure }) => f =>
-	bindFlipped({ bind })(x => pure(f(x)))) as (Derive<'bind' | 'pure', 'map'>);
+export const liftM1: DeriveAll<'map'> = (M => f => bindFlipped(M)(x => M.pure(f(x)))) as (Derive<
+	'map'
+>);
 
-export const ap: DeriveAll<'bind' | 'pure', 'apply'> = (({ bind, pure }) => ff =>
-	bindFlipped({ bind })(x => bind(ff)(f => pure(f(x))))) as Derive<'bind' | 'pure', 'apply'>;
+export const ap: DeriveAll<'apply'> = (M => ff =>
+	bindFlipped(M)(x => M.bind(ff)(f => M.pure(f(x))))) as Derive<'apply'>;
 
-export const whenM: DeriveAll<'bind' | 'pure', 'whenM/unlessM'> = (({ bind, pure }) => fp => fa =>
-	bind(fp)(p => when({ pure })(p)(fa))) as Derive<'bind' | 'pure', 'whenM/unlessM'>;
+export const whenM: DeriveAll<'whenM/unlessM'> = (M => fp => fa =>
+	M.bind(fp)(p => when(M)(p)(fa))) as Derive<'whenM/unlessM'>;
 
-export const unlessM: DeriveAll<'bind' | 'pure', 'whenM/unlessM'> = (({ bind, pure }) => fp => fa =>
-	bind(fp)(p => unless({ pure })(p)(fa))) as Derive<'bind' | 'pure', 'whenM/unlessM'>;
+export const unlessM: DeriveAll<'whenM/unlessM'> = (M => fp => fa =>
+	M.bind(fp)(p => unless(M)(p)(fa))) as Derive<'whenM/unlessM'>;

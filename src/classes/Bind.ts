@@ -35,28 +35,23 @@ interface Derived2<f extends Prop2> extends Bind2<f> {
 	) => <b>(whenTrue: Type2<f, a, b>) => (whenFalse: Type2<f, a, b>) => Type2<f, a, b>;
 }
 
-type Derive<k extends keyof Bind1<never>, r extends keyof Derived1<never>> = <f extends Prop1>(
-	B: Pick<Bind1<f>, k>,
-) => Derived1<f>[r];
-interface DeriveAll<k extends keyof Bind1<never>, r extends keyof Derived1<never>> {
-	<f extends Prop2>(B: Pick<Bind2<f>, k>): Derived2<f>[r];
-	<f extends Prop1>(B: Pick<Bind1<f>, k>): Derived1<f>[r];
+type Derive<r extends keyof Derived1<never>> = <f extends Prop1>(B: Bind1<f>) => Derived1<f>[r];
+interface DeriveAll<r extends keyof Derived1<never>> {
+	<f extends Prop2>(B: Bind2<f>): Derived2<f>[r];
+	<f extends Prop1>(B: Bind1<f>): Derived1<f>[r];
 }
 
-export const bindFlipped: DeriveAll<'bind', 'bindFlipped'> = (({ bind }) => f => fa =>
-	bind(fa)(f)) as Derive<'bind', 'bindFlipped'>;
+export const bindFlipped: DeriveAll<'bindFlipped'> = (({ bind }) => f => fa =>
+	bind(fa)(f)) as Derive<'bindFlipped'>;
 
-export const join: DeriveAll<'bind', 'join'> = (({ bind }) => fa => bind(fa)(x => x)) as Derive<
-	'bind',
-	'join'
->;
+export const join: DeriveAll<'join'> = (({ bind }) => fa => bind(fa)(x => x)) as Derive<'join'>;
 
-export const composeKleisli: DeriveAll<'bind', 'composeKleisli'> = (({ bind }) => f => g => x =>
-	bind(f(x))(g)) as Derive<'bind', 'composeKleisli'>;
+export const composeKleisli: DeriveAll<'composeKleisli'> = (({ bind }) => f => g => x =>
+	bind(f(x))(g)) as Derive<'composeKleisli'>;
 
-export const composeKleisliFlipped: DeriveAll<'bind', 'composeKleisliFlipped'> = (({
+export const composeKleisliFlipped: DeriveAll<'composeKleisliFlipped'> = (({
 	bind,
-}) => f => g => x => bind(g(x))(f)) as Derive<'bind', 'composeKleisliFlipped'>;
+}) => f => g => x => bind(g(x))(f)) as Derive<'composeKleisliFlipped'>;
 
-export const ifM: DeriveAll<'bind', 'ifM'> = (({ bind }) => cond => whenTrue => whenFalse =>
-	bind(cond)(x => (x ? whenTrue : whenFalse))) as Derive<'bind', 'ifM'>;
+export const ifM: DeriveAll<'ifM'> = (({ bind }) => cond => whenTrue => whenFalse =>
+	bind(cond)(x => (x ? whenTrue : whenFalse))) as Derive<'ifM'>;

@@ -55,41 +55,31 @@ interface Derived2<f extends Prop2> extends Apply2<f> {
 	) => (fc: Type2<f, a, d>) => (fd: Type2<f, a, e>) => (fe: Type2<f, a, g>) => Type2<f, a, h>;
 }
 
-type Derive<k extends keyof Apply1<never>, r extends keyof Derived1<never>> = <f extends Prop1>(
-	A: Pick<Apply1<f>, k>,
-) => Derived1<f>[r];
-interface DeriveAll<k extends keyof Apply1<never>, r extends keyof Derived1<never>> {
-	<f extends Prop2>(A: Pick<Apply2<f>, k>): Derived2<f>[r];
-	<f extends Prop1>(A: Pick<Apply1<f>, k>): Derived1<f>[r];
+type Derive<r extends keyof Derived1<never>> = <f extends Prop1>(A: Apply1<f>) => Derived1<f>[r];
+interface DeriveAll<r extends keyof Derived1<never>> {
+	<f extends Prop2>(A: Apply2<f>): Derived2<f>[r];
+	<f extends Prop1>(A: Apply1<f>): Derived1<f>[r];
 }
 
-export const applyFlipped: DeriveAll<'apply', 'applyFlipped'> = (({ apply }) => fa => ff =>
-	apply(ff)(fa)) as Derive<'apply', 'applyFlipped'>;
+export const applyFlipped: DeriveAll<'applyFlipped'> = (({ apply }) => fa => ff =>
+	apply(ff)(fa)) as Derive<'applyFlipped'>;
 
-export const applyFirst: DeriveAll<'apply' | 'map', 'applyFirst'> = (A =>
-	lift2(A)(x => _ => x)) as Derive<'apply' | 'map', 'applyFirst'>;
-
-export const applySecond: DeriveAll<'apply' | 'map', 'applySecond'> = (A =>
-	lift2(A)(_ => y => y)) as Derive<'apply' | 'map', 'applySecond'>;
-
-export const lift2: DeriveAll<'apply' | 'map', 'lift2'> = (({ apply, map }) => f => fa =>
-	apply(map(f)(fa))) as Derive<'apply' | 'map', 'lift2'>;
-
-export const lift3: DeriveAll<'apply' | 'map', 'lift3'> = (({ apply, map }) => f => fa => fb =>
-	apply(lift2({ apply, map })(f)(fa)(fb))) as Derive<'apply' | 'map', 'lift3'>;
-
-export const lift4: DeriveAll<'apply' | 'map', 'lift4'> = (({
-	apply,
-	map,
-}) => f => fa => fb => fc => apply(lift3({ apply, map })(f)(fa)(fb)(fc))) as Derive<
-	'apply' | 'map',
-	'lift4'
+export const applyFirst: DeriveAll<'applyFirst'> = (A => lift2(A)(x => _ => x)) as Derive<
+	'applyFirst'
 >;
 
-export const lift5: DeriveAll<'apply' | 'map', 'lift5'> = (({
-	apply,
-	map,
-}) => f => fa => fb => fc => fd => apply(lift4({ apply, map })(f)(fa)(fb)(fc)(fd))) as Derive<
-	'apply' | 'map',
-	'lift5'
+export const applySecond: DeriveAll<'applySecond'> = (A => lift2(A)(_ => y => y)) as Derive<
+	'applySecond'
 >;
+
+export const lift2: DeriveAll<'lift2'> = (({ apply, map }) => f => fa =>
+	apply(map(f)(fa))) as Derive<'lift2'>;
+
+export const lift3: DeriveAll<'lift3'> = (({ apply, map }) => f => fa => fb =>
+	apply(lift2({ apply, map })(f)(fa)(fb))) as Derive<'lift3'>;
+
+export const lift4: DeriveAll<'lift4'> = (({ apply, map }) => f => fa => fb => fc =>
+	apply(lift3({ apply, map })(f)(fa)(fb)(fc))) as Derive<'lift4'>;
+
+export const lift5: DeriveAll<'lift5'> = (({ apply, map }) => f => fa => fb => fc => fd =>
+	apply(lift4({ apply, map })(f)(fa)(fb)(fc)(fd))) as Derive<'lift5'>;

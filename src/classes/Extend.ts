@@ -31,24 +31,22 @@ interface Derived2<f extends Prop2> extends Extend2<f> {
 	duplicate: <a, b>(fa: Type2<f, a, b>) => Type2<f, a, Type2<f, a, b>>;
 }
 
-type Derive<k extends keyof Extend1<never>, r extends keyof Derived1<never>> = <f extends Prop1>(
-	E: Pick<Extend1<f>, k>,
-) => Derived1<f>[r];
-interface DeriveAll<k extends keyof Extend1<never>, r extends keyof Derived1<never>> {
-	<f extends Prop2>(E: Pick<Extend2<f>, k>): Derived2<f>[r];
-	<f extends Prop1>(E: Pick<Extend1<f>, k>): Derived1<f>[r];
+type Derive<r extends keyof Derived1<never>> = <f extends Prop1>(E: Extend1<f>) => Derived1<f>[r];
+interface DeriveAll<r extends keyof Derived1<never>> {
+	<f extends Prop2>(E: Extend2<f>): Derived2<f>[r];
+	<f extends Prop1>(E: Extend1<f>): Derived1<f>[r];
 }
 
-export const extendFlipped: DeriveAll<'extend', 'extendFlipped'> = (({ extend }) =>
-	flip(extend)) as Derive<'extend', 'extendFlipped'>;
+export const extendFlipped: DeriveAll<'extendFlipped'> = (({ extend }) => flip(extend)) as Derive<
+	'extendFlipped'
+>;
 
-export const composeCoKleisli: DeriveAll<'extend', 'composeCoKleisli'> = (({
+export const composeCoKleisli: DeriveAll<'composeCoKleisli'> = (({ extend }) => f => g => fa =>
+	g(extend(f)(fa))) as Derive<'composeCoKleisli'>;
+
+export const composeCoKleisliFlipped: DeriveAll<'composeCoKleisliFlipped'> = (({
 	extend,
-}) => f => g => fa => g(extend(f)(fa))) as Derive<'extend', 'composeCoKleisli'>;
+}) => f => g => fa => f(extend(g)(fa))) as Derive<'composeCoKleisliFlipped'>;
 
-export const composeCoKleisliFlipped: DeriveAll<'extend', 'composeCoKleisliFlipped'> = (({
-	extend,
-}) => f => g => fa => f(extend(g)(fa))) as Derive<'extend', 'composeCoKleisliFlipped'>;
-
-export const duplicate: DeriveAll<'extend', 'duplicate'> = (({ extend }) =>
-	extend(identity)) as Derive<'extend', 'duplicate'>;
+export const duplicate: DeriveAll<'duplicate'> = (({ extend }) => fx =>
+	extend(identity)(fx)) as Derive<'duplicate'>;

@@ -40,7 +40,7 @@ export const voidRight: DeriveAll<'voidRight'> = (({ map }) => x => map(_ => x))
 	'voidRight'
 >;
 
-const _void: DeriveAll<'void'> = (({ map }) => map(_ => undefined)) as Derive<'void'>;
+const _void: DeriveAll<'void'> = (({ map }) => fx => map(_ => undefined)(fx)) as Derive<'void'>;
 export { _void as void };
 
 export const flap: DeriveAll<'flap'> = (({ map }) => ff => x =>
