@@ -27,6 +27,7 @@
 		"eslint": "^5.16.0",
 		"eslint-config-prettier": "^4.1.0",
 		"jest": "^24.7.0",
+		"jsverify": "^0.8.4",
 		"prettier": "^1.16.4",
 		"rollup": "^1.8.0",
 		"rollup-plugin-commonjs": "^9.3.4",
