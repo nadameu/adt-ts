@@ -1,6 +1,11 @@
-import { Ordering } from '../instances/Ordering';
 import { Eq, Eq1 } from './Eq';
 import { Prop1, Type1 } from '../Types';
+
+export const enum Ordering {
+	LT = -1,
+	EQ = 0,
+	GT = 1,
+}
 
 export interface Ord<a> extends Eq<a> {
 	compare: (x: a) => (y: a) => Ordering;

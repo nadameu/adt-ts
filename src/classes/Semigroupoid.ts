@@ -1,4 +1,3 @@
-import { flip } from '../instances/Fn';
 import { Prop2, Type2 } from '../Types';
 
 export interface Semigroupoid2<f extends Prop2> {
@@ -13,4 +12,4 @@ type Derive<r extends keyof Derived2<never>> = <f extends Prop2>(
 	S: Semigroupoid2<f>,
 ) => Derived2<f>[r];
 
-export const composeFlipped: Derive<'composeFlipped'> = ({ compose }) => flip(compose);
+export const composeFlipped: Derive<'composeFlipped'> = ({ compose }) => g => f => compose(f)(g);

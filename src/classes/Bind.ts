@@ -1,4 +1,3 @@
-import { flip, identity } from '../instances/Fn';
 import { Prop1, Prop2, Type1, Type2 } from '../Types';
 import { Apply1, Apply2 } from './Apply';
 
@@ -44,12 +43,10 @@ interface DeriveAll<k extends keyof Bind1<never>, r extends keyof Derived1<never
 	<f extends Prop1>(B: Pick<Bind1<f>, k>): Derived1<f>[r];
 }
 
-export const bindFlipped: DeriveAll<'bind', 'bindFlipped'> = (({ bind }) => flip(bind)) as Derive<
-	'bind',
-	'bindFlipped'
->;
+export const bindFlipped: DeriveAll<'bind', 'bindFlipped'> = (({ bind }) => f => fa =>
+	bind(fa)(f)) as Derive<'bind', 'bindFlipped'>;
 
-export const join: DeriveAll<'bind', 'join'> = (({ bind }) => flip(bind)(identity)) as Derive<
+export const join: DeriveAll<'bind', 'join'> = (({ bind }) => fa => bind(fa)(x => x)) as Derive<
 	'bind',
 	'join'
 >;

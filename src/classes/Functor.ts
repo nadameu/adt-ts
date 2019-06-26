@@ -1,4 +1,3 @@
-import { constant, flip, thrush } from '../instances/Fn';
 import { Prop1, Prop2, Type1, Type2 } from '../Types';
 
 export interface Functor1<f extends Prop1> {
@@ -29,17 +28,20 @@ interface DeriveAll<r extends keyof Derived1<never>> {
 	<f extends Prop1>(F: Functor1<f>): Derived1<f>[r];
 }
 
-export const mapFlipped: DeriveAll<'mapFlipped'> = (({ map }) => flip(map)) as Derive<'mapFlipped'>;
+export const mapFlipped: DeriveAll<'mapFlipped'> = (({ map }) => fa => f => map(f)(fa)) as Derive<
+	'mapFlipped'
+>;
 
-export const voidLeft: DeriveAll<'voidLeft'> = (F => flip(voidRight(F))) as Derive<'voidLeft'>;
+export const voidLeft: DeriveAll<'voidLeft'> = (F => fa => y => voidRight(F)(y)(fa)) as Derive<
+	'voidLeft'
+>;
 
-export const voidRight: DeriveAll<'voidRight'> = (({ map }) => x => map(constant(x))) as Derive<
+export const voidRight: DeriveAll<'voidRight'> = (({ map }) => x => map(_ => x)) as Derive<
 	'voidRight'
 >;
 
-const _void: DeriveAll<'void'> = (({ map }) => map(constant(undefined))) as Derive<'void'>;
+const _void: DeriveAll<'void'> = (({ map }) => map(_ => undefined)) as Derive<'void'>;
 export { _void as void };
 
-export const flap: DeriveAll<'flap'> = (({ map }) => ff => x => map(thrush(x))(ff)) as Derive<
-	'flap'
->;
+export const flap: DeriveAll<'flap'> = (({ map }) => ff => x =>
+	map<Function, any>(f => f(x))(ff)) as Derive<'flap'>;

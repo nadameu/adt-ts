@@ -1,14 +1,9 @@
 import * as E from '../classes/Eq';
 import { Eq } from '../classes/Eq';
 import * as O from '../classes/Ord';
-import { Ord } from '../classes/Ord';
+import { Ord, Ordering } from '../classes/Ord';
 import { Semigroup } from '../classes/Semigroup';
-
-export const enum Ordering {
-	LT = -1,
-	EQ = 0,
-	GT = 1,
-}
+export { Ordering };
 
 export const eq: Eq<Ordering>['eq'] = x => y => x === y;
 export const notEq = E.notEq<Ordering>({ eq });

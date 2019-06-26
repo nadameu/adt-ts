@@ -1,4 +1,3 @@
-import { constant, flip, identity } from '../instances/Fn';
 import { Prop1, Prop2, Type1, Type2 } from '../Types';
 import { Functor1, Functor2 } from './Functor';
 
@@ -64,14 +63,14 @@ interface DeriveAll<k extends keyof Apply1<never>, r extends keyof Derived1<neve
 	<f extends Prop1>(A: Pick<Apply1<f>, k>): Derived1<f>[r];
 }
 
-export const applyFlipped: DeriveAll<'apply', 'applyFlipped'> = (({ apply }) =>
-	flip(apply)) as Derive<'apply', 'applyFlipped'>;
+export const applyFlipped: DeriveAll<'apply', 'applyFlipped'> = (({ apply }) => fa => ff =>
+	apply(ff)(fa)) as Derive<'apply', 'applyFlipped'>;
 
-export const applyFirst: DeriveAll<'apply' | 'map', 'applyFirst'> = (({ apply, map }) =>
-	lift2({ apply, map })(constant)) as Derive<'apply' | 'map', 'applyFirst'>;
+export const applyFirst: DeriveAll<'apply' | 'map', 'applyFirst'> = (A =>
+	lift2(A)(x => _ => x)) as Derive<'apply' | 'map', 'applyFirst'>;
 
-export const applySecond: DeriveAll<'apply' | 'map', 'applySecond'> = (({ apply, map }) =>
-	lift2({ apply, map })(constant(identity))) as Derive<'apply' | 'map', 'applySecond'>;
+export const applySecond: DeriveAll<'apply' | 'map', 'applySecond'> = (A =>
+	lift2(A)(_ => y => y)) as Derive<'apply' | 'map', 'applySecond'>;
 
 export const lift2: DeriveAll<'apply' | 'map', 'lift2'> = (({ apply, map }) => f => fa =>
 	apply(map(f)(fa))) as Derive<'apply' | 'map', 'lift2'>;
