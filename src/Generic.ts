@@ -14,4 +14,8 @@ export interface Generic2 {
 	type: unknown;
 }
 
-export type Type<f extends Generic, a = unknown, b = unknown> = (f & { a: a; b: b })['type'];
+// eslint-disable-next-line @typescript-eslint/class-name-casing, @typescript-eslint/no-empty-interface
+declare interface _ {}
+export type Type<f extends Generic, a = _, b = _> = f extends never
+	? never
+	: (f & { a: a; b: b })['type'];
