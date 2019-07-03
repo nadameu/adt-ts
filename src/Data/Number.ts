@@ -1,7 +1,10 @@
-import * as EqFns from './Eq';
 import { Eq } from './Eq';
 import { eqNumberImpl as eq } from './EqImpl';
+import { Ord } from './Ord';
+import { ordNumberImpl as compare } from './OrdImpl';
 
 export { eq };
 export const eqNumber: Eq<number> = { eq };
-export const notEq = EqFns.notEq(eqNumber);
+
+export { compare };
+export const ordNumber: Ord<number> = { eq, compare };
