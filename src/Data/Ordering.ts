@@ -1,5 +1,6 @@
 import { Bounded } from './Bounded';
 import { Eq } from './Eq';
+import { refEq } from './EqImpl';
 import { Ord } from './Ord';
 import { Show } from './Show';
 
@@ -15,7 +16,7 @@ export const EQ = 0 as EQ;
 export type GT = 1 & { [OrderingSymbol]: 'GT' };
 export const GT = 1 as GT;
 
-export const eq = (x: Ordering) => (y: Ordering): boolean => x === y;
+export const eq: (x: Ordering) => (y: Ordering) => boolean = refEq;
 export const eqOrdering: Eq<Ordering> = { eq };
 
 export const compare = (x: Ordering) => (y: Ordering): Ordering => (x < y ? LT : x === y ? EQ : GT);

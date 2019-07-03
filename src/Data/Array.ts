@@ -1,6 +1,5 @@
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
-import { eqArrayImpl } from './EqImpl';
 import { Ord } from './Ord';
 import { ordArrayImpl } from './OrdImpl';
 import { Show } from './Show';
@@ -11,7 +10,8 @@ export interface GenericArray extends Generic1 {
 }
 
 export const makeEqArray = <a>(eqA: Eq<a>): Eq<a[]> => ({
-	eq: eqArrayImpl(eqA.eq),
+	eq: (xs: a[]) => (ys: a[]): boolean =>
+		xs.length === ys.length && xs.every((_, i) => eqA.eq(xs[i])(ys[i])),
 });
 
 export const makeOrdArray = <a>(ordA: Ord<a>): Ord<a[]> => ({

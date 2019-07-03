@@ -1,6 +1,6 @@
 import { Bounded } from './Bounded';
 import { Eq } from './Eq';
-import { eqCharImpl } from './EqImpl';
+import { refEq } from './EqImpl';
 import { Ord } from './Ord';
 import { ordCharImpl } from './OrdImpl';
 import { Show } from './Show';
@@ -9,7 +9,7 @@ import { showCharImpl } from './ShowImpl';
 declare const CharSymbol: unique symbol;
 export type Char = string & { [CharSymbol]: 'Char' };
 
-export const eq = eqCharImpl;
+export const eq: (x: Char) => (y: Char) => boolean = refEq;
 export const eqChar: Eq<Char> = { eq };
 
 export const compare = ordCharImpl;

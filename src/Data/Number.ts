@@ -1,12 +1,12 @@
 import { Bounded } from './Bounded';
 import { Eq } from './Eq';
-import { eqNumberImpl } from './EqImpl';
+import { refEq } from './EqImpl';
 import { Ord } from './Ord';
 import { ordNumberImpl } from './OrdImpl';
 import { Show } from './Show';
 import { showNumberImpl } from './ShowImpl';
 
-export const eq = eqNumberImpl;
+export const eq: (x: number) => (y: number) => boolean = refEq;
 export const eqNumber: Eq<number> = { eq };
 
 export const compare = ordNumberImpl;

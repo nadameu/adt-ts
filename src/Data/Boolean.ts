@@ -1,13 +1,13 @@
 import { Bounded } from './Bounded';
 import { Eq } from './Eq';
-import { eqBooleanImpl } from './EqImpl';
+import { refEq } from './EqImpl';
 import { Ord } from './Ord';
 import { ordBooleanImpl } from './OrdImpl';
 import { Show } from './Show';
 
 export const otherwise = true as boolean;
 
-export const eq = eqBooleanImpl;
+export const eq: (x: boolean) => (y: boolean) => boolean = refEq;
 export const eqBoolean: Eq<boolean> = { eq };
 
 export const compare = ordBooleanImpl;
