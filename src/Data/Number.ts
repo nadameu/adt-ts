@@ -5,7 +5,6 @@ import { Ord } from './Ord';
 import { Ordering } from './Ordering';
 import { unsafeCompareImpl } from './OrdImpl';
 import { Show } from './Show';
-import { showNumberImpl } from './ShowImpl';
 
 export const eq: (x: number) => (y: number) => boolean = refEq;
 export const eqNumber: Eq<number> = { eq };
@@ -17,5 +16,8 @@ export const top = Number.POSITIVE_INFINITY;
 export const bottom = Number.NEGATIVE_INFINITY;
 export const boundedInt: Bounded<number> = { eq, compare, top, bottom };
 
-export const show = showNumberImpl;
+export const show = (x: number): string => {
+	const str = x.toString();
+	return isNaN(`${str}.0` as any) ? str : `${str}.0`;
+};
 export const showNumber: Show<number> = { show };

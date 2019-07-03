@@ -5,7 +5,6 @@ import { Ord } from './Ord';
 import { Ordering } from './Ordering';
 import { unsafeCompareImpl } from './OrdImpl';
 import { Show } from './Show';
-import { showIntImpl } from './ShowImpl';
 
 declare const IntSymbol: unique symbol;
 export type Int = number & { [IntSymbol]: 'Int' };
@@ -20,5 +19,5 @@ export const top = 2147483647 as Int;
 export const bottom = -2147483648 as Int;
 export const boundedInt: Bounded<Int> = { eq, compare, top, bottom };
 
-export const show = showIntImpl;
+export const show = (x: Int): string => x.toString();
 export const showInt: Show<Int> = { show };

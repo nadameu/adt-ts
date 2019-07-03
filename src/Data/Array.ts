@@ -4,7 +4,6 @@ import { ordNumber } from './Number';
 import { Ord } from './Ord';
 import { EQ } from './Ordering';
 import { Show } from './Show';
-import { showArrayImpl } from './ShowImpl';
 
 export interface GenericArray extends Generic1 {
 	type: this['a'][];
@@ -29,5 +28,5 @@ export const makeOrdArray = <a>(ordA: Ord<a>): Ord<a[]> => ({
 });
 
 export const makeShowArray = <a>(showA: Show<a>): Show<a[]> => ({
-	show: showArrayImpl(showA.show),
+	show: xs => `[${xs.map(showA.show).join(',')}]`,
 });
