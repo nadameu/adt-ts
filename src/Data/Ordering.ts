@@ -1,6 +1,7 @@
 import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
+import { Monoid } from './Monoid';
 import { Ord } from './Ord';
 import { Semigroup } from './Semigroup';
 import { Show } from './Show';
@@ -32,3 +33,6 @@ export const showOrdering: Show<Ordering> = { show };
 
 export const append = (x: Ordering) => (y: Ordering): Ordering => (x === EQ ? y : x);
 export const semigroupOrdering: Semigroup<Ordering> = { append };
+
+export const mempty = () => EQ;
+export const monoidOrdering: Monoid<Ordering> = { ...semigroupOrdering, mempty };

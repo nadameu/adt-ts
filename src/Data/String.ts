@@ -1,5 +1,6 @@
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
+import { Monoid } from './Monoid';
 import { Ord } from './Ord';
 import { Ordering } from './Ordering';
 import { unsafeCompareImpl } from './OrdImpl';
@@ -47,3 +48,6 @@ export const showString: Show<string> = { show };
 
 export const append = (x: string) => (y: string): string => `${x}${y}`;
 export const semigroupString: Semigroup<string> = { append };
+
+export const mempty = () => '';
+export const monoidString: Monoid<string> = { ...semigroupString, mempty };

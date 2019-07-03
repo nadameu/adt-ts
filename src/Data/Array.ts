@@ -1,5 +1,6 @@
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
+import { Monoid1 } from './Monoid';
 import { ordNumber } from './Number';
 import { Ord } from './Ord';
 import { EQ } from './Ordering';
@@ -35,3 +36,6 @@ export const makeShowArray = <a>(showA: Show<a>): Show<a[]> => ({
 export const append = <a>(xs: a[]) => (ys: a[]): a[] =>
 	xs.length === 0 ? ys : ys.length === 0 ? xs : xs.concat(ys);
 export const semigroupArray: Semigroup1<GenericArray> = { append };
+
+export const mempty = <a = never>(): a[] => [];
+export const monoidArray: Monoid1<GenericArray> = { ...semigroupArray, mempty };
