@@ -4,6 +4,7 @@ import { DivisionRing } from './DivisionRing';
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
 import { EuclidianRing } from './EuclidianRing';
+import { Field } from './Field';
 import { Int } from './Int';
 import { Ord } from './Ord';
 import { Ordering } from './Ordering';
@@ -53,3 +54,5 @@ export const euclidianRingNumber: EuclidianRing<number> = {
 	div,
 	mod,
 };
+
+export const fieldNumber: Field<number> = { ...euclidianRingNumber, ...divisionRingNumber };
