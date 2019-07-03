@@ -1,15 +1,16 @@
 import { Bounded } from './Bounded';
+import { CommutativeRing } from './CommutativeRing';
+import { DivisionRing } from './DivisionRing';
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
+import { EuclidianRing } from './EuclidianRing';
+import { Int } from './Int';
 import { Ord } from './Ord';
 import { Ordering } from './Ordering';
 import { unsafeCompareImpl } from './OrdImpl';
 import { Ring } from './Ring';
 import { Semiring } from './Semiring';
 import { Show } from './Show';
-import { CommutativeRing } from './CommutativeRing';
-import { Int } from './Int';
-import { EuclidianRing } from './EuclidianRing';
 
 export const eq: (x: number) => (y: number) => boolean = refEq;
 export const eqNumber: Eq<number> = { eq };
@@ -35,6 +36,9 @@ export const semiringNumber: Semiring<number> = { add, zero, mul, one };
 
 export const sub = (x: number) => (y: number): number => x - y;
 export const ringNumber: Ring<number> = { ...semiringNumber, sub };
+
+export const recip = (x: number): number => 1 / x;
+export const divisionRingNumber: DivisionRing<number> = { ...ringNumber, recip };
 
 export const commutativeRingNumber: CommutativeRing<number> = ringNumber;
 
