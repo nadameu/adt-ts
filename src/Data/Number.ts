@@ -1,10 +1,15 @@
 import { Eq } from './Eq';
-import { eqNumberImpl as eq } from './EqImpl';
+import { eqNumberImpl } from './EqImpl';
 import { Ord } from './Ord';
-import { ordNumberImpl as compare } from './OrdImpl';
+import { ordNumberImpl } from './OrdImpl';
+import { Show } from './Show';
+import { showNumberImpl } from './ShowImpl';
 
-export { eq };
+export const eq = eqNumberImpl;
 export const eqNumber: Eq<number> = { eq };
 
-export { compare };
+export const compare = ordNumberImpl;
 export const ordNumber: Ord<number> = { eq, compare };
+
+export const show = showNumberImpl;
+export const showNumber: Show<number> = { show };

@@ -1,13 +1,18 @@
 import { Eq } from './Eq';
-import { eqCharImpl as eq } from './EqImpl';
+import { eqCharImpl } from './EqImpl';
 import { Ord } from './Ord';
-import { ordCharImpl as compare } from './OrdImpl';
+import { ordCharImpl } from './OrdImpl';
+import { Show } from './Show';
+import { showCharImpl } from './ShowImpl';
 
 declare const CharSymbol: unique symbol;
 export type Char = string & { [CharSymbol]: 'Char' };
 
-export { eq };
+export const eq = eqCharImpl;
 export const eqChar: Eq<Char> = { eq };
 
-export { compare };
+export const compare = ordCharImpl;
 export const ordChar: Ord<Char> = { eq, compare };
+
+export const show = showCharImpl;
+export const showChar: Show<Char> = { show };

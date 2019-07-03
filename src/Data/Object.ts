@@ -1,16 +1,30 @@
-import { eq1 } from './Array';
-import { eqString } from './String';
+import { makeEqArray } from './Array';
+import { Eq } from './Eq';
+import { Show } from './Show';
+import { eqString, showString } from './String';
 
-export const eq = <t>(eqT: { [key in keyof t]: (x: t[key]) => (y: t[key]) => boolean }) => (
-	x: t,
-) => (y: t): boolean => {
-	const keys = Object.keys(x).sort();
-	if (!eq1(eqString)(Object.keys(y).sort())(keys)) return false;
-	return (keys as (keyof t)[]).every(
-		key => Object.prototype.hasOwnProperty(key) && eqT[key](x[key])(y[key]),
-	);
-};
+const eqKeys = makeEqArray(eqString).eq;
+export const makeEqObject = <t>(eqT: { [k in keyof t]: Eq<t[k]>['eq'] }): Eq<t> => ({
+	eq: x => y => {
+		const keys = Object.keys(x).sort();
+		if (!eqKeys(Object.keys(y).sort())(keys)) return false;
+		return (keys as (keyof t)[]).every(
+			key => Object.prototype.hasOwnProperty.call(y, key) && eqT[key](x[key])(y[key]),
+		);
+	},
+});
 
-export const notEq = <t>(eqT: { [key in keyof t]: (x: t[key]) => (y: t[key]) => boolean }) => (
-	x: t,
-) => (y: t): boolean => eq(eqT)(x)(y) === false;
+const showKey = showString.show;
+export const makeShowObject = <t>(showT: { [k in keyof t]: Show<t[k]>['show'] }): Show<t> => ({
+	show: x => {
+		const keys = Object.keys(x);
+		const str = (keys as (keyof t)[])
+			.map(k => {
+				const key = showKey(k as string);
+				const val = showT[k](x[k]);
+				return `${key}: ${val}`;
+			})
+			.join(', ');
+		return `{${str}}`;
+	},
+});
