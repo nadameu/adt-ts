@@ -3,6 +3,7 @@ import { Eq } from './Eq';
 import { ordNumber } from './Number';
 import { Ord } from './Ord';
 import { EQ } from './Ordering';
+import { Semigroup1 } from './Semigroup';
 import { Show } from './Show';
 
 export interface GenericArray extends Generic1 {
@@ -30,3 +31,7 @@ export const makeOrdArray = <a>(ordA: Ord<a>): Ord<a[]> => ({
 export const makeShowArray = <a>(showA: Show<a>): Show<a[]> => ({
 	show: xs => `[${xs.map(showA.show).join(',')}]`,
 });
+
+export const append = <a>(xs: a[]) => (ys: a[]): a[] =>
+	xs.length === 0 ? ys : ys.length === 0 ? xs : xs.concat(ys);
+export const semigroupArray: Semigroup1<GenericArray> = { append };

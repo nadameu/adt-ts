@@ -3,6 +3,7 @@ import { refEq } from './EqImpl';
 import { Ord } from './Ord';
 import { Ordering } from './Ordering';
 import { unsafeCompareImpl } from './OrdImpl';
+import { Semigroup } from './Semigroup';
 import { Show } from './Show';
 
 export const eq: (x: string) => (y: string) => boolean = refEq;
@@ -43,3 +44,6 @@ export const show = (x: string): string => {
 	return `"${t}"`;
 };
 export const showString: Show<string> = { show };
+
+export const append = (x: string) => (y: string): string => `${x}${y}`;
+export const semigroupString: Semigroup<string> = { append };

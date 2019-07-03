@@ -2,6 +2,7 @@ import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
 import { Ord } from './Ord';
+import { Semigroup } from './Semigroup';
 import { Show } from './Show';
 
 declare const OrderingSymbol: unique symbol;
@@ -28,3 +29,6 @@ export const boundedOrdering: Bounded<Ordering> = { ...ordOrdering, top, bottom 
 
 export const show = (x: Ordering): string => (x === LT ? 'LT' : x === EQ ? 'EQ' : 'GT');
 export const showOrdering: Show<Ordering> = { show };
+
+export const append = (x: Ordering) => (y: Ordering): Ordering => (x === EQ ? y : x);
+export const semigroupOrdering: Semigroup<Ordering> = { append };
