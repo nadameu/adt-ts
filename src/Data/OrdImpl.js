@@ -12,7 +12,7 @@ export const ordArrayImpl = f => xs => ys => {
 	const xlen = xs.length;
 	const ylen = ys.length;
 	for (let i = 0; i < xlen && i < ylen; i++) {
-		var o = f(xs[i])(ys[i]);
+		const o = f(xs[i])(ys[i]);
 		if (o !== EQ) return o;
 	}
 	return unsafeCompareImpl(xlen)(ylen);
