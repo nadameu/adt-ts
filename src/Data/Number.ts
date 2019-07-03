@@ -7,6 +7,7 @@ import { unsafeCompareImpl } from './OrdImpl';
 import { Ring } from './Ring';
 import { Semiring } from './Semiring';
 import { Show } from './Show';
+import { CommutativeRing } from './CommutativeRing';
 
 export const eq: (x: number) => (y: number) => boolean = refEq;
 export const eqNumber: Eq<number> = { eq };
@@ -31,4 +32,6 @@ export const one = 1 as number;
 export const semiringNumber: Semiring<number> = { add, zero, mul, one };
 
 export const sub = (x: number) => (y: number): number => x - y;
-export const ringInt: Ring<number> = { add, zero, mul, one, sub };
+export const ringNumber: Ring<number> = { add, zero, mul, one, sub };
+
+export const commutativeRingNumber: CommutativeRing<number> = ringNumber;
