@@ -8,6 +8,7 @@ import { Ring } from './Ring';
 import { Semiring } from './Semiring';
 import { Show } from './Show';
 import { CommutativeRing } from './CommutativeRing';
+import { EuclidianRing } from './EuclidianRing';
 
 declare const IntSymbol: unique symbol;
 export type Int = number & { [IntSymbol]: 'Int' };
@@ -35,3 +36,15 @@ export const sub = (x: Int) => (y: Int): Int => ((x - y) | 0) as Int;
 export const ringInt: Ring<Int> = { add, zero, mul, one, sub };
 
 export const commutativeRingInt: CommutativeRing<Int> = ringInt;
+
+export const degree = (x: Int): Int => Math.min(Math.abs(x), 2147483647) as Int;
+export const div = (x: Int) => (y: Int): Int => {
+	if (y === 0) return 0 as Int;
+	return (y > 0 ? Math.floor(x / y) : -Math.floor(x / -y)) as Int;
+};
+export const mod = (x: Int) => (y: Int): Int => {
+	if (y === 0) return 0 as Int;
+	const yy = Math.abs(y);
+	return (((x % yy) + yy) % yy) as Int;
+};
+export const euclidianRingInt: EuclidianRing<Int> = { add, zero, mul, one, sub, degree, div, mod };

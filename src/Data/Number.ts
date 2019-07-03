@@ -8,6 +8,8 @@ import { Ring } from './Ring';
 import { Semiring } from './Semiring';
 import { Show } from './Show';
 import { CommutativeRing } from './CommutativeRing';
+import { Int } from './Int';
+import { EuclidianRing } from './EuclidianRing';
 
 export const eq: (x: number) => (y: number) => boolean = refEq;
 export const eqNumber: Eq<number> = { eq };
@@ -35,3 +37,19 @@ export const sub = (x: number) => (y: number): number => x - y;
 export const ringNumber: Ring<number> = { add, zero, mul, one, sub };
 
 export const commutativeRingNumber: CommutativeRing<number> = ringNumber;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const degree = (x: number): Int => 1 as Int;
+export const div = (x: number) => (y: number): number => x / y;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const mod = (x: number) => (y: number): number => 0;
+export const euclidianRingNumber: EuclidianRing<number> = {
+	add,
+	zero,
+	mul,
+	one,
+	sub,
+	degree,
+	div,
+	mod,
+};
