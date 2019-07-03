@@ -1,6 +1,6 @@
-import * as EqFns from './Eq';
 import { Eq } from './Eq';
 import { Ord } from './Ord';
+import { Show } from './Show';
 
 declare const OrderingSymbol: unique symbol;
 export type Ordering = LT | EQ | GT;
@@ -16,7 +16,9 @@ export const GT = 1 as GT;
 
 export const eq = (x: Ordering) => (y: Ordering): boolean => x === y;
 export const eqOrdering: Eq<Ordering> = { eq };
-export const notEq = EqFns.notEq(eqOrdering);
 
 export const compare = (x: Ordering) => (y: Ordering): Ordering => (x < y ? LT : x === y ? EQ : GT);
 export const ordOrdering: Ord<Ordering> = { eq, compare };
+
+export const show = (x: Ordering): string => (x === LT ? 'LT' : x === EQ ? 'EQ' : 'GT');
+export const showOrdering: Show<Ordering> = { show };
