@@ -4,6 +4,7 @@ import { refEq } from './EqImpl';
 import { Ord } from './Ord';
 import { Ordering } from './Ordering';
 import { unsafeCompareImpl } from './OrdImpl';
+import { Semiring } from './Semiring';
 import { Show } from './Show';
 
 export const eq: (x: number) => (y: number) => boolean = refEq;
@@ -21,3 +22,9 @@ export const show = (x: number): string => {
 	return isNaN(`${str}.0` as any) ? str : `${str}.0`;
 };
 export const showNumber: Show<number> = { show };
+
+export const add = (x: number) => (y: number): number => x + y;
+export const zero = 0 as number;
+export const mul = (x: number) => (y: number): number => x * y;
+export const one = 1 as number;
+export const semiringNumber: Semiring<number> = { add, zero, mul, one };
