@@ -1,3 +1,4 @@
+import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { eqIntImpl } from './EqImpl';
 import { Ord } from './Ord';
@@ -13,6 +14,10 @@ export const eqInt: Eq<Int> = { eq };
 
 export const compare = ordIntImpl;
 export const ordInt: Ord<Int> = { eq, compare };
+
+export const top = 2147483647 as Int;
+export const bottom = -2147483648 as Int;
+export const boundedInt: Bounded<Int> = { eq, compare, top, bottom };
 
 export const show = showIntImpl;
 export const showInt: Show<Int> = { show };

@@ -1,3 +1,4 @@
+import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { eqBooleanImpl } from './EqImpl';
 import { Ord } from './Ord';
@@ -11,6 +12,10 @@ export const eqBoolean: Eq<boolean> = { eq };
 
 export const compare = ordBooleanImpl;
 export const ordBoolean: Ord<boolean> = { eq, compare };
+
+export const top = true as boolean;
+export const bottom = false as boolean;
+export const boundedBoolean: Bounded<boolean> = { eq, compare, top, bottom };
 
 export const show = (x: boolean): string => (x ? 'true' : 'false');
 export const showBoolean: Show<boolean> = { show };

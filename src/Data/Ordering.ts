@@ -1,3 +1,4 @@
+import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { Ord } from './Ord';
 import { Show } from './Show';
@@ -19,6 +20,10 @@ export const eqOrdering: Eq<Ordering> = { eq };
 
 export const compare = (x: Ordering) => (y: Ordering): Ordering => (x < y ? LT : x === y ? EQ : GT);
 export const ordOrdering: Ord<Ordering> = { eq, compare };
+
+export const top = GT as Ordering;
+export const bottom = LT as Ordering;
+export const boundedOrdering: Bounded<Ordering> = { eq, compare, top, bottom };
 
 export const show = (x: Ordering): string => (x === LT ? 'LT' : x === EQ ? 'EQ' : 'GT');
 export const showOrdering: Show<Ordering> = { show };
