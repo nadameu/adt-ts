@@ -2,7 +2,8 @@ import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
 import { Ord } from './Ord';
-import { ordCharImpl } from './OrdImpl';
+import { Ordering } from './Ordering';
+import { unsafeCompareImpl } from './OrdImpl';
 import { Show } from './Show';
 import { showCharImpl } from './ShowImpl';
 
@@ -12,7 +13,7 @@ export type Char = string & { [CharSymbol]: 'Char' };
 export const eq: (x: Char) => (y: Char) => boolean = refEq;
 export const eqChar: Eq<Char> = { eq };
 
-export const compare = ordCharImpl;
+export const compare: (x: Char) => (y: Char) => Ordering = unsafeCompareImpl;
 export const ordChar: Ord<Char> = { eq, compare };
 
 export const top = String.fromCharCode(65535) as Char;

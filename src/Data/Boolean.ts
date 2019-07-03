@@ -2,7 +2,8 @@ import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
 import { Ord } from './Ord';
-import { ordBooleanImpl } from './OrdImpl';
+import { Ordering } from './Ordering';
+import { unsafeCompareImpl } from './OrdImpl';
 import { Show } from './Show';
 
 export const otherwise = true as boolean;
@@ -10,7 +11,7 @@ export const otherwise = true as boolean;
 export const eq: (x: boolean) => (y: boolean) => boolean = refEq;
 export const eqBoolean: Eq<boolean> = { eq };
 
-export const compare = ordBooleanImpl;
+export const compare: (x: boolean) => (y: boolean) => Ordering = unsafeCompareImpl;
 export const ordBoolean: Ord<boolean> = { eq, compare };
 
 export const top = true as boolean;

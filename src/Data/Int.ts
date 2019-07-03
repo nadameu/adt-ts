@@ -2,7 +2,8 @@ import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { refEq } from './EqImpl';
 import { Ord } from './Ord';
-import { ordIntImpl } from './OrdImpl';
+import { Ordering } from './Ordering';
+import { unsafeCompareImpl } from './OrdImpl';
 import { Show } from './Show';
 import { showIntImpl } from './ShowImpl';
 
@@ -12,7 +13,7 @@ export type Int = number & { [IntSymbol]: 'Int' };
 export const eq: (x: Int) => (y: Int) => boolean = refEq;
 export const eqInt: Eq<Int> = { eq };
 
-export const compare = ordIntImpl;
+export const compare: (x: Int) => (y: Int) => Ordering = unsafeCompareImpl;
 export const ordInt: Ord<Int> = { eq, compare };
 
 export const top = 2147483647 as Int;
