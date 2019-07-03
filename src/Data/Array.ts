@@ -1,3 +1,4 @@
+import { Apply } from '../Control/Apply';
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
 import { Functor } from './Functor';
@@ -43,3 +44,14 @@ export const monoidArray: Monoid1<GenericArray> = { ...semigroupArray, mempty };
 
 export const map = <a, b>(f: (_: a) => b) => (xs: a[]): b[] => xs.map(x => f(x));
 export const functorArray: Functor<GenericArray> = { map };
+
+export const apply = <a, b>(fs: ((_: a) => b)[]) => (xs: a[]): b[] => {
+	const ys: b[] = [];
+	for (const f of fs) {
+		for (const x of xs) {
+			ys.push(f(x));
+		}
+	}
+	return ys;
+};
+export const applyArray: Apply<GenericArray> = { ...functorArray, apply };
