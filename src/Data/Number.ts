@@ -15,11 +15,11 @@ export const eq: (x: number) => (y: number) => boolean = refEq;
 export const eqNumber: Eq<number> = { eq };
 
 export const compare: (x: number) => (y: number) => Ordering = unsafeCompareImpl;
-export const ordNumber: Ord<number> = { eq, compare };
+export const ordNumber: Ord<number> = { ...eqNumber, compare };
 
 export const top = Number.POSITIVE_INFINITY;
 export const bottom = Number.NEGATIVE_INFINITY;
-export const boundedInt: Bounded<number> = { eq, compare, top, bottom };
+export const boundedInt: Bounded<number> = { ...ordNumber, top, bottom };
 
 export const show = (x: number): string => {
 	const str = x.toString();
@@ -34,7 +34,7 @@ export const one = 1 as number;
 export const semiringNumber: Semiring<number> = { add, zero, mul, one };
 
 export const sub = (x: number) => (y: number): number => x - y;
-export const ringNumber: Ring<number> = { add, zero, mul, one, sub };
+export const ringNumber: Ring<number> = { ...semiringNumber, sub };
 
 export const commutativeRingNumber: CommutativeRing<number> = ringNumber;
 
@@ -44,11 +44,7 @@ export const div = (x: number) => (y: number): number => x / y;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const mod = (x: number) => (y: number): number => 0;
 export const euclidianRingNumber: EuclidianRing<number> = {
-	add,
-	zero,
-	mul,
-	one,
-	sub,
+	...commutativeRingNumber,
 	degree,
 	div,
 	mod,

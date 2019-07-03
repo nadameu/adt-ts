@@ -17,11 +17,11 @@ export const eq: (x: Int) => (y: Int) => boolean = refEq;
 export const eqInt: Eq<Int> = { eq };
 
 export const compare: (x: Int) => (y: Int) => Ordering = unsafeCompareImpl;
-export const ordInt: Ord<Int> = { eq, compare };
+export const ordInt: Ord<Int> = { ...eqInt, compare };
 
 export const top = 2147483647 as Int;
 export const bottom = -2147483648 as Int;
-export const boundedInt: Bounded<Int> = { eq, compare, top, bottom };
+export const boundedInt: Bounded<Int> = { ...ordInt, top, bottom };
 
 export const show = (x: Int): string => x.toString();
 export const showInt: Show<Int> = { show };
@@ -33,7 +33,7 @@ export const one = 1 as Int;
 export const semiringInt: Semiring<Int> = { add, zero, mul, one };
 
 export const sub = (x: Int) => (y: Int): Int => ((x - y) | 0) as Int;
-export const ringInt: Ring<Int> = { add, zero, mul, one, sub };
+export const ringInt: Ring<Int> = { ...semiringInt, sub };
 
 export const commutativeRingInt: CommutativeRing<Int> = ringInt;
 
@@ -47,4 +47,4 @@ export const mod = (x: Int) => (y: Int): Int => {
 	const yy = Math.abs(y);
 	return (((x % yy) + yy) % yy) as Int;
 };
-export const euclidianRingInt: EuclidianRing<Int> = { add, zero, mul, one, sub, degree, div, mod };
+export const euclidianRingInt: EuclidianRing<Int> = { ...commutativeRingInt, degree, div, mod };

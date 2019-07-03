@@ -9,7 +9,7 @@ export const eqNever: Eq<never> = { eq };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const compare = (x: never) => (y: never): Ordering => EQ;
-export const ordNever: Ord<never> = { eq, compare };
+export const ordNever: Ord<never> = { ...eqNever, compare };
 
 export const absurd = <a>(a: never): a => {
 	throw new TypeError(`absurd: ${a}`);

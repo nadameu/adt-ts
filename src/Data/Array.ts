@@ -15,7 +15,7 @@ export const makeEqArray = <a>(eqA: Eq<a>): Eq<a[]> => ({
 });
 
 export const makeOrdArray = <a>(ordA: Ord<a>): Ord<a[]> => ({
-	eq: makeEqArray(ordA).eq,
+	...makeEqArray(ordA),
 	compare: xs => ys => {
 		const xlen = xs.length;
 		const ylen = ys.length;

@@ -9,7 +9,7 @@ export const eq: (x: string) => (y: string) => boolean = refEq;
 export const eqString: Eq<string> = { eq };
 
 export const compare: (x: string) => (y: string) => Ordering = unsafeCompareImpl;
-export const ordString: Ord<string> = { eq, compare };
+export const ordString: Ord<string> = { ...eqString, compare };
 
 export const show = (x: string): string => {
 	const l = x.length;

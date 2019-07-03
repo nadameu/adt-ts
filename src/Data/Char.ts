@@ -13,11 +13,11 @@ export const eq: (x: Char) => (y: Char) => boolean = refEq;
 export const eqChar: Eq<Char> = { eq };
 
 export const compare: (x: Char) => (y: Char) => Ordering = unsafeCompareImpl;
-export const ordChar: Ord<Char> = { eq, compare };
+export const ordChar: Ord<Char> = { ...eqChar, compare };
 
 export const top = String.fromCharCode(65535) as Char;
 export const bottom = String.fromCharCode(0) as Char;
-export const boundedChar: Bounded<Char> = { eq, compare, top, bottom };
+export const boundedChar: Bounded<Char> = { ...ordChar, top, bottom };
 
 export const show = (x: Char): string => {
 	const code = x.charCodeAt(0);

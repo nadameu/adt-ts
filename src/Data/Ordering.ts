@@ -20,11 +20,11 @@ export const eq: (x: Ordering) => (y: Ordering) => boolean = refEq;
 export const eqOrdering: Eq<Ordering> = { eq };
 
 export const compare = (x: Ordering) => (y: Ordering): Ordering => (x < y ? LT : x === y ? EQ : GT);
-export const ordOrdering: Ord<Ordering> = { eq, compare };
+export const ordOrdering: Ord<Ordering> = { ...eqOrdering, compare };
 
 export const top = GT as Ordering;
 export const bottom = LT as Ordering;
-export const boundedOrdering: Bounded<Ordering> = { eq, compare, top, bottom };
+export const boundedOrdering: Bounded<Ordering> = { ...ordOrdering, top, bottom };
 
 export const show = (x: Ordering): string => (x === LT ? 'LT' : x === EQ ? 'EQ' : 'GT');
 export const showOrdering: Show<Ordering> = { show };
