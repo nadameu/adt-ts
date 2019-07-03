@@ -1,5 +1,6 @@
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
+import { Functor } from './Functor';
 import { Monoid1 } from './Monoid';
 import { ordNumber } from './Number';
 import { Ord } from './Ord';
@@ -39,3 +40,6 @@ export const semigroupArray: Semigroup1<GenericArray> = { append };
 
 export const mempty = <a = never>(): a[] => [];
 export const monoidArray: Monoid1<GenericArray> = { ...semigroupArray, mempty };
+
+export const map = <a, b>(f: (_: a) => b) => (xs: a[]): b[] => xs.map(x => f(x));
+export const functorArray: Functor<GenericArray> = { map };
