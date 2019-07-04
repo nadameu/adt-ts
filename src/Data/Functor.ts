@@ -8,7 +8,7 @@ export const mapFlipped = <f extends Generic1>(functor: Functor<f>) => <a>(fa: T
 	f: (_: a) => b,
 ): Type<f, b> => functor.map(f)(fa);
 
-export const void_ = <f extends Generic1>(
+export const void$ = <f extends Generic1>(
 	functor: Functor<f>,
 ): (<a>(fa: Type<f, a>) => Type<f, void>) => /*@__PURE__*/ functor.map(_ => undefined);
 
