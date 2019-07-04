@@ -1,4 +1,5 @@
 import { Apply } from '../Control/Apply';
+import { Bind } from '../Control/Bind';
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
 import { Functor } from './Functor';
@@ -55,3 +56,12 @@ export const apply = <a, b>(fs: ((_: a) => b)[]) => (xs: a[]): b[] => {
 	return ys;
 };
 export const applyArray: Apply<GenericArray> = { ...functorArray, apply };
+
+export const bind = <a>(xs: a[]) => <b>(f: (_: a) => b[]): b[] => {
+	const ys: b[] = [];
+	for (const x of xs) {
+		Array.prototype.push.apply(ys, f(x));
+	}
+	return ys;
+};
+export const bindArray: Bind<GenericArray> = { ...applyArray, bind };

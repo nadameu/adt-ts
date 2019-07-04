@@ -1,3 +1,5 @@
+import { Bind, Discard } from '../Control/Bind';
+import { Generic1, Type } from '../Generic';
 import { Bounded } from './Bounded';
 import { Eq } from './Eq';
 import { Ord } from './Ord';
@@ -19,3 +21,11 @@ export const boundedUndefined: Bounded<undefined> = { ...ordUndefined, top, bott
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const show = (x: undefined): string => 'undefined';
 export const showUndefined: Show<undefined> = { show };
+
+const discard: <f extends Generic1>(
+	bind: Bind<f>,
+) => (fa: Type<f, undefined>) => <b>(f: (_: undefined) => Type<f, b>) => Type<f, b> = bind =>
+	bind.bind;
+export const discardUndefined: Discard<undefined> = {
+	discard,
+};
