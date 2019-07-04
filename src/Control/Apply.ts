@@ -1,8 +1,12 @@
-import { Functor } from '../Data/Functor';
-import { Generic1, Type } from '../Generic';
+import { Functor, Functor2 } from '../Data/Functor';
+import { Generic1, Generic2, Type } from '../Generic';
 
 export interface Apply<f extends Generic1> extends Functor<f> {
 	apply: <a, b>(ff: Type<f, (_: a) => b>) => (fa: Type<f, a>) => Type<f, b>;
+}
+
+export interface Apply2<f extends Generic2> extends Functor2<f> {
+	apply: <a, b, c>(ff: Type<f, a, (_: b) => c>) => (fa: Type<f, a, b>) => Type<f, a, c>;
 }
 
 export const applyFirst = <f extends Generic1>(apply: Apply<f>) => <a>(

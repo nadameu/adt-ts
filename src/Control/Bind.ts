@@ -1,9 +1,13 @@
 import { flip, identity } from '../Data/Function';
-import { Generic1, Type } from '../Generic';
-import { Apply } from './Apply';
+import { Generic1, Generic2, Type } from '../Generic';
+import { Apply, Apply2 } from './Apply';
 
 export interface Bind<m extends Generic1> extends Apply<m> {
 	bind: <a>(ma: Type<m, a>) => <b>(f: (_: a) => Type<m, b>) => Type<m, b>;
+}
+
+export interface Bind2<m extends Generic2> extends Apply2<m> {
+	bind: <a, b>(ma: Type<m, a, b>) => <c>(f: (_: b) => Type<m, a, c>) => Type<m, a, c>;
 }
 
 export const bindFlipped = <m extends Generic1>(

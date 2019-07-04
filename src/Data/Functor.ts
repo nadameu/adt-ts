@@ -1,8 +1,12 @@
-import { Generic1, Type } from '../Generic';
+import { Generic1, Generic2, Type } from '../Generic';
 import { applyFlipped, constant, flip } from './Function';
 
 export interface Functor<f extends Generic1> {
 	map: <a, b>(f: (_: a) => b) => (fa: Type<f, a>) => Type<f, b>;
+}
+
+export interface Functor2<f extends Generic2> {
+	map: <b, c>(f: (_: b) => c) => <a>(fa: Type<f, a, b>) => Type<f, a, c>;
 }
 
 export const mapFlipped = <f extends Generic1>(

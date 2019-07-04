@@ -1,8 +1,10 @@
-import { Generic1, Type } from '../Generic';
-import { Applicative, unless, when } from './Applicative';
-import { Bind } from './Bind';
+import { Generic1, Generic2, Type } from '../Generic';
+import { Applicative, Applicative2, unless, when } from './Applicative';
+import { Bind, Bind2 } from './Bind';
 
 export interface Monad<m extends Generic1> extends Applicative<m>, Bind<m> {}
+
+export interface Monad2<m extends Generic2> extends Applicative2<m>, Bind2<m> {}
 
 export const liftM1 = <m extends Generic1>({ bind, pure }: Monad<m>) => <a, b>(f: (_: a) => b) => (
 	ma: Type<m, a>,
