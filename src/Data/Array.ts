@@ -1,3 +1,4 @@
+import { Applicative } from '../Control/Applicative';
 import { Apply } from '../Control/Apply';
 import { Bind } from '../Control/Bind';
 import { Generic1 } from '../Generic';
@@ -65,3 +66,6 @@ export const bind = <a>(xs: a[]) => <b>(f: (_: a) => b[]): b[] => {
 	return ys;
 };
 export const bindArray: Bind<GenericArray> = { ...applyArray, bind };
+
+export const pure = <a>(x: a): a[] => [x];
+export const applicativeArray: Applicative<GenericArray> = { ...applyArray, pure };
