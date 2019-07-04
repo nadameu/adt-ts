@@ -1,12 +1,13 @@
 import { Generic1, Type } from '../Generic';
+import { applyFlipped, constant, flip } from './Function';
 
 export interface Functor<f extends Generic1> {
 	map: <a, b>(f: (_: a) => b) => (fa: Type<f, a>) => Type<f, b>;
 }
 
-export const mapFlipped = <f extends Generic1>(functor: Functor<f>) => <a>(fa: Type<f, a>) => <b>(
-	f: (_: a) => b,
-): Type<f, b> => functor.map(f)(fa);
+export const mapFlipped = <f extends Generic1>(
+	functor: Functor<f>,
+): (<a>(fa: Type<f, a>) => <b>(f: (_: a) => b) => Type<f, b>) => /*@__PURE__*/ flip(functor.map);
 
 export const void$ = <f extends Generic1>(
 	functor: Functor<f>,
@@ -14,12 +15,12 @@ export const void$ = <f extends Generic1>(
 
 export const voidRight = <f extends Generic1>(functor: Functor<f>) => <a>(
 	a: a,
-): (<b>(fb: Type<f, b>) => Type<f, a>) => /*@__PURE__*/ functor.map(_ => a);
+): (<b>(fb: Type<f, b>) => Type<f, a>) => /*@__PURE__*/ functor.map(constant(a));
 
-export const voidLeft = <f extends Generic1>(functor: Functor<f>) => <a>(fa: Type<f, a>) => <b>(
-	b: b,
-): Type<f, b> => functor.map(_ => b)(fa);
+export const voidLeft = <f extends Generic1>(
+	functor: Functor<f>,
+): (<a>(fa: Type<f, a>) => <b>(b: b) => Type<f, b>) => /*@__PURE__*/ flip(voidRight(functor));
 
 export const flap = <f extends Generic1>(functor: Functor<f>) => <a, b>(
 	ff: Type<f, (_: a) => b>,
-) => (a: a): Type<f, b> => functor.map<(_: a) => b, b>(f => f(a))(ff);
+) => (a: a): Type<f, b> => functor.map(applyFlipped(a))(ff);
