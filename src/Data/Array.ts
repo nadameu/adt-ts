@@ -1,6 +1,7 @@
 import { Applicative } from '../Control/Applicative';
 import { Apply } from '../Control/Apply';
 import { Bind } from '../Control/Bind';
+import { Monad } from '../Control/Monad';
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
 import { Functor } from './Functor';
@@ -69,3 +70,5 @@ export const bindArray: Bind<GenericArray> = { ...applyArray, bind };
 
 export const pure = <a>(x: a): a[] => [x];
 export const applicativeArray: Applicative<GenericArray> = { ...applyArray, pure };
+
+export const monadArray: Monad<GenericArray> = { ...applicativeArray, ...bindArray };
