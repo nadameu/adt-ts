@@ -10,10 +10,20 @@ export interface Monoid1<f extends Generic1> extends Semigroup1<f> {
 	mempty: <a = never>() => Type<f, a>;
 }
 
-export const power: {
-	<f extends Generic1>(monoidA: Monoid1<f>): <a>(x: Type<f, a>) => (p: Int) => Type<f, a>;
-	<m>(monoidA: Monoid<m>): (x: m) => (p: Int) => m;
-} = <m>(monoidA: Monoid<m>) => (x: m) => {
+interface Helpers<m> {
+	power: (x: m) => (p: Int) => m;
+	guard: (cond: boolean) => (x: m) => m;
+}
+interface Helpers1<f extends Generic1> {
+	power: <a>(x: Type<f, a>) => (p: Int) => Type<f, a>;
+	guard: (cond: boolean) => <a>(x: Type<f, a>) => Type<f, a>;
+}
+interface Helper<k extends keyof Helpers<any>> {
+	<f extends Generic1>(monoidA: Monoid1<f>): Helpers1<f>[k];
+	<m>(monoidA: Monoid<m>): Helpers<m>[k];
+}
+
+export const power: Helper<'power'> = <m>(monoidA: Monoid<m>) => (x: m) => {
 	const { append, mempty } = monoidA;
 	return function go(p: Int): m {
 		if (p <= 0) return mempty();
@@ -26,7 +36,5 @@ export const power: {
 	};
 };
 
-export const guard: {
-	<f extends Generic1>(monoidA: Monoid1<f>): (cond: boolean) => <a>(x: Type<f, a>) => Type<f, a>;
-	<m>(monoidA: Monoid<m>): (cond: boolean) => (x: m) => m;
-} = <m>(monoidA: Monoid<m>) => (cond: boolean) => (m: m): m => (cond ? m : monoidA.mempty());
+export const guard: Helper<'guard'> = <m>(monoidA: Monoid<m>) => (cond: boolean) => (m: m): m =>
+	cond ? m : monoidA.mempty();
