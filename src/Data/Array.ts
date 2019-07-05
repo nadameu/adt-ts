@@ -4,6 +4,7 @@ import { Applicative } from '../Control/Applicative';
 import { Apply } from '../Control/Apply';
 import { Bind } from '../Control/Bind';
 import { Monad } from '../Control/Monad';
+import { MonadZero } from '../Control/MonadZero';
 import { Plus } from '../Control/Plus';
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
@@ -83,3 +84,5 @@ export const empty = mempty;
 export const plusArray: Plus<GenericArray> = { ...altArray, empty };
 
 export const alternativeArray: Alternative<GenericArray> = { ...applicativeArray, ...plusArray };
+
+export const monadZeroArray: MonadZero<GenericArray> = { ...monadArray, ...alternativeArray };
