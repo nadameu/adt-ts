@@ -1,10 +1,14 @@
+import { Alt, Alt2 } from '../Control/Alt';
 import { Applicative, Applicative2 } from '../Control/Applicative';
 import { Apply2, lift2 } from '../Control/Apply';
 import { Bind2 } from '../Control/Bind';
+import { Extend2 } from '../Control/Extend';
 import { Monad2 } from '../Control/Monad';
 import { Generic1, Generic2, Type } from '../Generic';
+import { Bifunctor } from './Bifunctor';
 import { Bounded } from './Bounded';
 import { Eq } from './Eq';
+import { Foldable2 } from './Foldable';
 import { constant, identity } from './Function';
 import { Functor2 } from './Functor';
 import { Monoid, Monoid1 } from './Monoid';
@@ -43,7 +47,7 @@ export const functorEither: Functor2<GenericEither> = { map };
 export const bimap = <a, c>(f: (_: a) => c) => <b, d>(g: (_: b) => d) => (
 	fx: Either<a, b>,
 ): Either<c, d> => (isLeft(fx) ? Left(f(fx.leftValue)) : Right(g(fx.rightValue)));
-// TODO: Bifunctor
+export const bifunctorEither: Bifunctor<GenericEither> = { bimap };
 
 const apply = <a, b, c>(ff: Either<a, (_: b) => c>): ((fa: Either<a, b>) => Either<a, c>) =>
 	isLeft(ff) ? constant(ff) : map(ff.rightValue);
@@ -57,7 +61,7 @@ export const applicativeEither: Applicative2<GenericEither> = { ...applyEither, 
 
 export const alt = <a, b>(fx: Either<a, b>) => (fy: Either<a, b>): Either<a, b> =>
 	isLeft(fx) ? fy : fx;
-// TODO: Alt
+export const altEither: Alt2<GenericEither> = { ...functorEither, alt };
 
 export const bind = <a, b>(fx: Either<a, b>) => <c>(f: (_: b) => Either<a, c>): Either<a, c> =>
 	isLeft(fx) ? fx : f(fx.rightValue);
@@ -67,7 +71,7 @@ export const monadEither: Monad2<GenericEither> = { ...applicativeEither, ...bin
 
 export const extend = <a, b, c>(f: (_: Either<a, b>) => c) => (fx: Either<a, b>): Either<a, c> =>
 	isLeft(fx) ? fx : Right(f(fx));
-// TODO: Extend
+export const extendEither: Extend2<GenericEither> = { ...functorEither, extend };
 
 export const makeShowEither = <a, b>(showA: Show<a>, showB: Show<b>): Show<Either<a, b>> => ({
 	show: fx =>
@@ -110,7 +114,11 @@ export const foldMap: {
 	<m>(monoid: Monoid<m>): <b>(f: (_: b) => m) => <a>(fx: Either<a, b>) => m;
 } = <m>(monoid: Monoid<m>) => <b>(f: (_: b) => m) => <a>(fx: Either<a, b>): m =>
 	isLeft(fx) ? monoid.mempty() : f(fx.rightValue);
-// TODO: Foldable
+export const foldableEither: Foldable2<GenericEither> = {
+	foldr,
+	foldl,
+	foldMap,
+};
 
 export const bifoldr = <a, c>(f: (_: a) => (_: c) => c) => <b>(g: (_: b) => (_: c) => c) => (
 	z: c,
@@ -168,7 +176,9 @@ export const makeSemigroupEither: {
 export const either = <a, c>(f: (_: a) => c) => <b>(g: (_: b) => c) => (fx: Either<a, b>): c =>
 	isLeft(fx) ? f(fx.leftValue) : g(fx.rightValue);
 
-// TODO: choose
+export const choose = <m extends Generic1>(alt: Alt<m>) => <a>(ma: Type<m, a>) => <b>(
+	mb: Type<m, b>,
+): Type<m, Either<a, b>> => alt.alt(alt.map(Left)(ma))(alt.map(Right)(mb));
 
 export const fromLeft = <a>(fx: Left<a>): a => fx.leftValue;
 
