@@ -3,6 +3,7 @@ import { Alternative } from '../Control/Alternative';
 import { Applicative } from '../Control/Applicative';
 import { Apply } from '../Control/Apply';
 import { Bind } from '../Control/Bind';
+import { Extend } from '../Control/Extend';
 import { Monad } from '../Control/Monad';
 import { MonadPlus } from '../Control/MonadPlus';
 import { MonadZero } from '../Control/MonadZero';
@@ -89,3 +90,7 @@ export const alternativeArray: Alternative<GenericArray> = { ...applicativeArray
 export const monadZeroArray: MonadZero<GenericArray> = { ...monadArray, ...alternativeArray };
 
 export const monadPlusArray: MonadPlus<GenericArray> = monadZeroArray;
+
+export const extend = <a, b>(f: (_: a[]) => b) => (xs: a[]): b[] =>
+	xs.map((_, i, xs) => f(xs.slice(i)));
+export const extendArray: Extend<GenericArray> = { ...functorArray, extend };

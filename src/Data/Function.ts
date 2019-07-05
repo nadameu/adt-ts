@@ -2,10 +2,13 @@ import { Applicative2 } from '../Control/Applicative';
 import { Apply2 } from '../Control/Apply';
 import { Bind2 } from '../Control/Bind';
 import { Category, GenericCategory } from '../Control/Category';
+import { Extend, Extend2 } from '../Control/Extend';
 import { Monad2 } from '../Control/Monad';
 import { Semigroupoid } from '../Control/Semigroupoid';
+import { Generic1, Generic2, Type } from '../Generic';
 import { Functor2 } from './Functor';
 import { Int } from './Int';
+import { Semigroup, Semigroup1 } from './Semigroup';
 
 export interface GenericFn extends GenericCategory {
 	type: (_: this['a']) => this['b'];
@@ -47,3 +50,17 @@ export const applyN = <a>(f: (_: a) => a) =>
 
 export const on = <b, c>(f: (_: b) => (_: b) => c) => <a>(g: (_: a) => b) => (x: a) => (y: a): c =>
 	f(g(x))(g(y));
+
+interface PartialGenericFn<a> extends Generic1 {
+	type: (_: a) => this['a'];
+}
+interface PartialHigherKindedFn<f extends Generic1> extends Generic2 {
+	type: (_: Type<f, this['a']>) => this['b'];
+}
+export const makeExtendFn: {
+	<m extends Generic1>(semigroup: Semigroup1<m>): Extend2<PartialHigherKindedFn<m>>;
+	<w>(semigroup: Semigroup<w>): Extend<PartialGenericFn<w>>;
+} = <w>(semigroup: Semigroup<w>): Extend<PartialGenericFn<w>> => ({
+	...functorFn,
+	extend: f => g => w => f(w$ => g(semigroup.append(w)(w$))),
+});
