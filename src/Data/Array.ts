@@ -10,6 +10,7 @@ import { MonadZero } from '../Control/MonadZero';
 import { Plus } from '../Control/Plus';
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
+import { Foldable, foldMapDefaultR } from './Foldable';
 import { Functor } from './Functor';
 import { Monoid1 } from './Monoid';
 import { ordNumber } from './Number';
@@ -94,3 +95,14 @@ export const monadPlusArray: MonadPlus<GenericArray> = monadZeroArray;
 export const extend = <a, b>(f: (_: a[]) => b) => (xs: a[]): b[] =>
 	xs.map((_, i, xs) => f(xs.slice(i)));
 export const extendArray: Extend<GenericArray> = { ...functorArray, extend };
+
+export const foldr: <a, b>(f: (_: a) => (_: b) => b) => (z: b) => (fa: a[]) => b = f => z => xs =>
+	xs.reduceRight((acc, x) => f(x)(acc), z);
+export const foldl: <a, b>(f: (_: b) => (_: a) => b) => (z: b) => (fa: a[]) => b = f => z => xs =>
+	xs.reduce((acc, x) => f(acc)(x), z);
+export const foldMap = foldMapDefaultR<GenericArray>({ foldr } as any);
+export const foldableArray: Foldable<GenericArray> = {
+	foldr,
+	foldl,
+	foldMap,
+};

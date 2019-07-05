@@ -1,3 +1,7 @@
+import { Category, GenericCategory } from '../Control/Category';
+import { Semigroupoid } from '../Control/Semigroupoid';
+import { identity } from '../Data/Function';
+
 const FuncSymbol = Symbol();
 interface Func<a, b, i = unknown> {
 	(_: a): b;
@@ -5,6 +9,10 @@ interface Func<a, b, i = unknown> {
 		left: (_: i) => b;
 		right: (_: a) => i;
 	};
+}
+interface GenericFunc extends GenericCategory {
+	type: Func<this['a'], this['b']>;
+	identity: <a>(_: a) => a;
 }
 
 export const compose = <b, c>(f: (_: b) => c) => <a>(g: (_: a) => b): ((_: a) => c) => {
@@ -28,3 +36,6 @@ const run = <a, b>(f: Func<a, b>, x: a): b => {
 		}
 	}
 };
+
+export const semigroupoidFunc: Semigroupoid<GenericFunc> = { compose };
+export const categoryFunc: Category<GenericFunc> = { compose, identity };
