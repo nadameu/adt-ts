@@ -1,4 +1,5 @@
 import { Alt } from '../Control/Alt';
+import { Alternative } from '../Control/Alternative';
 import { Applicative } from '../Control/Applicative';
 import { Apply } from '../Control/Apply';
 import { Bind } from '../Control/Bind';
@@ -80,3 +81,5 @@ export const altArray: Alt<GenericArray> = { ...functorArray, alt: append };
 
 export const empty = mempty;
 export const plusArray: Plus<GenericArray> = { ...altArray, empty };
+
+export const alternativeArray: Alternative<GenericArray> = { ...applicativeArray, ...plusArray };
