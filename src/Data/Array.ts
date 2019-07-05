@@ -1,3 +1,4 @@
+import { Alt } from '../Control/Alt';
 import { Applicative } from '../Control/Applicative';
 import { Apply } from '../Control/Apply';
 import { Bind } from '../Control/Bind';
@@ -72,3 +73,6 @@ export const pure = <a>(x: a): a[] => [x];
 export const applicativeArray: Applicative<GenericArray> = { ...applyArray, pure };
 
 export const monadArray: Monad<GenericArray> = { ...applicativeArray, ...bindArray };
+
+export const alt = append;
+export const altArray: Alt<GenericArray> = { ...functorArray, alt: append };
