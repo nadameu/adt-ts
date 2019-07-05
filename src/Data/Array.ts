@@ -3,6 +3,7 @@ import { Applicative } from '../Control/Applicative';
 import { Apply } from '../Control/Apply';
 import { Bind } from '../Control/Bind';
 import { Monad } from '../Control/Monad';
+import { Plus } from '../Control/Plus';
 import { Generic1 } from '../Generic';
 import { Eq } from './Eq';
 import { Functor } from './Functor';
@@ -76,3 +77,6 @@ export const monadArray: Monad<GenericArray> = { ...applicativeArray, ...bindArr
 
 export const alt = append;
 export const altArray: Alt<GenericArray> = { ...functorArray, alt: append };
+
+export const empty = mempty;
+export const plusArray: Plus<GenericArray> = { ...altArray, empty };
