@@ -1,14 +1,10 @@
 {
-  "name": "rollup-starter-lib",
+  "name": "pure-ts",
   "version": "1.0.0",
-  "main": "dist/how-long-till-lunch.cjs.js",
-  "module": "dist/how-long-till-lunch.esm.js",
-  "browser": "dist/how-long-till-lunch.umd.js",
-  "dependencies": {
-    "ms": "^2.1.2"
-  },
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "dependencies": {},
   "devDependencies": {
-    "@types/ms": "^0.7.30",
     "rollup": "^1.19.4",
     "rollup-plugin-commonjs": "^10.0.2",
     "rollup-plugin-node-resolve": "^5.2.0",
