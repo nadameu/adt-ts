@@ -1,7 +1,7 @@
-import { Generic1, Type1 } from "../Generic";
-import { Applicative1 } from "../typeclasses/Applicative";
-import { Monoid } from "../typeclasses/Monoid";
-import { Just, Maybe, Nothing } from "./definitions";
+import { Generic1, Type1 } from '../Generic';
+import { Applicative1 } from '../typeclasses/Applicative';
+import { Monoid } from '../typeclasses/Monoid';
+import { Just, Maybe, Nothing } from './definitions';
 
 export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? b : f(fa.value);
@@ -30,7 +30,7 @@ export const fromMaybe = <a>(a: a): ((fa: Maybe<a>) => a) =>
 export const fromMaybeL = <a>(thunk: () => a): ((fa: Maybe<a>) => a) =>
   /*#__PURE__*/ maybeL(thunk)(x => x);
 
-export const alt = <a>(fx: Maybe<a>) => (fy: Maybe<a>): Maybe<a> =>
+export const alt = <a>(fx: Maybe<a>, fy: Maybe<a>): Maybe<a> =>
   fx.isNothing ? fy : fx;
 
 export const empty = <a = never>(): Maybe<a> => Nothing;
