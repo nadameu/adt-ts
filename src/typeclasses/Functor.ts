@@ -10,5 +10,4 @@ export const mapTo = <f extends Generic1>(functor: Functor1<f>) => <a>(
 
 export const flap = <f extends Generic1>(functor: Functor1<f>) => <a>(
   a: a
-): (<b>(ff: Type1<f, (_: a) => b>) => Type1<f, b>) =>
-  /*#__PURE__*/ functor.map(f => f(a));
+): (<b>(ff: Type1<f, (_: a) => b>) => Type1<f, b>) => /*#__PURE__*/ functor.map(f => f(a));
