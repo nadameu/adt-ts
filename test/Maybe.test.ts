@@ -17,6 +17,8 @@ import { makeApplyLaws } from './Apply.laws';
 import { makeFoldableLaws } from './Foldable.laws';
 import { makeFunctorLaws } from './Functor.laws';
 import { makeBindLaws } from './Bind.laws';
+import { makeEq1Laws } from './Eq.laws';
+import { TMaybe } from '../src/Maybe/internal';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
   jsc.oneof([jsc.constant(Nothing), arb.smap(Just, x => x.value)]);
@@ -55,4 +57,11 @@ describe('Foldable', () => {
 describe('Bind', () => {
   const bindLaws = makeBindLaws(bindMaybe)(makeEqMaybe)(makeArb);
   test('Bind - associativity', bindLaws.associativity);
+});
+
+describe('Eq', () => {
+  const eqLaws = makeEq1Laws<TMaybe>(makeEqMaybe)(makeArb);
+  test('Eq - reflexivity', eqLaws.reflexivity);
+  test('Eq - symmetry', eqLaws.symmetry);
+  test('Eq - transitivity', eqLaws.transitivity);
 });
