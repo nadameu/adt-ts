@@ -3,9 +3,9 @@ import { eqNumber } from '../src';
 import { Generic1, Type1 } from '../src/Generic';
 import { Foldable1 } from '../src/typeclasses/Foldable';
 
-export const makeFoldableLaws = <f extends Generic1>(
-  foldable: Foldable1<f>
-) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) => {
+export const makeFoldableLaws = <f extends Generic1>(foldable: Foldable1<f>) => (
+  makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>
+) => {
   const eq = eqNumber.eq;
   console.log({ foldable });
   return {
@@ -32,7 +32,7 @@ export const makeFoldableLaws = <f extends Generic1>(
         eq(
           foldable.foldMap<number>({
             NotGenericType: (undefined as unknown) as number,
-            append: x => y => x + y,
+            append: (x, y) => x + y,
             mempty: () => 0
           })(f)(fx),
           foldable
