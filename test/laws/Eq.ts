@@ -1,7 +1,7 @@
 import jsc from 'jsverify';
-import { Eq } from '../src/typeclasses/Eq';
-import { Type1, Generic1, Generic2, Type2 } from '../src/Generic';
-import { eqNumber } from '../src';
+import { Eq } from '../../src/typeclasses/Eq';
+import { Type1, Generic1, Generic2, Type2 } from '../../src/Generic';
+import { eqNumber } from '../../src';
 
 export const makeEqLaws = <a>(eq: Eq<a>) => (arb: jsc.Arbitrary<a>) => ({
   reflexivity: (): void => jsc.assertForall(arb, x => eq.eq(x, x)),

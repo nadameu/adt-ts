@@ -1,8 +1,8 @@
 import jsc from 'jsverify';
-import { eqNumber } from '../src';
-import { Generic1, Type1 } from '../src/Generic';
-import { Bind1 } from '../src/typeclasses/Bind';
-import { Eq } from '../src/typeclasses/Eq';
+import { eqNumber } from '../../src';
+import { Generic1, Type1 } from '../../src/Generic';
+import { Bind1 } from '../../src/typeclasses/Bind';
+import { Eq } from '../../src/typeclasses/Eq';
 
 export const makeBindLaws = <f extends Generic1>(bind: Bind1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>

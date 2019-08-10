@@ -1,8 +1,8 @@
 import jsc from 'jsverify';
-import { eqNumber } from '../src';
-import { Generic1, Type1 } from '../src/Generic';
-import { Apply1 } from '../src/typeclasses/Apply';
-import { Eq } from '../src/typeclasses/Eq';
+import { eqNumber } from '../../src';
+import { Generic1, Type1 } from '../../src/Generic';
+import { Apply1 } from '../../src/typeclasses/Apply';
+import { Eq } from '../../src/typeclasses/Eq';
 
 export const makeApplyLaws = <f extends Generic1>(apply: Apply1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
@@ -18,10 +18,8 @@ export const makeApplyLaws = <f extends Generic1>(apply: Apply1<f>) => (
           eq(
             apply.apply(
               apply.apply(
-                apply.map(
-                  (f: (_: number) => number) => (g: (_: number) => number) => (
-                    x: number
-                  ) => f(g(x))
+                apply.map((f: (_: number) => number) => (g: (_: number) => number) => (x: number) =>
+                  f(g(x))
                 )(a)
               )(u)
             )(v),

@@ -3,22 +3,22 @@ import {
   altMaybe,
   applicativeMaybe,
   applyMaybe,
+  bindMaybe,
   foldableMaybe,
   functorMaybe,
   Just,
   makeEqMaybe,
   Maybe,
-  Nothing,
-  bindMaybe
+  Nothing
 } from '../src/Maybe';
-import { makeAltLaws } from './Alt.laws';
-import { makeApplicativeLaws } from './Applicative.laws';
-import { makeApplyLaws } from './Apply.laws';
-import { makeFoldableLaws } from './Foldable.laws';
-import { makeFunctorLaws } from './Functor.laws';
-import { makeBindLaws } from './Bind.laws';
-import { makeEq1Laws } from './Eq.laws';
 import { TMaybe } from '../src/Maybe/internal';
+import { makeAltLaws } from './laws/Alt';
+import { makeApplicativeLaws } from './laws/Applicative';
+import { makeApplyLaws } from './laws/Apply';
+import { makeBindLaws } from './laws/Bind';
+import { makeEq1Laws } from './laws/Eq';
+import { makeFoldableLaws } from './laws/Foldable';
+import { makeFunctorLaws } from './laws/Functor';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
   jsc.oneof([jsc.constant(Nothing), arb.smap(Just, x => x.value)]);
