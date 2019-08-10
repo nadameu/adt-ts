@@ -9,7 +9,8 @@ import {
   Just,
   makeEqMaybe,
   Maybe,
-  Nothing
+  Nothing,
+  monadMaybe
 } from '../src/Maybe';
 import { TMaybe } from '../src/Maybe/internal';
 import { makeAltLaws } from './laws/Alt';
@@ -19,6 +20,7 @@ import { makeBindLaws } from './laws/Bind';
 import { makeEq1Laws } from './laws/Eq';
 import { makeFoldableLaws } from './laws/Foldable';
 import { makeFunctorLaws } from './laws/Functor';
+import { makeMonadLaws } from './laws/Monad';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
   jsc.oneof([jsc.constant(Nothing), arb.smap(Just, x => x.value)]);
@@ -57,6 +59,12 @@ describe('Foldable', () => {
 describe('Bind', () => {
   const bindLaws = makeBindLaws(bindMaybe)(makeEqMaybe)(makeArb);
   test('Bind - associativity', bindLaws.associativity);
+});
+
+describe('Monad', () => {
+  const monadLaws = makeMonadLaws(monadMaybe)(makeEqMaybe)(makeArb);
+  test('Monad - left identity', monadLaws.leftIdentity);
+  test('Monad - right identity', monadLaws.rightIdentity);
 });
 
 describe('Eq', () => {
