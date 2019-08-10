@@ -23,8 +23,8 @@ export interface Identified2<f extends Generic2> {
 
 export type Type1<f extends Generic1, a> = f extends never
   ? never
-  : (f & { a: a })["type"];
+  : (f & { a: a })['type'];
 
 export type Type2<f extends Generic2, a, b> = f extends never
   ? never
-  : (f & { a: a; b: b })["type"];
+  : (f & { a: a; b: b })['type'];
