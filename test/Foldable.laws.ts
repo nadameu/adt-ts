@@ -7,7 +7,6 @@ export const makeFoldableLaws = <f extends Generic1>(foldable: Foldable1<f>) => 
   makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>
 ) => {
   const eq = eqNumber.eq;
-  console.log({ foldable });
   return {
     foldl: (): void =>
       jsc.assertForall(makeArb(jsc.number), jsc.number, (fx, z) =>

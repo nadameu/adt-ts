@@ -46,9 +46,7 @@ describe('Alt', () => {
 });
 
 describe('Foldable', () => {
-  console.log({ foldableMaybe, functorMaybe, altMaybe });
   const foldableLaws = makeFoldableLaws(foldableMaybe)(makeArb);
-  debugger;
   test('Foldable - foldl', foldableLaws.foldl);
   test('Foldable - foldr', foldableLaws.foldr);
   test('Foldable - foldMap', foldableLaws.foldMap);
