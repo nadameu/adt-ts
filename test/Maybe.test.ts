@@ -8,13 +8,15 @@ import {
   Just,
   makeEqMaybe,
   Maybe,
-  Nothing
+  Nothing,
+  bindMaybe
 } from '../src/Maybe';
 import { makeAltLaws } from './Alt.laws';
 import { makeApplicativeLaws } from './Applicative.laws';
 import { makeApplyLaws } from './Apply.laws';
 import { makeFoldableLaws } from './Foldable.laws';
 import { makeFunctorLaws } from './Functor.laws';
+import { makeBindLaws } from './Bind.laws';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
   jsc.oneof([jsc.constant(Nothing), arb.smap(Just, x => x.value)]);
@@ -31,9 +33,7 @@ describe('Apply', () => {
 });
 
 describe('Applicative', () => {
-  const applicativeLaws = makeApplicativeLaws(applicativeMaybe)(makeEqMaybe)(
-    makeArb
-  );
+  const applicativeLaws = makeApplicativeLaws(applicativeMaybe)(makeEqMaybe)(makeArb);
   test('Applicative - identity', applicativeLaws.identity);
   test('Applicative - homomorphism', applicativeLaws.homomorphism);
   test('Applicative - interchange', applicativeLaws.interchange);
@@ -50,4 +50,9 @@ describe('Foldable', () => {
   test('Foldable - foldl', foldableLaws.foldl);
   test('Foldable - foldr', foldableLaws.foldr);
   test('Foldable - foldMap', foldableLaws.foldMap);
+});
+
+describe('Bind', () => {
+  const bindLaws = makeBindLaws(bindMaybe)(makeEqMaybe)(makeArb);
+  test('Bind - associativity', bindLaws.associativity);
 });
