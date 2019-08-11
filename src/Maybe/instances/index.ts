@@ -7,6 +7,8 @@ import * as functorMaybe from './functor';
 import * as monadMaybe from './monad';
 import * as monadErrorMaybe from './monadError';
 import * as monadThrowMaybe from './monadThrow';
+import * as plusMaybe from './plus';
+
 export { makeEqMaybe } from './eq';
 export {
   altMaybe,
@@ -17,5 +19,6 @@ export {
   functorMaybe,
   monadMaybe,
   monadErrorMaybe,
-  monadThrowMaybe
+  monadThrowMaybe,
+  plusMaybe
 };
