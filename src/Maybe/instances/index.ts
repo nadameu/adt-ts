@@ -9,6 +9,7 @@ import * as monadMaybe from './monad';
 import * as monadErrorMaybe from './monadError';
 import * as monadThrowMaybe from './monadThrow';
 import * as plusMaybe from './plus';
+import * as traversableMaybe from './traversable';
 
 export { makeEqMaybe } from './eq';
 export {
@@ -23,4 +24,5 @@ export {
   monadErrorMaybe,
   monadThrowMaybe,
   plusMaybe,
+  traversableMaybe,
 };
