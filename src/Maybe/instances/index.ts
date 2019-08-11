@@ -1,4 +1,5 @@
 import * as altMaybe from './alt';
+import * as alternativeMaybe from './alternative';
 import * as applicativeMaybe from './applicative';
 import * as applyMaybe from './apply';
 import * as bindMaybe from './bind';
@@ -12,6 +13,7 @@ import * as plusMaybe from './plus';
 export { makeEqMaybe } from './eq';
 export {
   altMaybe,
+  alternativeMaybe,
   applicativeMaybe,
   applyMaybe,
   bindMaybe,

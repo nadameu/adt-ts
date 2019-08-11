@@ -1,5 +1,6 @@
 import jsc from 'jsverify';
 import {
+  alternativeMaybe,
   altMaybe,
   applicativeMaybe,
   applyMaybe,
@@ -15,6 +16,7 @@ import {
 } from '../src/Maybe';
 import { TMaybe } from '../src/Maybe/internal';
 import { makeAltLaws } from './laws/Alt';
+import { makeAlternativeLaws } from './laws/Alternative';
 import { makeApplicativeLaws } from './laws/Applicative';
 import { makeApplyLaws } from './laws/Apply';
 import { makeBindLaws } from './laws/Bind';
@@ -56,6 +58,12 @@ describe('Plus', () => {
   test('Plus - left identity', plusLaws.leftIdentity);
   test('Plus - right identity', plusLaws.rightIdentity);
   test('Plus - annihilation', plusLaws.annihilation);
+});
+
+describe('Alternative', () => {
+  const alternativeLaws = makeAlternativeLaws(alternativeMaybe)(makeEqMaybe)(makeArb);
+  test('Alternative - distributivity', alternativeLaws.distributivity);
+  test('Alternative - annihilation', alternativeLaws.annihilation);
 });
 
 describe('Foldable', () => {
