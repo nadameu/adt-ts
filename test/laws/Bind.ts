@@ -15,6 +15,6 @@ export const makeBindLaws = <f extends Generic1>(bind: Bind1<f>) => (
         jsc.fn(makeArb(jsc.number)),
         jsc.fn(makeArb(jsc.number)),
         (x, f, g) => eq(bind.bind(g)(bind.bind(f)(x)), bind.bind(k => bind.bind(g)(f(k)))(x))
-      )
+      ),
   };
 };

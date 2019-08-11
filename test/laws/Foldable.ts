@@ -32,12 +32,12 @@ export const makeFoldableLaws = <f extends Generic1>(foldable: Foldable1<f>) => 
           foldable.foldMap<number>({
             NotGenericType: (undefined as unknown) as number,
             append: (x, y) => x + y,
-            mempty: () => 0
+            mempty: () => 0,
           })(f)(fx),
           foldable
             .foldl<number, number[]>(xs => x => (xs.push(x), xs))([])(fx)
             .reduce((acc, x) => acc + f(x), 0)
         )
-      )
+      ),
   };
 };

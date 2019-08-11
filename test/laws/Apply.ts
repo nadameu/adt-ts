@@ -25,6 +25,6 @@ export const makeApplyLaws = <f extends Generic1>(apply: Apply1<f>) => (
             )(v),
             apply.apply(a)(apply.apply(u)(v))
           )
-      )
+      ),
   };
 };

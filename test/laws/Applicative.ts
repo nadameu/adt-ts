@@ -23,6 +23,6 @@ export const makeApplicativeLaws = <f extends Generic1>(applicative: Applicative
           applicative.apply(u)(applicative.pure(y)),
           applicative.apply(applicative.pure((f: (_: number) => number) => f(y)))(u)
         )
-      )
+      ),
   };
 };

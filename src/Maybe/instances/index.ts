@@ -20,5 +20,5 @@ export {
   monadMaybe,
   monadErrorMaybe,
   monadThrowMaybe,
-  plusMaybe
+  plusMaybe,
 };

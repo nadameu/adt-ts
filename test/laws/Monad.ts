@@ -14,6 +14,6 @@ export const makeMonadLaws = <f extends Generic1>(monad: Monad1<f>) => (
         eq(monad.bind(f)(monad.pure(x)), f(x))
       ),
     rightIdentity: (): void =>
-      jsc.assertForall(makeArb(jsc.number), x => eq(monad.bind(monad.pure)(x), x))
+      jsc.assertForall(makeArb(jsc.number), x => eq(monad.bind(monad.pure)(x), x)),
   };
 };

@@ -13,6 +13,6 @@ export const makeFunctorLaws = <f extends Generic1>(functor: Functor1<f>) => (
     composition: (): void =>
       jsc.assertForall(makeArb(jsc.number), jsc.fn(jsc.number), jsc.fn(jsc.number), (x, f, g) =>
         eq(functor.map(f)(functor.map(g)(x)), functor.map(x => f(g(x)))(x))
-      )
+      ),
   };
 };

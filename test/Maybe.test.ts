@@ -11,7 +11,7 @@ import {
   Maybe,
   monadMaybe,
   Nothing,
-  plusMaybe
+  plusMaybe,
 } from '../src/Maybe';
 import { TMaybe } from '../src/Maybe/internal';
 import { makeAltLaws } from './laws/Alt';

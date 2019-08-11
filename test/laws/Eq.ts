@@ -7,7 +7,7 @@ export const makeEqLaws = <a>(eq: Eq<a>) => (arb: jsc.Arbitrary<a>) => ({
   reflexivity: (): void => jsc.assertForall(arb, x => eq.eq(x, x)),
   symmetry: (): void => jsc.assertForall(arb, arb, (x, y) => eq.eq(x, y) === eq.eq(y, x)),
   transitivity: (): void =>
-    jsc.assertForall(arb, arb, arb, (x, y, z) => (eq.eq(x, y) && eq.eq(y, z) ? eq.eq(x, z) : true))
+    jsc.assertForall(arb, arb, arb, (x, y, z) => (eq.eq(x, y) && eq.eq(y, z) ? eq.eq(x, z) : true)),
 });
 
 export const makeEq1Laws = <f extends Generic1>(makeEq: <a>(eq: Eq<a>) => Eq<Type1<f, a>>) => (

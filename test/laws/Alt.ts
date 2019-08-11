@@ -16,6 +16,6 @@ export const makeAltLaws = <f extends Generic1>(alt: Alt1<f>) => (
     distributivity: (): void =>
       jsc.assertForall(jsc.fn(jsc.number), makeArb(jsc.number), makeArb(jsc.number), (f, x, y) =>
         eq(alt.alt(alt.map(f)(x), alt.map(f)(y)), alt.map(f)(alt.alt(x, y)))
-      )
+      ),
   };
 };
