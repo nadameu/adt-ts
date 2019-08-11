@@ -10,6 +10,7 @@ import {
   Just,
   makeEqMaybe,
   Maybe,
+  monadErrorMaybe,
   monadMaybe,
   monadThrowMaybe,
   Nothing,
@@ -25,6 +26,7 @@ import { makeEq1Laws } from './laws/Eq';
 import { makeFoldableLaws } from './laws/Foldable';
 import { makeFunctorLaws } from './laws/Functor';
 import { makeMonadLaws } from './laws/Monad';
+import { makeMonadError1Laws } from './laws/MonadError';
 import { makeMonadThrow1Laws } from './laws/MonadThrow';
 import { makePlusLaws } from './laws/Plus';
 
@@ -86,9 +88,15 @@ describe('Monad', () => {
   test('Monad - right identity', monadLaws.rightIdentity);
 });
 
-describe('Monad', () => {
+describe('MonadThrow', () => {
   const monadThrowLaws = makeMonadThrow1Laws(monadThrowMaybe)(makeEqMaybe)(makeArb);
-  test('Monad - left zero', monadThrowLaws.leftZero);
+  test('MonadThrow - left zero', monadThrowLaws.leftZero);
+});
+
+describe('MonadError', () => {
+  const monadErrorLaws = makeMonadError1Laws(monadErrorMaybe)(makeEqMaybe)(makeArb);
+  test('MonadError - catch', monadErrorLaws.catch);
+  test('MonadError - pure', monadErrorLaws.pure);
 });
 
 describe('Eq', () => {
