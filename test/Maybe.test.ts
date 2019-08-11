@@ -11,6 +11,7 @@ import {
   makeEqMaybe,
   Maybe,
   monadMaybe,
+  monadThrowMaybe,
   Nothing,
   plusMaybe,
 } from '../src/Maybe';
@@ -24,6 +25,7 @@ import { makeEq1Laws } from './laws/Eq';
 import { makeFoldableLaws } from './laws/Foldable';
 import { makeFunctorLaws } from './laws/Functor';
 import { makeMonadLaws } from './laws/Monad';
+import { makeMonadThrow1Laws } from './laws/MonadThrow';
 import { makePlusLaws } from './laws/Plus';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
@@ -82,6 +84,11 @@ describe('Monad', () => {
   const monadLaws = makeMonadLaws(monadMaybe)(makeEqMaybe)(makeArb);
   test('Monad - left identity', monadLaws.leftIdentity);
   test('Monad - right identity', monadLaws.rightIdentity);
+});
+
+describe('Monad', () => {
+  const monadThrowLaws = makeMonadThrow1Laws(monadThrowMaybe)(makeEqMaybe)(makeArb);
+  test('Monad - left zero', monadThrowLaws.leftZero);
 });
 
 describe('Eq', () => {
