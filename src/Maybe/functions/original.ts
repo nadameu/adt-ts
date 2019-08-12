@@ -20,7 +20,7 @@ export const bind: Bind1<TMaybe>['bind'] = /*#__PURE__*/ maybe(Nothing as Maybe<
 
 export const pure: Applicative1<TMaybe>['pure'] = Just;
 
-export const map: Functor1<TMaybe>['map'] = f => /*@__PURE__*/ bind(a => pure(f(a)));
+export const map: Functor1<TMaybe>['map'] = f => /*#__PURE__*/ bind(a => pure(f(a)));
 
 export const apply: Apply1<TMaybe>['apply'] = ff =>
   /*#__PURE__*/ bind(a => map((f: (_: any) => any) => f(a))(ff));
