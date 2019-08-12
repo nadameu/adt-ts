@@ -9,10 +9,10 @@ export default [
         tsconfig: 'src/tsconfig.json',
         target: 'es5',
         module: 'es2015',
-        declaration: false
-      })
+        declaration: false,
+      }),
     ],
-    output: [{ file: pkg.main, format: 'cjs' }]
+    output: [{ file: pkg.main, format: 'cjs' }],
   },
   {
     input: 'src/index.ts',
@@ -21,9 +21,9 @@ export default [
         tsconfig: 'src/tsconfig.json',
         target: 'es2018',
         module: 'es2015',
-        rootDir: './src/'
-      })
+        rootDir: './src/',
+      }),
     ],
-    output: [{ file: pkg.module, format: 'es', preferConst: true }]
-  }
+    output: [{ file: pkg.module, format: 'es', preferConst: true }],
+  },
 ];
