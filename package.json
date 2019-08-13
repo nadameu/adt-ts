@@ -25,6 +25,7 @@
     "build-esm": "tsc -p tsconfig-esm.json",
     "build": "npm run clean && npm run build-cjs && npm run build-esm",
     "dev": "rollup -c -w",
+    "pretest": "npm run build",
     "prettier-write": "prettier --write \"./*.js\" \"src/**\" \"test/**\"",
     "test": "jest",
     "typecheck": "tsc"
