@@ -1,9 +1,9 @@
 {
   "name": "pure-ts",
   "version": "1.0.0",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "typings": "dist/esm/index.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@nadameu/pipe": "^2.0.0",

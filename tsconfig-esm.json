@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "es2015",
+    "declaration": true,
+    "rootDir": "src/",
+    "outDir": "dist/esm/",
+    "strict": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src"]
+}

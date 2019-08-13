@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": false,
+    "rootDir": "src/",
+    "outDir": "dist/cjs/",
+    "strict": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src"]
+}
