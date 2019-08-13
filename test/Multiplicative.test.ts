@@ -1,4 +1,4 @@
-import jsc from 'jsverify';
+import * as jsc from 'jsverify';
 import { monoidMultiplicative, semigroupMultiplicative } from '../src/Multiplicative';
 import { makeSemigroupLaws } from './laws/Semigroup';
 import { eqNumber } from '../src/Number';

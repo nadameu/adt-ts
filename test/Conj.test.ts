@@ -1,4 +1,4 @@
-import jsc from 'jsverify';
+import * as jsc from 'jsverify';
 import { eqBoolean } from '../src/Boolean';
 import { monoidConj, semigroupConj } from '../src/Conj';
 import { makeMonoidLaws } from './laws/Monoid';

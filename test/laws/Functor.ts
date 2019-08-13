@@ -1,4 +1,4 @@
-import jsc from 'jsverify';
+import * as jsc from 'jsverify';
 import { Generic1, Type1 } from '../../src/Generic';
 import { Functor1 } from '../../src/typeclasses/Functor';
 import { Eq } from '../../src/typeclasses/Eq';

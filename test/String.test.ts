@@ -1,4 +1,4 @@
-import jsc from 'jsverify';
+import * as jsc from 'jsverify';
 import { eqString } from '../src/String';
 import { makeEqLaws } from './laws/Eq';
 

@@ -1,4 +1,4 @@
-import jsc from 'jsverify';
+import * as jsc from 'jsverify';
 import { eqNumber } from '../../src';
 import { Generic1, Type1 } from '../../src/Generic';
 import { Monad1 } from '../../src/typeclasses/Monad';
