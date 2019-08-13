@@ -1,2 +1,2 @@
-export { alt, empty, map } from '../functions/original';
-export { TMaybe as Generic1Type } from '../internal';
+export { empty } from '../functions/original';
+export * from './alt';

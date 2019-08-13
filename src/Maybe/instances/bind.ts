@@ -1,2 +1,2 @@
-export { apply, bind, map } from '../functions/original';
-export { TMaybe as Generic1Type } from '../internal';
+export { bind } from '../functions/original';
+export * from './apply';
