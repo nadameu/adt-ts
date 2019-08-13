@@ -1,2 +1,5 @@
-export { mempty, append } from '../functions';
-export let NotGenericType: number;
+import { Monoid } from '../../typeclasses/Monoid';
+
+export * from './semigroup';
+
+export const mempty: Monoid<number>['mempty'] = () => 1;

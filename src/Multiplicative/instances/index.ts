@@ -1,2 +1,3 @@
 import * as monoidMultiplicative from './monoid';
-export { monoidMultiplicative };
+import * as semigroupMultiplicative from './semigroup';
+export { monoidMultiplicative, semigroupMultiplicative };
