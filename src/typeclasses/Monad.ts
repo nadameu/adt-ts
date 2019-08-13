@@ -33,12 +33,16 @@ type PartialHelper<keys extends keyof Monad1<never> & keyof Monad2<never>> = {
   };
 };
 
-export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = <f extends Generic1>(
-  monad: AnyPartialMonad<f, 'bind' | 'pure'>
-) => <a, b>(f: (_: a) => b): ((fa: Type1<f, a>) => Type1<f, b>) =>
-  /*#__PURE__*/ monad.bind(x => monad.pure(f(x)));
+export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = <f extends Generic1>({
+  bind,
+  pure,
+}: AnyPartialMonad<f, 'bind' | 'pure'>) => <a, b>(
+  f: (_: a) => b
+): ((fa: Type1<f, a>) => Type1<f, b>) => /*#__PURE__*/ bind(x => pure(f(x)));
 
 export const ap: PartialHelper<'bind' | 'pure'>['ap'] = <f extends Generic1>(
   monad: AnyPartialMonad<f, 'bind' | 'pure'>
 ) => <a, b>(ff: Type1<f, (_: a) => b>): ((fa: Type1<f, a>) => Type1<f, b>) =>
-  /*#__PURE__*/ monad.bind(x => liftM1<f>(monad as any)((f: (_: a) => b) => f(x))(ff));
+  /*#__PURE__*/ (map => monad.bind<a, b>(x => map<(_: a) => b, b>(f => f(x))(ff)))(
+    liftM1<f>(monad as any)
+  );
