@@ -9,3 +9,8 @@ export * from './Maybe';
 export * from './Multiplicative';
 export * from './Number';
 export * from './String';
+export { lift2, lift3, lift4, lift5 } from './typeclasses/Apply';
+export { join } from './typeclasses/Bind';
+export { fold } from './typeclasses/Foldable';
+export { flap, mapTo } from './typeclasses/Functor';
+export { ap, liftM1 } from './typeclasses/Monad';

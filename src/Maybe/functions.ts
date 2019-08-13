@@ -11,6 +11,7 @@ import { Plus1 } from '../typeclasses/Plus';
 import { Traversable1, traverseDefaultFoldablePlus } from '../typeclasses/Traversable';
 import { Just, Maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
+import { liftM1, ap, Monad1 } from '../typeclasses/Monad';
 
 export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? b : f(fa.value);
@@ -19,10 +20,9 @@ export const bind: Bind1<TMaybe>['bind'] = /*#__PURE__*/ maybe(Nothing as Maybe<
 
 export const pure: Applicative1<TMaybe>['pure'] = Just;
 
-export const map: Functor1<TMaybe>['map'] = f => /*#__PURE__*/ bind(a => pure(f(a)));
+export const map = liftM1({ bind, pure } as Monad1<TMaybe>);
 
-export const apply: Apply1<TMaybe>['apply'] = ff =>
-  /*#__PURE__*/ bind(a => map((f: (_: any) => any) => f(a))(ff));
+export const apply = ap({ bind, pure } as Monad1<TMaybe>);
 
 export const maybeL = <b>(f: () => b) => <a>(g: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? f() : g(fa.value);
