@@ -1,11 +1,11 @@
 import jsc from 'jsverify';
 import { eqBoolean } from '../src/Boolean';
-import { monoidDisj } from '../src/Disj';
+import { monoidDisj, semigroupDisj } from '../src/Disj';
 import { makeMonoidLaws } from './laws/Monoid';
 import { makeSemigroupLaws } from './laws/Semigroup';
 
 describe('Semigroup', () => {
-  const semigroupLaws = makeSemigroupLaws(monoidDisj)(eqBoolean)(jsc.bool);
+  const semigroupLaws = makeSemigroupLaws(semigroupDisj)(eqBoolean)(jsc.bool);
   test('Semigroup - associativity', semigroupLaws.associativity);
 });
 

@@ -1,2 +1,3 @@
 import * as monoidDisj from './monoid';
-export { monoidDisj };
+import * as semigroupDisj from './semigroup';
+export { monoidDisj, semigroupDisj };
