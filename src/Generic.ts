@@ -1,9 +1,13 @@
+declare const GenericSymbol: unique symbol;
+
 export interface Generic1 {
+  [GenericSymbol]: 'Generic1';
   a: unknown;
   type: unknown;
 }
 
 export interface Generic2 {
+  [GenericSymbol]: 'Generic2';
   a: unknown;
   b: unknown;
   type: unknown;
