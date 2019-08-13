@@ -11,6 +11,7 @@
     "jest": "^24.8.0",
     "jsverify": "^0.8.4",
     "prettier": "^1.18.2",
+    "rimraf": "^2.6.3",
     "rollup": "^1.19.4",
     "rollup-plugin-typescript2": "^0.22.1",
     "ts-jest": "^24.0.2",
@@ -19,10 +20,14 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "build": "rollup -c",
+    "clean": "rimraf dist .rpt2_cache",
+    "build-cjs": "tsc -p tsconfig-cjs.json",
+    "build-esm": "tsc -p tsconfig-esm.json",
+    "build": "npm run clean && npm run build-cjs && npm run build-esm",
     "dev": "rollup -c -w",
     "prettier-write": "prettier --write \"./*.js\" \"src/**\" \"test/**\"",
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc"
   },
   "files": [
     "dist"
