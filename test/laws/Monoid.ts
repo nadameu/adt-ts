@@ -14,4 +14,4 @@ export const makeMonoidLaws = <a>(monoid: Monoid<a>) => (eq: Eq<a>) => (arb: jsc
 export const makeMonoid1Laws = <f extends Generic1>(monoid: Monoid1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
 ) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
-  makeMonoidLaws(monoid as any)(makeEq(eqNumber))(makeArb(jsc.number));
+  makeMonoidLaws<Type1<f, number>>(monoid as any)(makeEq(eqNumber))(makeArb(jsc.number));

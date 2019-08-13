@@ -21,4 +21,4 @@ export const makeSemigroupLaws = <a>(semigroup: Semigroup<a>) => (eq: Eq<a>) => 
 export const makeSemigroup1Laws = <f extends Generic1>(semigroup: Semigroup1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
 ) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
-  makeSemigroupLaws(semigroup as any)(makeEq(eqNumber))(makeArb(jsc.number));
+  makeSemigroupLaws<Type1<f, number>>(semigroup as any)(makeEq(eqNumber))(makeArb(jsc.number));
