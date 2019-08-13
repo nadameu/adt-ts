@@ -1,2 +1,2 @@
-export { bind } from '../functions/original';
+export { bind } from '../functions';
 export * from './apply';

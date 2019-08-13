@@ -1,17 +1,16 @@
-import { Alt1 } from '../../typeclasses/Alt';
-import { Applicative1 } from '../../typeclasses/Applicative';
-import { Apply1 } from '../../typeclasses/Apply';
-import { Bind1 } from '../../typeclasses/Bind';
-import { Foldable1, foldMapDefaultR, foldlDefault, foldrDefault } from '../../typeclasses/Foldable';
-import { Functor1 } from '../../typeclasses/Functor';
-import { MonadError1 } from '../../typeclasses/MonadError';
-import { MonadThrow1 } from '../../typeclasses/MonadThrow';
-import { Plus1 } from '../../typeclasses/Plus';
-import { Traversable1, traverseDefaultFoldablePlus } from '../../typeclasses/Traversable';
-import { Just, Maybe, Nothing } from '../definitions';
-import { TMaybe } from '../internal';
-import { Generic1, Type1 } from '../../Generic';
-import { Monoid1, Monoid } from '../../typeclasses/Monoid';
+import { Alt1 } from '../typeclasses/Alt';
+import { Applicative1 } from '../typeclasses/Applicative';
+import { Apply1 } from '../typeclasses/Apply';
+import { Bind1 } from '../typeclasses/Bind';
+import { Foldable1, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
+import { Functor1 } from '../typeclasses/Functor';
+import { MonadError1 } from '../typeclasses/MonadError';
+import { MonadThrow1 } from '../typeclasses/MonadThrow';
+import { Monoid, Monoid1 } from '../typeclasses/Monoid';
+import { Plus1 } from '../typeclasses/Plus';
+import { Traversable1, traverseDefaultFoldablePlus } from '../typeclasses/Traversable';
+import { Just, Maybe, Nothing } from './definitions';
+import { TMaybe } from './internal';
 
 export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? b : f(fa.value);

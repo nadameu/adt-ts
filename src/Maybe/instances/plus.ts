@@ -1,2 +1,2 @@
-export { empty } from '../functions/original';
+export { empty } from '../functions';
 export * from './alt';

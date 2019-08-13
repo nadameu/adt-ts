@@ -1,2 +1,2 @@
-export { apply } from '../functions/original';
+export { apply } from '../functions';
 export * from './functor';

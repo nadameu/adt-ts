@@ -1,2 +1,2 @@
-export { catchError } from '../functions/original';
+export { catchError } from '../functions';
 export * from './monadThrow';

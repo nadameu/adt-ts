@@ -1,2 +1,2 @@
-export { map } from '../functions/original';
+export { map } from '../functions';
 export { TMaybe as Generic1Type } from '../internal';

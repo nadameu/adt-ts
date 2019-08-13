@@ -1,2 +1,2 @@
-export { throwError } from '../functions/original';
+export { throwError } from '../functions';
 export * from './monad';
