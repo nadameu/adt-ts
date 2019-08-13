@@ -9,6 +9,7 @@ export * from './Maybe';
 export * from './Multiplicative';
 export * from './Number';
 export * from './String';
+export { liftA1 } from './typeclasses/Applicative';
 export { lift2, lift3, lift4, lift5 } from './typeclasses/Apply';
 export { join } from './typeclasses/Bind';
 export { fold } from './typeclasses/Foldable';
