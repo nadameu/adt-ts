@@ -9,7 +9,10 @@ export interface Apply2<f extends Generic2> extends Functor2<f> {
   apply: Helpers2<f>['apply'];
 }
 
-type AnyApply<f extends Generic1> = Pick<Apply1<f>, 'apply' | 'map'>;
+export type AnyApply = Pick<
+  Apply1<Generic1> & Apply2<Generic2>,
+  keyof Apply1<Generic1> & keyof Apply2<Generic2>
+>;
 
 interface Helpers1<f extends Generic1> {
   apply: <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>) => Type1<f, b>;
@@ -60,21 +63,21 @@ type Helper = {
   };
 };
 
-export const lift2: Helper['lift2'] = <f extends Generic1>(apply: AnyApply<f>) => <a, b, c>(
-  f: (_: a) => (_: b) => c
-) => (fa: Type1<f, a>) => /*#__PURE__*/ apply.apply(apply.map(f)(fa));
+export const lift2: Helper['lift2'] = (apply: AnyApply) => <a, b, c>(f: (_: a) => (_: b) => c) => (
+  fa: unknown
+) => /*#__PURE__*/ apply.apply(apply.map(f)(fa));
 
-export const lift3: Helper['lift3'] = <f extends Generic1>(apply: AnyApply<f>) => <a, b, c, d>(
+export const lift3: Helper['lift3'] = (apply: AnyApply) => <a, b, c, d>(
   f: (_: a) => (_: b) => (_: c) => d
-) => (fa: Type1<f, a>) => (fb: Type1<f, b>) =>
-  /*#__PURE__*/ apply.apply(lift2(apply as Apply1<f>)(f)(fa)(fb));
+) => (fa: unknown) => (fb: unknown) =>
+  /*#__PURE__*/ apply.apply(lift2(apply as Apply1<Generic1>)(f)(fa)(fb));
 
-export const lift4: Helper['lift4'] = <f extends Generic1>(apply: AnyApply<f>) => <a, b, c, d, e>(
+export const lift4: Helper['lift4'] = (apply: AnyApply) => <a, b, c, d, e>(
   f: (_: a) => (_: b) => (_: c) => (_: d) => e
-) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => (fc: Type1<f, c>) =>
-  /*#__PURE__*/ apply.apply(lift3(apply as Apply1<f>)(f)(fa)(fb)(fc));
+) => (fa: unknown) => (fb: unknown) => (fc: unknown) =>
+  /*#__PURE__*/ apply.apply(lift3(apply as Apply1<Generic1>)(f)(fa)(fb)(fc));
 
-export const lift5: Helper['lift5'] = <f extends Generic1>(apply: AnyApply<f>) => <a, b, c, d, e>(
+export const lift5: Helper['lift5'] = (apply: AnyApply) => <a, b, c, d, e>(
   f: (_: a) => (_: b) => (_: c) => (_: d) => e
-) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => (fc: Type1<f, c>) => (fd: Type1<f, d>) =>
-  /*#__PURE__*/ apply.apply(lift4(apply as Apply1<f>)(f)(fa)(fb)(fc)(fd));
+) => (fa: unknown) => (fb: unknown) => (fc: unknown) => (fd: unknown) =>
+  /*#__PURE__*/ apply.apply(lift4(apply as Apply1<Generic1>)(f)(fa)(fb)(fc)(fd));

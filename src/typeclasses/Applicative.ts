@@ -1,6 +1,5 @@
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { Apply1, Apply2 } from './Apply';
-import { Monad1 } from './Monad';
 
 export interface Applicative1<f extends Generic1> extends Apply1<f> {
   pure: Helpers1<f>['pure'];
@@ -10,10 +9,9 @@ export interface Applicative2<f extends Generic2> extends Apply2<f> {
   pure: Helpers2<f>['pure'];
 }
 
-type AnyApplicative<f extends Generic1> = Pick<Applicative1<f>, 'apply' | 'map' | 'pure'>;
-type AnyPartialApplicative<f extends Generic1, k extends 'apply' | 'map' | 'pure'> = Pick<
-  Applicative1<f>,
-  k
+export type AnyApplicative = Pick<
+  Applicative1<Generic1> & Applicative2<Generic2>,
+  keyof Applicative1<Generic1> & keyof Applicative2<Generic2>
 >;
 
 interface Helpers1<f extends Generic1> {
@@ -37,9 +35,8 @@ type PartialHelper<keys extends keyof Applicative1<never> & keyof Applicative2<n
   };
 };
 
-export const liftA1: PartialHelper<'apply' | 'pure'>['liftA1'] = <f extends Generic1>({
+export const liftA1: PartialHelper<'apply' | 'pure'>['liftA1'] = ({
   apply,
   pure,
-}: Pick<Applicative1<f>, 'apply' | 'pure'>) => <a, b>(
-  f: (_: a) => b
-): ((fa: Type1<f, a>) => Type1<f, b>) => /*#__PURE__*/ apply(pure(f));
+}: Pick<AnyApplicative, 'apply' | 'pure'>) => <a, b>(f: (_: a) => b) =>
+  /*#__PURE__*/ apply(pure(f));

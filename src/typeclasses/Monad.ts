@@ -1,4 +1,4 @@
-import { Generic1, Generic2, Type1 } from '../Generic';
+import { Generic1, Generic2 } from '../Generic';
 import { Applicative1, Applicative2 } from './Applicative';
 import { Bind1, Bind2 } from './Bind';
 
@@ -6,10 +6,9 @@ export interface Monad1<f extends Generic1> extends Applicative1<f>, Bind1<f> {}
 
 export interface Monad2<f extends Generic2> extends Applicative2<f>, Bind2<f> {}
 
-type AnyMonad<f extends Generic1> = Pick<Monad1<f>, 'apply' | 'bind' | 'map' | 'pure'>;
-type AnyPartialMonad<f extends Generic1, k extends 'apply' | 'bind' | 'map' | 'pure'> = Pick<
-  Monad1<f>,
-  k
+export type AnyMonad = Pick<
+  Monad1<Generic1> & Monad2<Generic2>,
+  keyof Monad1<Generic1> & keyof Monad2<Generic2>
 >;
 
 interface Helpers1<f extends Generic1> {
@@ -33,16 +32,15 @@ type PartialHelper<keys extends keyof Monad1<never> & keyof Monad2<never>> = {
   };
 };
 
-export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = <f extends Generic1>({
+export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = ({
   bind,
   pure,
-}: AnyPartialMonad<f, 'bind' | 'pure'>) => <a, b>(
-  f: (_: a) => b
-): ((fa: Type1<f, a>) => Type1<f, b>) => /*#__PURE__*/ bind(x => pure(f(x)));
+}: Pick<AnyMonad, 'bind' | 'pure'>) => (f: (_: any) => any) => /*#__PURE__*/ bind(x => pure(f(x)));
 
-export const ap: PartialHelper<'bind' | 'pure'>['ap'] = <f extends Generic1>(
-  monad: AnyPartialMonad<f, 'bind' | 'pure'>
-) => <a, b>(ff: Type1<f, (_: a) => b>): ((fa: Type1<f, a>) => Type1<f, b>) =>
-  /*#__PURE__*/ (map => monad.bind<a, b>(x => map<(_: a) => b, b>(f => f(x))(ff)))(
-    liftM1<f>(monad as any)
-  );
+export const ap: PartialHelper<'bind' | 'pure'>['ap'] = (
+  monad: Pick<AnyMonad, 'bind' | 'pure'>
+) => {
+  const map = /*#__PURE__*/ liftM1(monad as Monad1<Generic1>);
+  return (ff: unknown) =>
+    /*#__PURE__*/ monad.bind(x => map<(_: unknown) => unknown, unknown>(f => f(x))(ff));
+};

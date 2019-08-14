@@ -8,7 +8,10 @@ export interface Functor2<f extends Generic2> extends Identified2<f> {
   map: Helpers2<f>['map'];
 }
 
-type AnyFunctor<f extends Generic1> = Pick<Functor1<f>, 'map'>;
+export type AnyFunctor = Pick<
+  Functor1<Generic1> & Functor2<Generic2>,
+  keyof Functor1<Generic1> & keyof Functor2<Generic2>
+>;
 
 interface Helpers1<f extends Generic1> {
   map: <a, b>(f: (_: a) => b) => (fa: Type1<f, a>) => Type1<f, b>;
@@ -27,9 +30,8 @@ type Helper = {
   };
 };
 
-export const mapTo: Helper['mapTo'] = <f extends Generic1>(functor: AnyFunctor<f>) => <a>(a: a) =>
+export const mapTo: Helper['mapTo'] = (functor: AnyFunctor) => <a>(a: a) =>
   /*#__PURE__*/ functor.map(_ => a);
 
-export const flap: Helper['flap'] = <f extends Generic1>(functor: AnyFunctor<f>) => <a>(
-  a: a
-): (<b>(ff: Type1<f, (_: a) => b>) => Type1<f, b>) => /*#__PURE__*/ functor.map(f => f(a));
+export const flap: Helper['flap'] = (functor: AnyFunctor) => <a>(a: a) =>
+  /*#__PURE__*/ functor.map<(_: unknown) => unknown, unknown>(f => f(a));
