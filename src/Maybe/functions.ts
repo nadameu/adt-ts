@@ -38,9 +38,9 @@ export const alt: Alt1<TMaybe>['alt'] = (fx, fy) => (fx.isNothing ? fy : fx);
 
 export const empty: Plus1<TMaybe>['empty'] = () => Nothing;
 
-export const throwError: MonadThrow1<TMaybe>['throwError'] = () => Nothing;
+export const throwError: MonadThrow1<TMaybe>['throwError'] = empty;
 
-export const catchError: MonadError1<TMaybe>['catchError'] = f => fa => (fa.isNothing ? f() : fa);
+export const catchError: MonadError1<TMaybe>['catchError'] = f => /*#__PURE__*/ maybeL(f)(Just);
 
 export const foldMap: Foldable1<TMaybe>['foldMap'] = <m>(monoid: Monoid<m> | Monoid1<any>) =>
   /*#__PURE__*/ maybeL(monoid.mempty);
