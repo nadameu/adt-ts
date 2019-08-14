@@ -17,15 +17,15 @@ import {
   plusMaybe,
 } from '../src/Maybe';
 import { TMaybe } from '../src/Maybe/internal';
-import { makeAltLaws } from './laws/Alt';
+import { makeAlt1Laws } from './laws/Alt';
 import { makeAlternativeLaws } from './laws/Alternative';
-import { makeApplicativeLaws } from './laws/Applicative';
-import { makeApplyLaws } from './laws/Apply';
-import { makeBindLaws } from './laws/Bind';
+import { makeApplicative1Laws } from './laws/Applicative';
+import { makeApply1Laws } from './laws/Apply';
+import { makeBind1Laws } from './laws/Bind';
 import { makeEq1Laws } from './laws/Eq';
-import { makeFoldableLaws } from './laws/Foldable';
-import { makeFunctorLaws } from './laws/Functor';
-import { makeMonadLaws } from './laws/Monad';
+import { makeFoldable1Laws } from './laws/Foldable';
+import { makeFunctor1Laws } from './laws/Functor';
+import { makeMonad1Laws } from './laws/Monad';
 import { makeMonadError1Laws } from './laws/MonadError';
 import { makeMonadThrow1Laws } from './laws/MonadThrow';
 import { makePlusLaws } from './laws/Plus';
@@ -34,25 +34,25 @@ const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
   jsc.oneof([jsc.constant(Nothing), arb.smap(Just, x => x.value)]);
 
 describe('Functor', () => {
-  const functorLaws = makeFunctorLaws(functorMaybe)(makeEqMaybe)(makeArb);
+  const functorLaws = makeFunctor1Laws(functorMaybe)(makeEqMaybe)(makeArb);
   test('Functor - identity', functorLaws.identity);
   test('Functor - composition', functorLaws.composition);
 });
 
 describe('Apply', () => {
-  const applyLaws = makeApplyLaws(applyMaybe)(makeEqMaybe)(makeArb);
+  const applyLaws = makeApply1Laws(applyMaybe)(makeEqMaybe)(makeArb);
   test('Apply - composition', applyLaws.composition);
 });
 
 describe('Applicative', () => {
-  const applicativeLaws = makeApplicativeLaws(applicativeMaybe)(makeEqMaybe)(makeArb);
+  const applicativeLaws = makeApplicative1Laws(applicativeMaybe)(makeEqMaybe)(makeArb);
   test('Applicative - identity', applicativeLaws.identity);
   test('Applicative - homomorphism', applicativeLaws.homomorphism);
   test('Applicative - interchange', applicativeLaws.interchange);
 });
 
 describe('Alt', () => {
-  const altLaws = makeAltLaws(altMaybe)(makeEqMaybe)(makeArb);
+  const altLaws = makeAlt1Laws(altMaybe)(makeEqMaybe)(makeArb);
   test('Alt - associativity', altLaws.associativity);
   test('Alt - distributivity', altLaws.distributivity);
 });
@@ -71,19 +71,19 @@ describe('Alternative', () => {
 });
 
 describe('Foldable', () => {
-  const foldableLaws = makeFoldableLaws(foldableMaybe)(makeArb);
+  const foldableLaws = makeFoldable1Laws(foldableMaybe)(makeArb);
   test('Foldable - foldl', foldableLaws.foldl);
   test('Foldable - foldr', foldableLaws.foldr);
   test('Foldable - foldMap', foldableLaws.foldMap);
 });
 
 describe('Bind', () => {
-  const bindLaws = makeBindLaws(bindMaybe)(makeEqMaybe)(makeArb);
+  const bindLaws = makeBind1Laws(bindMaybe)(makeEqMaybe)(makeArb);
   test('Bind - associativity', bindLaws.associativity);
 });
 
 describe('Monad', () => {
-  const monadLaws = makeMonadLaws(monadMaybe)(makeEqMaybe)(makeArb);
+  const monadLaws = makeMonad1Laws(monadMaybe)(makeEqMaybe)(makeArb);
   test('Monad - left identity', monadLaws.leftIdentity);
   test('Monad - right identity', monadLaws.rightIdentity);
 });

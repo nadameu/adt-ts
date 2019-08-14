@@ -13,15 +13,15 @@ import { TArray } from '../src/Array/internal';
 import { Alt1 } from '../src/typeclasses/Alt';
 import { Alternative1 } from '../src/typeclasses/Alternative';
 import { Plus1 } from '../src/typeclasses/Plus';
-import { makeAltLaws } from './laws/Alt';
+import { makeAlt1Laws } from './laws/Alt';
 import { makeAlternativeLaws } from './laws/Alternative';
-import { makeApplicativeLaws } from './laws/Applicative';
-import { makeApplyLaws } from './laws/Apply';
-import { makeBindLaws } from './laws/Bind';
+import { makeApplicative1Laws } from './laws/Applicative';
+import { makeApply1Laws } from './laws/Apply';
+import { makeBind1Laws } from './laws/Bind';
 import { makeEq1Laws } from './laws/Eq';
-import { makeFoldableLaws } from './laws/Foldable';
-import { makeFunctorLaws } from './laws/Functor';
-import { makeMonadLaws } from './laws/Monad';
+import { makeFoldable1Laws } from './laws/Foldable';
+import { makeFunctor1Laws } from './laws/Functor';
+import { makeMonad1Laws } from './laws/Monad';
 import { makePlusLaws } from './laws/Plus';
 
 const altArray: Alt1<TArray> = {
@@ -41,25 +41,25 @@ const alternativeArray: Alternative1<TArray> = {
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Array<a>> => jsc.array(arb);
 
 describe('Functor', () => {
-  const functorLaws = makeFunctorLaws(functorArray)(makeEqArray)(makeArb);
+  const functorLaws = makeFunctor1Laws(functorArray)(makeEqArray)(makeArb);
   test('Functor - identity', functorLaws.identity);
   test('Functor - composition', functorLaws.composition);
 });
 
 describe('Apply', () => {
-  const applyLaws = makeApplyLaws(applyArray)(makeEqArray)(makeArb);
+  const applyLaws = makeApply1Laws(applyArray)(makeEqArray)(makeArb);
   test('Apply - composition', applyLaws.composition);
 });
 
 describe('Applicative', () => {
-  const applicativeLaws = makeApplicativeLaws(applicativeArray)(makeEqArray)(makeArb);
+  const applicativeLaws = makeApplicative1Laws(applicativeArray)(makeEqArray)(makeArb);
   test('Applicative - identity', applicativeLaws.identity);
   test('Applicative - homomorphism', applicativeLaws.homomorphism);
   test('Applicative - interchange', applicativeLaws.interchange);
 });
 
 describe('Alt', () => {
-  const altLaws = makeAltLaws(altArray)(makeEqArray)(makeArb);
+  const altLaws = makeAlt1Laws(altArray)(makeEqArray)(makeArb);
   test('Alt - associativity', altLaws.associativity);
   test('Alt - distributivity', altLaws.distributivity);
 });
@@ -78,19 +78,19 @@ describe('Alternative', () => {
 });
 
 describe('Foldable', () => {
-  const foldableLaws = makeFoldableLaws(foldableArray)(makeArb);
+  const foldableLaws = makeFoldable1Laws(foldableArray)(makeArb);
   test('Foldable - foldl', foldableLaws.foldl);
   test('Foldable - foldr', foldableLaws.foldr);
   test('Foldable - foldMap', foldableLaws.foldMap);
 });
 
 describe('Bind', () => {
-  const bindLaws = makeBindLaws(bindArray)(makeEqArray)(makeArb);
+  const bindLaws = makeBind1Laws(bindArray)(makeEqArray)(makeArb);
   test('Bind - associativity', bindLaws.associativity);
 });
 
 describe('Monad', () => {
-  const monadLaws = makeMonadLaws(monadArray)(makeEqArray)(makeArb);
+  const monadLaws = makeMonad1Laws(monadArray)(makeEqArray)(makeArb);
   test('Monad - left identity', monadLaws.leftIdentity);
   test('Monad - right identity', monadLaws.rightIdentity);
 });
