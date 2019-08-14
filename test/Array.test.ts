@@ -1,5 +1,7 @@
 import * as jsc from 'jsverify';
 import {
+  altArray,
+  alternativeArray,
   applicativeArray,
   applyArray,
   bindArray,
@@ -8,6 +10,8 @@ import {
   makeEqArray,
   monadArray,
   monoidArray,
+  plusArray,
+  semigroupArray,
 } from '../src/Array';
 import { TArray } from '../src/Array/internal';
 import { Alt1 } from '../src/typeclasses/Alt';
@@ -22,21 +26,9 @@ import { makeEq1Laws } from './laws/Eq';
 import { makeFoldable1Laws } from './laws/Foldable';
 import { makeFunctor1Laws } from './laws/Functor';
 import { makeMonad1Laws } from './laws/Monad';
+import { makeMonoid1Laws } from './laws/Monoid';
 import { makePlusLaws } from './laws/Plus';
-
-const altArray: Alt1<TArray> = {
-  ...functorArray,
-  alt: monoidArray.append,
-};
-const plusArray: Plus1<TArray> = {
-  ...altArray,
-  empty: monoidArray.mempty,
-};
-const alternativeArray: Alternative1<TArray> = {
-  ...plusArray,
-  apply: applyArray.apply,
-  pure: applicativeArray.pure,
-};
+import { makeSemigroup1Laws } from './laws/Semigroup';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Array<a>> => jsc.array(arb);
 
@@ -100,4 +92,15 @@ describe('Eq', () => {
   test('Eq - reflexivity', eqLaws.reflexivity);
   test('Eq - symmetry', eqLaws.symmetry);
   test('Eq - transitivity', eqLaws.transitivity);
+});
+
+describe('Semigroup', () => {
+  const semigroupLaws = makeSemigroup1Laws(semigroupArray)(makeEqArray)(makeArb);
+  test('Semigroup - associativity', semigroupLaws.associativity);
+});
+
+describe('Monoid', () => {
+  const monoidLaws = makeMonoid1Laws(monoidArray)(makeEqArray)(makeArb);
+  test('Monoid - left unit', monoidLaws.leftUnit);
+  test('Monoid - right unit', monoidLaws.rightUnit);
 });
