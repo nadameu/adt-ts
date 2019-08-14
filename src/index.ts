@@ -3,6 +3,7 @@ export * from './Array';
 export * from './Boolean';
 export * from './Conj';
 export * from './Disj';
+export * from './Either';
 export * from './First';
 export * from './Last';
 export * from './Maybe';
