@@ -37,9 +37,8 @@ export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = ({
   pure,
 }: Pick<AnyMonad, 'bind' | 'pure'>) => (f: (_: any) => any) => bind(x => pure(f(x)));
 
-export const ap: PartialHelper<'bind' | 'pure'>['ap'] = (
-  monad: Pick<AnyMonad, 'bind' | 'pure'>
-) => {
-  const map = liftM1(monad as Monad1<Generic1>);
-  return (ff: unknown) => monad.bind(x => map<(_: unknown) => unknown, unknown>(f => f(x))(ff));
-};
+export const ap: PartialHelper<'bind' | 'pure'>['ap'] = ({
+  bind,
+  pure,
+}: Pick<AnyMonad, 'bind' | 'pure'>) => (ff: unknown) =>
+  bind(x => bind<(_: unknown) => unknown, unknown>(f => pure(f(x)))(ff));
