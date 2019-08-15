@@ -1,8 +1,8 @@
 import { Alt1 } from '../typeclasses/Alt';
 import { Applicative1 } from '../typeclasses/Applicative';
-import { Bind1 } from '../typeclasses/Bind';
+import { applyDefault, Bind1 } from '../typeclasses/Bind';
 import { Foldable1, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
-import { ap, liftM1, Monad1 } from '../typeclasses/Monad';
+import { liftM1, Monad1 } from '../typeclasses/Monad';
 import { MonadError1 } from '../typeclasses/MonadError';
 import { MonadThrow1 } from '../typeclasses/MonadThrow';
 import { Monoid, Monoid1 } from '../typeclasses/Monoid';
@@ -24,7 +24,7 @@ export const pure: Applicative1<TMaybe>['pure'] = Just;
 
 export const map = liftM1({ bind, pure } as Monad1<TMaybe>);
 
-export const apply = ap({ bind, pure } as Monad1<TMaybe>);
+export const apply = applyDefault({ bind, map } as Bind1<TMaybe>);
 
 export const maybeL = <b>(f: () => b) => <a>(g: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? f() : g(fa.value);
