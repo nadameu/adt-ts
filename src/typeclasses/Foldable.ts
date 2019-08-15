@@ -85,8 +85,8 @@ const toDLList = (() => {
     <f extends Generic2>(foldable: Pick<Foldable2<f>, 'Generic2Type' | 'foldMap'>): <a, b>(
       fab: Type2<f, a, b>
     ) => DLList<b>;
-  } = (foldable: Pick<AnyFoldable, 'foldMap'>) =>
-    foldable.foldMap<DLList<any>>({
+  } = ({ foldMap }: Pick<AnyFoldable, 'foldMap'>) =>
+    foldMap<DLList<any>>({
       append: (left, right) => {
         if (left === null) return right;
         if (right === null) return left;
@@ -130,15 +130,15 @@ export const foldrDefault: PartialHelper<'foldMap'>['foldr'] = (
   return acc;
 };
 
-export const foldMapDefaultL: PartialHelper<'foldl'>['foldMap'] = (
-  foldable: Pick<AnyFoldable, 'foldl'>
-) => (monoid: AnyMonoid) => <a>(f: (_: a) => unknown) =>
-  foldable.foldl<a, unknown>(acc => x => monoid.append(acc, f(x)))(monoid.mempty());
+export const foldMapDefaultL: PartialHelper<'foldl'>['foldMap'] = ({
+  foldl,
+}: Pick<AnyFoldable, 'foldl'>) => ({ append, mempty }: AnyMonoid) => <a>(f: (_: a) => unknown) =>
+  foldl<a, unknown>(acc => x => append(acc, f(x)))(mempty());
 
-export const foldMapDefaultR: PartialHelper<'foldr'>['foldMap'] = (
-  foldable: Pick<AnyFoldable, 'foldr'>
-) => (monoid: AnyMonoid) => <a>(f: (_: a) => unknown) =>
-  foldable.foldr<a, unknown>(x => acc => monoid.append(f(x), acc))(monoid.mempty());
+export const foldMapDefaultR: PartialHelper<'foldr'>['foldMap'] = ({
+  foldr,
+}: Pick<AnyFoldable, 'foldr'>) => ({ append, mempty }: AnyMonoid) => <a>(f: (_: a) => unknown) =>
+  foldr<a, unknown>(x => acc => append(f(x), acc))(mempty());
 
-export const fold: HelperMonoid['fold'] = (foldable: AnyFoldable) => (monoid: AnyMonoid) =>
-  /*#__PURE__#*/ foldable.foldMap(monoid as Monoid<unknown>)(x => x);
+export const fold: HelperMonoid['fold'] = ({ foldMap }: AnyFoldable) => (monoid: AnyMonoid) =>
+  /*#__PURE__#*/ foldMap(monoid as Monoid<unknown>)(x => x);

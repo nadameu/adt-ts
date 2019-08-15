@@ -63,9 +63,9 @@ type Helper = {
   };
 };
 
-export const lift2: Helper['lift2'] = (apply: AnyApply) => <a, b, c>(f: (_: a) => (_: b) => c) => (
-  fa: unknown
-) => apply.apply(apply.map(f)(fa));
+export const lift2: Helper['lift2'] = ({ apply, map }: AnyApply) => <a, b, c>(
+  f: (_: a) => (_: b) => c
+) => (fa: unknown) => apply(map(f)(fa));
 
 export const lift3: Helper['lift3'] = (apply: AnyApply) => <a, b, c, d>(
   f: (_: a) => (_: b) => (_: c) => d

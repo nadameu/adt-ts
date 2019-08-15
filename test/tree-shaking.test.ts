@@ -10,7 +10,7 @@ test('Simple', async () => {
   });
   expect(output.map(x => x.code)).toMatchInlineSnapshot(`
     Array [
-      "const lift2 = (apply) => (f) => (fa) => apply.apply(apply.map(f)(fa));
+      "const lift2 = ({ apply, map }) => (f) => (fa) => apply(map(f)(fa));
 
     function Maybe() { }
     const make = (isNothing) => {

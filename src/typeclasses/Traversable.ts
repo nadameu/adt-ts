@@ -80,15 +80,17 @@ type HelperApplicative = {
   };
 };
 
-export const sequenceDefault: PartialHelper<'traverse'>['sequence'] = (
-  traversable: Pick<AnyTraversable, 'traverse'>
-) => (applicative: AnyApplicative) =>
-  traversable.traverse(applicative as Applicative1<Generic1>)<unknown, unknown>(x => x);
+export const sequenceDefault: PartialHelper<'traverse'>['sequence'] = ({
+  traverse,
+}: Pick<AnyTraversable, 'traverse'>) => (applicative: AnyApplicative) =>
+  traverse(applicative as Applicative1<Generic1>)<unknown, unknown>(x => x);
 
-export const traverseDefault: PartialHelper<'map' | 'sequence'>['traverse'] = (
-  traversable: Pick<AnyTraversable, 'map' | 'sequence'>
-) => (applicative: AnyApplicative) => (f: (_: any) => unknown) => (ta: unknown) =>
-  traversable.sequence(applicative as Applicative1<Generic1>)(traversable.map(f)(ta));
+export const traverseDefault: PartialHelper<'map' | 'sequence'>['traverse'] = ({
+  map,
+  sequence,
+}: Pick<AnyTraversable, 'map' | 'sequence'>) => (applicative: AnyApplicative) => (
+  f: (_: any) => unknown
+) => (ta: unknown) => sequence(applicative as Applicative1<Generic1>)(map(f)(ta));
 
 export const traverseDefaultFoldablePlus: {
   <t extends Generic1>(
@@ -97,26 +99,31 @@ export const traverseDefaultFoldablePlus: {
   <t extends Generic2>(
     foldablePlus: Pick<Foldable2<t> & Plus2<t>, 'Generic2Type' | 'alt' | 'empty' | 'foldMap'>
   ): Helper2Applicative<t>['traverse'];
-} = (foldablePlus: Pick<AnyFoldable & AnyPlus, 'alt' | 'empty' | 'foldMap'>) => (
+} = ({ alt, empty, foldMap }: Pick<AnyFoldable & AnyPlus, 'alt' | 'empty' | 'foldMap'>) => (
   applicative: AnyApplicative
 ) => {
   const liftedAlt = lift2(applicative as Applicative1<Generic1>)(
-    (fx: unknown) => (fy: unknown): unknown => foldablePlus.alt(fx, fy)
+    (fx: unknown) => (fy: unknown): unknown => alt(fx, fy)
   );
-  return foldablePlus.foldMap({
+  return foldMap({
     append: (x, y) => liftedAlt(x)(y),
-    mempty: () => applicative.pure(foldablePlus.empty()),
+    mempty: () => applicative.pure(empty()),
   } as Monoid<unknown>);
 };
 
-export const traverseDefaultFoldableMonoid = <t extends Generic1>(
-  foldableMonoid: Pick<Foldable1<t> & Monoid1<t>, 'Generic1Type' | 'append' | 'mempty' | 'foldMap'>
-): Helper1Applicative<t>['traverse'] => (applicative: AnyApplicative) => {
+export const traverseDefaultFoldableMonoid = <t extends Generic1>({
+  append,
+  mempty,
+  foldMap,
+}: Pick<
+  Foldable1<t> & Monoid1<t>,
+  'Generic1Type' | 'append' | 'mempty' | 'foldMap'
+>): Helper1Applicative<t>['traverse'] => (applicative: AnyApplicative) => {
   const liftedAlt = lift2(applicative as Applicative1<Generic1>)(
-    <a>(fx: Type1<t, a>) => (fy: Type1<t, a>): Type1<t, a> => foldableMonoid.append(fx, fy)
+    <a>(fx: Type1<t, a>) => (fy: Type1<t, a>): Type1<t, a> => append(fx, fy)
   );
-  return foldableMonoid.foldMap({
+  return foldMap({
     append: (x, y) => liftedAlt(x)(y),
-    mempty: () => applicative.pure(foldableMonoid.mempty()),
+    mempty: () => applicative.pure(mempty()),
   } as Monoid<unknown>);
 };

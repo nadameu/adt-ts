@@ -37,7 +37,7 @@ type PartialHelper<keys extends keyof Bind1<Generic1> & keyof Bind2<Generic2>> =
   };
 };
 
-export const join: Helper['join'] = (bind: AnyBind) => bind.bind(x => x);
+export const join: Helper['join'] = ({ bind }: AnyBind) => bind(x => x);
 
 export const applyDefault: PartialHelper<'bind' | 'map'>['apply'] = ({
   bind,
