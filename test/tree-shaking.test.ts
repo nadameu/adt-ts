@@ -10,7 +10,9 @@ test('Simple', async () => {
   });
   expect(output.map(x => x.code)).toMatchInlineSnapshot(`
     Array [
-      "function Maybe() { }
+      "const lift2 = (apply) => (f) => (fa) => apply.apply(apply.map(f)(fa));
+
+    function Maybe() { }
     const make = (isNothing) => {
         const proto = Object.create(Maybe.prototype);
         proto.isJust = !isNothing;
@@ -26,14 +28,19 @@ test('Simple', async () => {
     const Nothing = /*#__PURE__*/ make(true);
     const Just = /*#__PURE__*/ make(false);
 
+    const applyDefault = ({ bind, map, }) => (ff) => (fa) => bind(f => map(f)(fa))(ff);
+
     const liftM1 = ({ bind, pure, }) => (f) => bind(x => pure(f(x)));
 
     const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
     const bind = maybe(Nothing);
     const pure = Just;
     const map = liftM1({ bind, pure });
+    const apply = applyDefault({ bind, map });
 
-    console.log(map(x => x > 3)(Nothing));
+    const applyMaybe = { apply, map };
+
+    console.log(lift2(applyMaybe)(x => y => x > y)(Nothing)(Just(40)));
     ",
     ]
   `);
