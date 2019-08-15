@@ -14,9 +14,6 @@ import {
   semigroupArray,
 } from '../src/Array';
 import { TArray } from '../src/Array/internal';
-import { Alt1 } from '../src/typeclasses/Alt';
-import { Alternative1 } from '../src/typeclasses/Alternative';
-import { Plus1 } from '../src/typeclasses/Plus';
 import { makeAlt1Laws } from './laws/Alt';
 import { makeAlternativeLaws } from './laws/Alternative';
 import { makeApplicative1Laws } from './laws/Applicative';
