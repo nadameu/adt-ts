@@ -19,7 +19,7 @@ interface Helpers1<f extends Generic1> {
   liftA1: Applicative1<f>['map'];
 }
 interface Helpers2<f extends Generic2> {
-  pure: <b, a = never>(b: b) => Type2<f, a, b>;
+  pure: <a, b>(b: b) => Type2<f, a, b>;
   liftA1: Applicative2<f>['map'];
 }
 type Helper = {
