@@ -65,19 +65,18 @@ type Helper = {
 
 export const lift2: Helper['lift2'] = (apply: AnyApply) => <a, b, c>(f: (_: a) => (_: b) => c) => (
   fa: unknown
-) => /*#__PURE__*/ apply.apply(apply.map(f)(fa));
+) => apply.apply(apply.map(f)(fa));
 
 export const lift3: Helper['lift3'] = (apply: AnyApply) => <a, b, c, d>(
   f: (_: a) => (_: b) => (_: c) => d
-) => (fa: unknown) => (fb: unknown) =>
-  /*#__PURE__*/ apply.apply(lift2(apply as Apply1<Generic1>)(f)(fa)(fb));
+) => (fa: unknown) => (fb: unknown) => apply.apply(lift2(apply as Apply1<Generic1>)(f)(fa)(fb));
 
 export const lift4: Helper['lift4'] = (apply: AnyApply) => <a, b, c, d, e>(
   f: (_: a) => (_: b) => (_: c) => (_: d) => e
 ) => (fa: unknown) => (fb: unknown) => (fc: unknown) =>
-  /*#__PURE__*/ apply.apply(lift3(apply as Apply1<Generic1>)(f)(fa)(fb)(fc));
+  apply.apply(lift3(apply as Apply1<Generic1>)(f)(fa)(fb)(fc));
 
 export const lift5: Helper['lift5'] = (apply: AnyApply) => <a, b, c, d, e>(
   f: (_: a) => (_: b) => (_: c) => (_: d) => e
 ) => (fa: unknown) => (fb: unknown) => (fc: unknown) => (fd: unknown) =>
-  /*#__PURE__*/ apply.apply(lift4(apply as Apply1<Generic1>)(f)(fa)(fb)(fc)(fd));
+  apply.apply(lift4(apply as Apply1<Generic1>)(f)(fa)(fb)(fc)(fd));

@@ -12,7 +12,10 @@ export interface Just<a> {
   value: a;
 }
 
-const make = (isNothing: boolean) => {
+const make: {
+  (isNothing: true): Nothing;
+  (isNothing: false): <a>(value: a) => Just<a>;
+} = (isNothing: boolean) => {
   const proto = Object.create(Maybe.prototype);
   proto.isJust = !isNothing;
   proto.isNothing = isNothing;
@@ -24,5 +27,5 @@ const make = (isNothing: boolean) => {
   };
 };
 
-export const Nothing: Nothing = /*#__PURE__*/ make(true);
-export const Just: <a>(value: a) => Just<a> = /*#__PURE__*/ make(false);
+export const Nothing = /*#__PURE__*/ make(true);
+export const Just = /*#__PURE__*/ make(false);

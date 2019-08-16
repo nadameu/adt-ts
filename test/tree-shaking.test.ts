@@ -23,10 +23,10 @@ test('Simple', async () => {
             return just;
         };
     };
-    const Nothing = make(true);
-    const Just = make(false);
+    const Nothing = /*#__PURE__*/ make(true);
+    const Just = /*#__PURE__*/ make(false);
 
-    const liftM1 = ({ bind, pure, }) => (f) => /*#__PURE__*/ bind(x => pure(f(x)));
+    const liftM1 = ({ bind, pure, }) => (f) => bind(x => pure(f(x)));
 
     const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
     const bind = maybe(Nothing);

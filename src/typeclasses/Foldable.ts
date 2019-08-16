@@ -75,7 +75,7 @@ type HelperMonoid = {
   };
 };
 
-const toDLList = /*#__PURE__*/ (() => {
+const toDLList = (() => {
   type DLNode<a> = { prev: DLNode<a> | null; value: a; next: DLNode<a> | null };
   type DLList<a> = { first: DLNode<a>; last: DLNode<a> } | null;
   const toList: {

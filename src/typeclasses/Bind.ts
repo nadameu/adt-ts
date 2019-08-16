@@ -29,4 +29,4 @@ type Helper = {
   };
 };
 
-export const join: Helper['join'] = (bind: AnyBind) => /*#__PURE__*/ bind.bind(x => x);
+export const join: Helper['join'] = (bind: AnyBind) => bind.bind(x => x);

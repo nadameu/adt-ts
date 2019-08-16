@@ -38,5 +38,4 @@ type PartialHelper<keys extends keyof Applicative1<never> & keyof Applicative2<n
 export const liftA1: PartialHelper<'apply' | 'pure'>['liftA1'] = ({
   apply,
   pure,
-}: Pick<AnyApplicative, 'apply' | 'pure'>) => <a, b>(f: (_: a) => b) =>
-  /*#__PURE__*/ apply(pure(f));
+}: Pick<AnyApplicative, 'apply' | 'pure'>) => <a, b>(f: (_: a) => b) => apply(pure(f));

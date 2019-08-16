@@ -30,8 +30,7 @@ type Helper = {
   };
 };
 
-export const mapTo: Helper['mapTo'] = (functor: AnyFunctor) => <a>(a: a) =>
-  /*#__PURE__*/ functor.map(_ => a);
+export const mapTo: Helper['mapTo'] = (functor: AnyFunctor) => <a>(a: a) => functor.map(_ => a);
 
 export const flap: Helper['flap'] = (functor: AnyFunctor) => <a>(a: a) =>
-  /*#__PURE__*/ functor.map<(_: unknown) => unknown, unknown>(f => f(a));
+  functor.map<(_: unknown) => unknown, unknown>(f => f(a));

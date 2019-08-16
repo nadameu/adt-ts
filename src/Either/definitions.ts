@@ -13,7 +13,10 @@ export interface Right<b> {
   rightValue: b;
 }
 
-const make = (isLeft: boolean) => {
+const make: {
+  (isLeft: true): <a>(leftValue: a) => Left<a>;
+  (isLeft: false): <b>(rightValue: b) => Right<b>;
+} = (isLeft: boolean) => {
   const proto = Object.create(Either.prototype);
   proto.isLeft = isLeft;
   proto.isRight = !isLeft;
@@ -30,5 +33,5 @@ const make = (isLeft: boolean) => {
   };
 };
 
-export const Left: <a>(leftValue: a) => Left<a> = /*#__PURE__*/ make(true);
-export const Right: <b>(rightValue: b) => Right<b> = /*#__PURE__*/ make(false);
+export const Left = /*#__PURE__*/ make(true);
+export const Right = /*#__PURE__*/ make(false);

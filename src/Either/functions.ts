@@ -16,45 +16,43 @@ import { TEither } from './internal';
 export const either = <a, c>(f: (_: a) => c) => <b>(g: (_: b) => c) => (fab: Either<a, b>): c =>
   fab.isLeft ? f(fab.leftValue) : g(fab.rightValue);
 
-export const bind: Bind2<TEither>['bind'] = /*#__PURE__*/ either<any, Either<any, any>>(Left);
+export const bind: Bind2<TEither>['bind'] = either<any, Either<any, any>>(Left);
 
 export const pure: Applicative2<TEither>['pure'] = Right;
 
-export const map = /*#__PURE__*/ liftM1({ bind, pure } as Monad2<TEither>);
+export const map = liftM1({ bind, pure } as Monad2<TEither>);
 
-export const apply = /*#__PURE__*/ ap({ bind, pure } as Monad2<TEither>);
+export const apply = ap({ bind, pure } as Monad2<TEither>);
 
 export const alt: Alt2<TEither>['alt'] = (fx, fy) => (fx.isLeft ? fy : fx);
 
 export const throwError: MonadThrow2<TEither>['throwError'] = Left;
 
-export const catchError: MonadError2<TEither>['catchError'] = f => /*#__PURE__*/ either(f)(Right);
+export const catchError: MonadError2<TEither>['catchError'] = f => either(f)(Right);
 
-export const foldMap: Foldable2<TEither>['foldMap'] = (monoid: AnyMonoid) =>
-  /*#__PURE__*/ either(monoid.mempty);
+export const foldMap: Foldable2<TEither>['foldMap'] = (monoid: AnyMonoid) => either(monoid.mempty);
 
-export const foldl = /*#__PURE__*/ foldlDefault({ foldMap } as Foldable2<TEither>);
+export const foldl = foldlDefault({ foldMap } as Foldable2<TEither>);
 
-export const foldr = /*#__PURE__*/ foldrDefault({ foldMap } as Foldable2<TEither>);
+export const foldr = foldrDefault({ foldMap } as Foldable2<TEither>);
 
 export const traverse: Traversable2<TEither>['traverse'] = (applicative: AnyApplicative) => <b, c>(
   f: (_: b) => Type1<Generic1, c>
 ): (<a>(fab: Either<a, b>) => Type1<Generic1, Either<a, c>>) =>
-  /*#__PURE__*/ either(a => applicative.pure(Left(a)))(b => applicative.map(Right)(f(b)));
+  either(a => applicative.pure(Left(a)))(b => applicative.map(Right)(f(b)));
 
-export const sequence = /*#__PURE__*/ sequenceDefault({ traverse } as Traversable2<TEither>);
+export const sequence = sequenceDefault({ traverse } as Traversable2<TEither>);
 
 export const choose = <m extends Generic1>(alt: Alt1<m>) => <a>(ma: Type1<m, a>) => <b>(
   mb: Type1<m, b>
 ): Type1<m, Either<a, b>> => alt.alt(alt.map(Left)(ma), alt.map(Right)(mb));
 
 export const note = <a>(a: a): (<b>(fb: Maybe<b>) => Either<a, b>) =>
-  /*#__PURE__*/ maybe<Either<a, any>>(Left(a))(Right);
+  maybe<Either<a, any>>(Left(a))(Right);
 
 export const noteL = <a>(thunk: () => a): (<b>(fb: Maybe<b>) => Either<a, b>) =>
-  /*#__PURE__*/ maybeL<Either<a, any>>(() => Left(thunk()))(Right);
+  maybeL<Either<a, any>>(() => Left(thunk()))(Right);
 
-export const hush: <a, b>(fab: Either<a, b>) => Maybe<b> = /*#__PURE__*/ either<
-  unknown,
-  Maybe<any>
->(() => Nothing)(Just);
+export const hush: <a, b>(fab: Either<a, b>) => Maybe<b> = either<unknown, Maybe<any>>(
+  () => Nothing
+)(Just);
