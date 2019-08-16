@@ -13,6 +13,13 @@ export interface Generic2 {
   type: unknown;
 }
 
+export interface GenericFn {
+  [GenericSymbol]: 'GenericFn';
+  a: unknown;
+  b: unknown;
+  type: (_: any) => unknown;
+}
+
 export interface Identified0<a> {
   NotGenericType: a;
 }
@@ -25,8 +32,16 @@ export interface Identified2<f extends Generic2> {
   Generic2Type: f;
 }
 
+export interface IdentifiedFn<f extends GenericFn> {
+  GenericFnType: f;
+}
+
 export type Type1<f extends Generic1, a> = f extends never ? never : (f & { a: a })['type'];
 
 export type Type2<f extends Generic2, a, b> = f extends never
+  ? never
+  : (f & { a: a; b: b })['type'];
+
+export type TypeFn<f extends GenericFn, a, b> = f extends never
   ? never
   : (f & { a: a; b: b })['type'];
