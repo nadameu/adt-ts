@@ -26,6 +26,12 @@ export const map = liftM1({ bind, pure } as Monad1<TMaybe>);
 
 export const apply = applyDefault({ bind, map } as Bind1<TMaybe>);
 
+export const filter: {
+  <a>(p: (_: a) => boolean): (fa: Maybe<a>) => Maybe<a>;
+  <a, b extends a>(r: (x: a) => x is b): (fa: Maybe<a>) => Maybe<b>;
+} = <a>(p: (_: a) => boolean): ((fa: Maybe<a>) => Maybe<a>) =>
+  bind(x => (p(x) ? Just(x) : Nothing));
+
 export const maybeL = <b>(f: () => b) => <a>(g: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? f() : g(fa.value);
 
