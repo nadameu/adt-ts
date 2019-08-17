@@ -3,6 +3,7 @@ import { Alternative1 } from '../typeclasses/Alternative';
 import { Applicative1 } from '../typeclasses/Applicative';
 import { Apply1 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
+import { Eq } from '../typeclasses/Eq';
 import { Foldable1 } from '../typeclasses/Foldable';
 import { Functor1 } from '../typeclasses/Functor';
 import { Monad1 } from '../typeclasses/Monad';
@@ -10,6 +11,7 @@ import { MonadError1 } from '../typeclasses/MonadError';
 import { MonadThrow1 } from '../typeclasses/MonadThrow';
 import { Plus1 } from '../typeclasses/Plus';
 import { Traversable1 } from '../typeclasses/Traversable';
+import { Maybe } from './definitions';
 import {
   alt,
   apply,
@@ -27,7 +29,10 @@ import {
 } from './functions';
 import { TMaybe } from './internal';
 
-export { makeEqMaybe } from './instances/eq';
+export const makeEqMaybe = <a>(eq: Eq<a>) =>
+  ({
+    eq: (fx, fy) => (fx.isNothing ? fy.isNothing : fy.isJust && eq.eq(fx.value, fy.value)),
+  } as Eq<Maybe<a>>);
 
 export const functorMaybe = { map } as Functor1<TMaybe>;
 export const applyMaybe = { apply, map } as Apply1<TMaybe>;
