@@ -1,13 +1,10 @@
-const _slice = Array.prototype.slice;
-const slice = _slice.call.bind(_slice) as <a>(xs: ArrayLike<a>, i?: number) => a[];
-
 export function curry(n: number, f: Function) {
-  const args = slice(arguments, 2);
+  const args = Array.prototype.slice.call(arguments, 2);
   if (args.length === n) return f.apply(null, args);
   if (args.length > n) throw new Error(`Expected ${n} arguments, got: ${args.length}.`);
   const applied = function() {
     if (arguments.length === 0) throw new Error(`Empty function call not allowed.`);
-    const newArgs = slice(arguments);
+    const newArgs = Array.prototype.slice.call(arguments);
     return curry.apply(null, [n, f].concat(args).concat(newArgs) as any);
   };
   applied.toString = () => f.toString();
@@ -19,7 +16,7 @@ export const curry2 = <a, b, c>(
 ): {
   (a: a, b: b): c;
   (a: a): (b: b) => c;
-} => curry(2, f);
+} => /*#__PURE__*/ curry(2, f);
 
 export const curry3 = <a, b, c, d>(
   f: (a: a, b: b, c: c) => d
@@ -30,7 +27,7 @@ export const curry3 = <a, b, c, d>(
     (b: b, c: c): d;
     (b: b): (c: c) => d;
   };
-} => curry(3, f);
+} => /*#__PURE__*/ curry(3, f);
 
 export const curry4 = <a, b, c, d, e>(
   f: (a: a, b: b, c: c, d: d) => e
@@ -49,4 +46,4 @@ export const curry4 = <a, b, c, d, e>(
       (c: c): (d: d) => e;
     };
   };
-} => curry(4, f);
+} => /*#__PURE__*/ curry(4, f);
