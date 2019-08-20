@@ -1,2 +1,4 @@
-import * as eqNumber from './instances/eq';
-export { eqNumber };
+import { Eq } from '../typeclasses/Eq';
+import { eq } from './functions';
+
+export const eqNumber = { eq } as Eq<number>;
