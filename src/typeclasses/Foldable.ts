@@ -1,5 +1,6 @@
 import { Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
 import { AnyMonoid, Monoid, Monoid1 } from './Monoid';
+import { curry2 } from '../curry';
 
 export interface Foldable1<f extends Generic1> extends Identified1<f> {
   foldl: Helpers1<f>['foldl'];
@@ -87,13 +88,13 @@ const toDLList = (() => {
     ) => DLList<b>;
   } = ({ foldMap }: Pick<AnyFoldable, 'foldMap'>) =>
     foldMap<DLList<any>>({
-      append: (left, right) => {
+      append: curry2((left, right) => {
         if (left === null) return right;
         if (right === null) return left;
         left.last.next = right.first;
         left.last = right.last;
         return left;
-      },
+      }),
       mempty: () => null,
     } as Monoid<DLList<any>>)<unknown>(value => {
       const node = { prev: null, value, next: null };

@@ -5,6 +5,7 @@ import { AnyFoldable, Foldable1, Foldable2 } from './Foldable';
 import { Functor1, Functor2 } from './Functor';
 import { Monoid, Monoid1 } from './Monoid';
 import { AnyPlus, Plus1, Plus2 } from './Plus';
+import { curry2 } from '../curry';
 
 export interface Traversable1<t extends Generic1> extends Functor1<t>, Foldable1<t> {
   traverse: Helpers1<t>['traverse'];
@@ -102,11 +103,9 @@ export const traverseDefaultFoldablePlus: {
 } = ({ alt, empty, foldMap }: Pick<AnyFoldable & AnyPlus, 'alt' | 'empty' | 'foldMap'>) => (
   applicative: AnyApplicative
 ) => {
-  const liftedAlt = lift2(applicative as Applicative1<Generic1>)(
-    (fx: unknown) => (fy: unknown): unknown => alt(fx, fy)
-  );
+  const liftedAlt = lift2(applicative as Applicative1<Generic1>)(alt);
   return foldMap({
-    append: (x, y) => liftedAlt(x)(y),
+    append: curry2((x, y) => liftedAlt(x)(y)),
     mempty: () => applicative.pure(empty()),
   } as Monoid<unknown>);
 };
@@ -119,11 +118,9 @@ export const traverseDefaultFoldableMonoid = <t extends Generic1>({
   Foldable1<t> & Monoid1<t>,
   'Generic1Type' | 'append' | 'mempty' | 'foldMap'
 >): Helper1Applicative<t>['traverse'] => (applicative: AnyApplicative) => {
-  const liftedAlt = lift2(applicative as Applicative1<Generic1>)(
-    <a>(fx: Type1<t, a>) => (fy: Type1<t, a>): Type1<t, a> => append(fx, fy)
-  );
+  const liftedAlt = lift2(applicative as Applicative1<Generic1>)(append);
   return foldMap({
-    append: (x, y) => liftedAlt(x)(y),
+    append: curry2((x, y) => liftedAlt(x)(y)),
     mempty: () => applicative.pure(mempty()),
   } as Monoid<unknown>);
 };
