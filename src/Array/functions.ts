@@ -35,20 +35,19 @@ export const foldl: Foldable1<TArray>['foldl'] = f => z => xs =>
 export const foldr: Foldable1<TArray>['foldr'] = f => z => xs =>
   xs.reduceRight((acc, x) => f(x)(acc), z);
 
-export const foldMap = foldMapDefaultR({ Generic1Type: TArray, foldr });
+export const foldMap = foldMapDefaultR({ foldr } as Foldable1<TArray>);
 
 export const append: Semigroup1<TArray>['append'] = (xs, ys) => xs.concat(ys);
 
 export const mempty: Monoid1<TArray>['mempty'] = () => [];
 
 export const traverse = traverseDefaultFoldableMonoid({
-  Generic1Type: TArray,
   append,
   foldMap,
   mempty,
-});
+} as Foldable1<TArray> & Monoid1<TArray>);
 
-export const sequence = sequenceDefault({ Generic1Type: TArray, traverse });
+export const sequence = sequenceDefault({ traverse } as Traversable1<TArray>);
 
 export const alt = append;
 
