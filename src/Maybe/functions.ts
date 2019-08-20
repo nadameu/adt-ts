@@ -50,15 +50,14 @@ export const catchError: MonadError1<TMaybe>['catchError'] = f => maybeL(f)(Just
 export const foldMap: Foldable1<TMaybe>['foldMap'] = <m>(monoid: Monoid<m> | Monoid1<any>) =>
   maybeL(monoid.mempty);
 
-export const foldl = foldlDefault({ Generic1Type: TMaybe, foldMap });
+export const foldl = foldlDefault({ foldMap } as Foldable1<TMaybe>);
 
-export const foldr = foldrDefault({ Generic1Type: TMaybe, foldMap });
+export const foldr = foldrDefault({ foldMap } as Foldable1<TMaybe>);
 
 export const traverse = traverseDefaultFoldablePlus({
-  Generic1Type: TMaybe,
   alt,
   empty,
   foldMap,
-});
+} as Foldable1<TMaybe> & Plus1<TMaybe>);
 
 export const sequence = sequenceDefault({ traverse } as Traversable1<TMaybe>);
