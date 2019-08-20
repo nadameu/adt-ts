@@ -2,6 +2,7 @@ import * as jsc from 'jsverify';
 import { eqNumber } from '../../src';
 import { Generic1, Type1, Generic2, Type2 } from '../../src/Generic';
 import { Foldable1, Foldable2 } from '../../src/typeclasses/Foldable';
+import { Monoid } from '../../src/typeclasses/Monoid';
 
 export const makeFoldable1Laws = <f extends Generic1>(foldable: Foldable1<f>) => (
   makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>
@@ -30,10 +31,9 @@ export const makeFoldable1Laws = <f extends Generic1>(foldable: Foldable1<f>) =>
       jsc.assertForall(makeArb(jsc.number), jsc.fn(jsc.number), (fx, f) =>
         eq(
           foldable.foldMap<number>({
-            NotGenericType: (undefined as unknown) as number,
             append: (x, y) => x + y,
             mempty: () => 0,
-          })(f)(fx),
+          } as Monoid<number>)(f)(fx),
           foldable
             .foldl<number, number[]>(xs => x => (xs.push(x), xs))([])(fx)
             .reduce((acc, x) => acc + f(x), 0)
