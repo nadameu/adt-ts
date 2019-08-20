@@ -12,21 +12,8 @@ test('Simple', async () => {
     Array [
       "const lift2 = ({ apply, map }) => (f) => (fa) => apply(map(f)(fa));
 
-    function Maybe() { }
-    const make = (isNothing) => {
-        const proto = Object.create(Maybe.prototype);
-        proto.isJust = !isNothing;
-        proto.isNothing = isNothing;
-        if (isNothing)
-            return Object.create(proto);
-        return function Just(value) {
-            const just = Object.create(proto);
-            just.value = value;
-            return just;
-        };
-    };
-    const Nothing = /*#__PURE__*/ make(true);
-    const Just = /*#__PURE__*/ make(false);
+    const Nothing = { isJust: false, isNothing: true };
+    const Just = (value) => ({ isJust: true, isNothing: false, value });
 
     const applyDefault = ({ bind, map, }) => (ff) => (fa) => bind(f => map(f)(fa))(ff);
 
