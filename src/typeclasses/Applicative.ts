@@ -1,5 +1,6 @@
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { Apply1, Apply2 } from './Apply';
+import { curry2 } from '../curry';
 
 export interface Applicative1<f extends Generic1> extends Apply1<f> {
   pure: Helpers1<f>['pure'];
@@ -38,4 +39,4 @@ type PartialHelper<keys extends keyof Applicative1<never> & keyof Applicative2<n
 export const liftA1: PartialHelper<'apply' | 'pure'>['liftA1'] = ({
   apply,
   pure,
-}: Pick<AnyApplicative, 'apply' | 'pure'>) => <a, b>(f: (_: a) => b) => apply(pure(f));
+}: Pick<AnyApplicative, 'apply' | 'pure'>) => curry2((f, fa) => apply(pure(f))(fa));

@@ -1,3 +1,4 @@
+import { curry, curry2 } from '../curry';
 import { Generic1, Generic2 } from '../Generic';
 import { Applicative1, Applicative2 } from './Applicative';
 import { Bind1, Bind2 } from './Bind';
@@ -6,9 +7,9 @@ export interface Monad1<f extends Generic1> extends Applicative1<f>, Bind1<f> {}
 
 export interface Monad2<f extends Generic2> extends Applicative2<f>, Bind2<f> {}
 
-export type AnyMonad = Pick<
+export type Monad = Pick<
   Monad1<Generic1> & Monad2<Generic2>,
-  keyof Monad1<Generic1> & keyof Monad2<Generic2>
+  keyof Monad1<never> & keyof Monad2<never>
 >;
 
 interface Helpers1<f extends Generic1> {
@@ -35,10 +36,10 @@ type PartialHelper<keys extends keyof Monad1<never> & keyof Monad2<never>> = {
 export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = ({
   bind,
   pure,
-}: Pick<AnyMonad, 'bind' | 'pure'>) => (f: (_: any) => any) => bind(x => pure(f(x)));
+}: Pick<Monad, 'bind' | 'pure'>) => curry2((f: Function, fa) => bind(x => pure(f(x)))(fa));
 
 export const ap: PartialHelper<'bind' | 'pure'>['ap'] = ({
   bind,
   pure,
-}: Pick<AnyMonad, 'bind' | 'pure'>) => (ff: unknown) =>
+}: Pick<Monad, 'bind' | 'pure'>) => (ff: unknown) =>
   bind(x => bind<(_: unknown) => unknown, unknown>(f => pure(f(x)))(ff));

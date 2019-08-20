@@ -1,16 +1,17 @@
+import { curry2 } from '../curry';
 import { Applicative1 } from '../typeclasses/Applicative';
 import { Apply1 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
 import { Foldable1, foldMapDefaultR } from '../typeclasses/Foldable';
 import { Functor1 } from '../typeclasses/Functor';
+import { Monoid1 } from '../typeclasses/Monoid';
+import { Semigroup1 } from '../typeclasses/Semigroup';
 import {
+  sequenceDefault,
   Traversable1,
   traverseDefaultFoldableMonoid,
-  sequenceDefault,
 } from '../typeclasses/Traversable';
 import { TArray } from './internal';
-import { Semigroup1 } from '../typeclasses/Semigroup';
-import { Monoid1 } from '../typeclasses/Monoid';
 
 export const bind: Bind1<TArray>['bind'] = f => xs => {
   const result: any[] = [];
@@ -22,7 +23,7 @@ export const bind: Bind1<TArray>['bind'] = f => xs => {
   return result;
 };
 
-export const map: Functor1<TArray>['map'] = f => xs => xs.map(x => f(x));
+export const map: Functor1<TArray>['map'] = curry2((f, xs) => xs.map(x => f(x)));
 
 export const apply: Apply1<TArray>['apply'] = <a, b>(fs: ((_: a) => b)[]) => (xs: a[]): b[] =>
   bind<(_: a) => b, b>(f => map(f)(xs))(fs);

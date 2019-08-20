@@ -31,7 +31,10 @@ import { makeMonadThrow1Laws } from './laws/MonadThrow';
 import { makePlusLaws } from './laws/Plus';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
-  jsc.oneof([jsc.constant(Nothing), arb.smap(Just, x => x.value)]);
+  jsc.oneof([
+    jsc.constant(Nothing).smap(x => x, x => x, _ => `Nothing`),
+    arb.smap(Just, x => x.value, x => `Just(${x.value})`),
+  ]);
 
 describe('Functor', () => {
   const functorLaws = makeFunctor1Laws(functorMaybe)(makeEqMaybe)(makeArb);

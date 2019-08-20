@@ -1,3 +1,4 @@
+import { curry, curry3 } from '../curry';
 import { Alt1 } from '../typeclasses/Alt';
 import { Applicative1 } from '../typeclasses/Applicative';
 import { applyDefault, Bind1 } from '../typeclasses/Bind';
@@ -15,10 +16,16 @@ import {
 import { Just, Maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
 
-export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
-  fa.isNothing ? b : f(fa.value);
+export const maybe: {
+  <a, b>(b: b, f: (_: a) => b, fa: Maybe<a>): b;
+  <a, b>(b: b, f: (_: a) => b): (fa: Maybe<a>) => b;
+  <b>(b: b): {
+    <a>(f: (_: a) => b, fa: Maybe<a>): b;
+    <a>(f: (_: a) => b): (fa: Maybe<a>) => b;
+  };
+} = curry3(<a, b>(b: b, f: (_: a) => b, fa: Maybe<a>): b => (fa.isNothing ? b : f(fa.value)));
 
-export const bind: Bind1<TMaybe>['bind'] = maybe(Nothing as Maybe<any>);
+export const bind: Bind1<TMaybe>['bind'] = maybe(Nothing as Maybe<unknown>);
 
 export const pure: Applicative1<TMaybe>['pure'] = Just;
 
