@@ -38,7 +38,7 @@ export const foldr: Foldable1<TArray>['foldr'] = f => z => xs =>
 
 export const foldMap = foldMapDefaultR({ foldr } as Foldable1<TArray>);
 
-export const append: Semigroup1<TArray>['append'] = (xs, ys) => xs.concat(ys);
+export const append: Semigroup1<TArray>['append'] = curry2((xs, ys) => xs.concat(ys));
 
 export const mempty: Monoid1<TArray>['mempty'] = () => [];
 

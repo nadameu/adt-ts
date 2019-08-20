@@ -1,7 +1,8 @@
+import { curry2 } from '../curry';
 import { Monoid } from '../typeclasses/Monoid';
 import { Semigroup } from '../typeclasses/Semigroup';
 
-const append = (x: number, y: number) => x + y;
+const append: Semigroup<number>['append'] = curry2((x: number, y: number) => x + y);
 
 export const semigroupAdditive = { append } as Semigroup<number>;
 

@@ -1,3 +1,4 @@
+import { curry2 } from '../curry';
 import { Generic1, Type1 } from '../Generic';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { maybe, maybeL } from '../Maybe/functions';
@@ -24,7 +25,7 @@ export const map = liftM1({ bind, pure } as Monad2<TEither>);
 
 export const apply = ap({ bind, pure } as Monad2<TEither>);
 
-export const alt: Alt2<TEither>['alt'] = (fx, fy) => (fx.isLeft ? fy : fx);
+export const alt: Alt2<TEither>['alt'] = curry2((fx, fy) => (fx.isLeft ? fy : fx));
 
 export const throwError: MonadThrow2<TEither>['throwError'] = Left;
 
