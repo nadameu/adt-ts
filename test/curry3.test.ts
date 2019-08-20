@@ -1,5 +1,5 @@
 import * as jsc from 'jsverify';
-import { curry } from '../src/curry';
+import { curry3 } from '../src/curry';
 
 const arity3 = jsc
   .fn(jsc.fn(jsc.fn(jsc.number)))
@@ -8,7 +8,7 @@ const numberOrUndefined = jsc.sum([jsc.number, jsc.constant(undefined)]);
 
 test('0 arguments should throw', () => {
   jsc.assertForall(arity3, numberOrUndefined, numberOrUndefined, (f, a, b) => {
-    const curried = curry(f);
+    const curried = curry3(f);
     //@ts-ignore
     expect(() => curried()).toThrow();
     //@ts-ignore
@@ -28,7 +28,7 @@ test('3 arguments', () => {
     numberOrUndefined,
     numberOrUndefined,
     (f, a, b, c) => {
-      const curried = curry(f);
+      const curried = curry3(f);
       const results = [curried(a, b, c), curried(a, b)(c), curried(a)(b, c), curried(a)(b)(c)];
       const expected = f(a, b, c);
       return results.every(x => x === expected);
@@ -44,13 +44,15 @@ test('4 arguments should throw', () => {
     numberOrUndefined,
     numberOrUndefined,
     (f, a, b, c, d) => {
-      const curried = curry(f);
+      const curried = curry3(f);
       //@ts-ignore
-      expect(() => curried(a)(b, c, d)).toThrow();
+      expect(() => curried(a, b, c, d)).toThrow();
       //@ts-ignore
       expect(() => curried(a, b)(c, d)).toThrow();
       //@ts-ignore
-      expect(() => curried(a, b, c, d)).toThrow();
+      expect(() => curried(a)(b, c, d)).toThrow();
+      //@ts-ignore
+      expect(() => curried(a)(b)(c, d)).toThrow();
       return true;
     }
   );
