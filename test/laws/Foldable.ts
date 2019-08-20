@@ -1,82 +1,59 @@
 import * as jsc from 'jsverify';
 import { eqNumber } from '../../src';
-import { Generic1, Type1, Generic2, Type2 } from '../../src/Generic';
+import { Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
 import { Foldable1, Foldable2 } from '../../src/typeclasses/Foldable';
-import { Monoid } from '../../src/typeclasses/Monoid';
+import { curry2, curry3 } from '../../src/curry';
+
+const laws = <a, i>(
+  foldable: {
+    foldl<b>(f: (_: b) => (_: i) => b): (z: b) => (fi: a) => b;
+    foldr<b>(f: (_: i) => (_: b) => b): (z: b) => (fi: a) => b;
+    foldMap<b>(monoid: {
+      append(x: b, y: b): b;
+      append(x: b): (y: b) => b;
+      mempty(): b;
+    }): (f: (_: i) => b) => (fi: a) => b;
+  },
+  a: jsc.Arbitrary<a>,
+  i: jsc.Arbitrary<i>,
+  f: (_: i) => (_: i) => i,
+  eq: (x: i, y: i) => boolean
+) => ({
+  foldl: (): void =>
+    jsc.assertForall(a, i, jsc.fn(jsc.fn(jsc.nat)), (x, z, f: (_: i) => (_: i) => i) =>
+      eq(
+        foldable.foldl(f)(z)(x),
+        foldable.foldMap<(_: i) => i>({
+          append: curry3((f, g, x) => g(f(x))),
+          mempty: () => x => x,
+        })(x => y => f(y)(x))(x)(z)
+      )
+    ),
+  foldr: (): void =>
+    jsc.assertForall(a, i, (x, z) =>
+      eq(
+        foldable.foldr(f)(z)(x),
+        foldable.foldMap<(_: i) => i>({
+          append: curry3((f, g, x) => f(g(x))),
+          mempty: () => x => x,
+        })(f)(x)(z)
+      )
+    ),
+  foldMap: (): void =>
+    jsc.assertForall(a, i, (x, z) =>
+      eq(
+        foldable.foldMap({ append: curry2((x, y) => f(x)(y)), mempty: () => z })(x => x)(x),
+        foldable
+          .foldMap<i[]>({ append: curry2((x, y) => x.concat(y)), mempty: () => [] })(x => [x])(x)
+          .reduceRight((acc, x) => f(x)(acc), z)
+      )
+    ),
+});
 
 export const makeFoldable1Laws = <f extends Generic1>(foldable: Foldable1<f>) => (
   makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>
-) => {
-  const eq = eqNumber.eq;
-  return {
-    foldl: (): void =>
-      jsc.assertForall(makeArb(jsc.number), jsc.number, (fx, z) =>
-        eq(
-          foldable.foldl<number, number>(acc => x => acc - x)(z)(fx),
-          foldable
-            .foldl<number, number[]>(xs => x => (xs.push(x), xs))([])(fx)
-            .reduce((acc, x) => acc - x, z)
-        )
-      ),
-    foldr: (): void =>
-      jsc.assertForall(makeArb(jsc.number), jsc.number, (fx, z) =>
-        eq(
-          foldable.foldr<number, number>(x => acc => x - acc)(z)(fx),
-          foldable
-            .foldr<number, number[]>(x => xs => [x, ...xs])([])(fx)
-            .reduceRight((acc, x) => x - acc, z)
-        )
-      ),
-    foldMap: (): void =>
-      jsc.assertForall(makeArb(jsc.number), jsc.fn(jsc.number), (fx, f) =>
-        eq(
-          foldable.foldMap<number>({
-            append: (x, y) => x + y,
-            mempty: () => 0,
-          } as Monoid<number>)(f)(fx),
-          foldable
-            .foldl<number, number[]>(xs => x => (xs.push(x), xs))([])(fx)
-            .reduce((acc, x) => acc + f(x), 0)
-        )
-      ),
-  };
-};
+) => laws(foldable, makeArb(jsc.nat), jsc.nat, x => y => x - y, eqNumber.eq);
 
 export const makeFoldable2Laws = <f extends Generic2>(foldable: Foldable2<f>) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>
-) => {
-  const eq = eqNumber.eq;
-  return {
-    foldl: (): void =>
-      jsc.assertForall(makeArb(jsc.number, jsc.number), jsc.number, (fx, z) =>
-        eq(
-          foldable.foldl<number, number>(acc => x => acc - x)(z)(fx),
-          foldable
-            .foldl<number, number[]>(xs => x => (xs.push(x), xs))([])(fx)
-            .reduce((acc, x) => acc - x, z)
-        )
-      ),
-    foldr: (): void =>
-      jsc.assertForall(makeArb(jsc.number, jsc.number), jsc.number, (fx, z) =>
-        eq(
-          foldable.foldr<number, number>(x => acc => x - acc)(z)(fx),
-          foldable
-            .foldr<number, number[]>(x => xs => [x, ...xs])([])(fx)
-            .reduceRight((acc, x) => x - acc, z)
-        )
-      ),
-    foldMap: (): void =>
-      jsc.assertForall(makeArb(jsc.number, jsc.number), jsc.fn(jsc.number), (fx, f) =>
-        eq(
-          foldable.foldMap<number>({
-            NotGenericType: (undefined as unknown) as number,
-            append: (x, y) => x + y,
-            mempty: () => 0,
-          })(f)(fx),
-          foldable
-            .foldl<number, number[]>(xs => x => (xs.push(x), xs))([])(fx)
-            .reduce((acc, x) => acc + f(x), 0)
-        )
-      ),
-  };
-};
+) => laws(foldable, makeArb(jsc.string, jsc.nat), jsc.nat, x => y => x - y, eqNumber.eq);
