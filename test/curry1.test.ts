@@ -1,5 +1,5 @@
 import * as jsc from 'jsverify';
-import { curry1 } from '../src/curry1';
+import { curry } from '../src/curry';
 
 const arity1 = jsc.fn(jsc.number);
 const numberOrUndefined = jsc.sum([jsc.number, jsc.constant(undefined)]);
@@ -7,19 +7,19 @@ const numberOrUndefined = jsc.sum([jsc.number, jsc.constant(undefined)]);
 test('0 arguments should throw', () => {
   jsc.assertForall(arity1, f => {
     //@ts-ignore
-    expect(() => curry1(f)()).toThrow();
+    expect(() => curry(f)()).toThrow();
     return true;
   });
 });
 
 test('1 argument', () => {
-  jsc.assertForall(arity1, numberOrUndefined, (f, a) => curry1(f)(a) === f(a));
+  jsc.assertForall(arity1, numberOrUndefined, (f, a) => curry(f)(a) === f(a));
 });
 
 test('2 arguments should throw', () => {
   jsc.assertForall(arity1, numberOrUndefined, numberOrUndefined, (f, a, b) => {
     //@ts-ignore
-    expect(() => curry1(f)(a, b)).toThrow();
+    expect(() => curry(f)(a, b)).toThrow();
     return true;
   });
 });
