@@ -1,4 +1,4 @@
-import { curry2 } from '../curry';
+import { autocurry2 } from '../autocurry';
 import { Applicative1 } from '../typeclasses/Applicative';
 import { Apply1 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
@@ -23,7 +23,7 @@ export const bind: Bind1<TArray>['bind'] = f => xs => {
   return result;
 };
 
-export const map: Functor1<TArray>['map'] = curry2((f, xs) => xs.map(x => f(x)));
+export const map: Functor1<TArray>['map'] = autocurry2((f, xs) => xs.map(x => f(x)));
 
 export const apply: Apply1<TArray>['apply'] = <a, b>(fs: ((_: a) => b)[]) => (xs: a[]): b[] =>
   bind<(_: a) => b, b>(f => map(f)(xs))(fs);
@@ -38,7 +38,7 @@ export const foldr: Foldable1<TArray>['foldr'] = f => z => xs =>
 
 export const foldMap = foldMapDefaultR({ foldr } as Foldable1<TArray>);
 
-export const append: Semigroup1<TArray>['append'] = curry2((xs, ys) => xs.concat(ys));
+export const append: Semigroup1<TArray>['append'] = autocurry2((xs, ys) => xs.concat(ys));
 
 export const mempty: Monoid1<TArray>['mempty'] = () => [];
 

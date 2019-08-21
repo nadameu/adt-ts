@@ -1,3 +1,4 @@
+import { autocurry2 } from '../autocurry';
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { AnyApplicative, Applicative1, Applicative2 } from './Applicative';
 import { lift2 } from './Apply';
@@ -5,7 +6,6 @@ import { AnyFoldable, Foldable1, Foldable2 } from './Foldable';
 import { Functor1, Functor2 } from './Functor';
 import { Monoid, Monoid1 } from './Monoid';
 import { AnyPlus, Plus1, Plus2 } from './Plus';
-import { curry2 } from '../curry';
 
 export interface Traversable1<t extends Generic1> extends Functor1<t>, Foldable1<t> {
   traverse: Helpers1<t>['traverse'];
@@ -105,7 +105,7 @@ export const traverseDefaultFoldablePlus: {
 ) => {
   const liftedAlt = lift2(applicative as Applicative1<Generic1>)(alt);
   return foldMap({
-    append: curry2((x, y) => liftedAlt(x)(y)),
+    append: autocurry2((x, y) => liftedAlt(x)(y)),
     mempty: () => applicative.pure(empty()),
   } as Monoid<unknown>);
 };
@@ -120,7 +120,7 @@ export const traverseDefaultFoldableMonoid = <t extends Generic1>({
 >): Helper1Applicative<t>['traverse'] => (applicative: AnyApplicative) => {
   const liftedAlt = lift2(applicative as Applicative1<Generic1>)(append);
   return foldMap({
-    append: curry2((x, y) => liftedAlt(x)(y)),
+    append: autocurry2((x, y) => liftedAlt(x)(y)),
     mempty: () => applicative.pure(mempty()),
   } as Monoid<unknown>);
 };

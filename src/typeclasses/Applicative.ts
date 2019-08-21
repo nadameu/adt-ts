@@ -1,4 +1,4 @@
-import { curry3 } from '../curry';
+import { autocurry3 } from '../autocurry';
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { Apply1, Apply2 } from './Apply';
 
@@ -48,7 +48,7 @@ export const liftA1: {
     <a, b, c>(f: (_: b) => c, fa: Type2<f, a, b>): Type2<f, a, c>;
     <a, b, c>(f: (_: b) => c): (fa: Type2<f, a, b>) => Type2<f, a, c>;
   };
-} = curry3(
+} = autocurry3(
   (
     { apply, pure }: Pick<Applicative1<Generic1> & Applicative2<Generic2>, 'apply' | 'pure'>,
     f,

@@ -1,4 +1,4 @@
-import { curry2, curry3 } from '../curry';
+import { autocurry2, autocurry3 } from '../autocurry';
 import { Alt1 } from '../typeclasses/Alt';
 import { Applicative1 } from '../typeclasses/Applicative';
 import { applyDefault, Bind1 } from '../typeclasses/Bind';
@@ -23,7 +23,7 @@ export const maybe: {
     <a>(f: (_: a) => b, fa: Maybe<a>): b;
     <a>(f: (_: a) => b): (fa: Maybe<a>) => b;
   };
-} = curry3(<a, b>(b: b, f: (_: a) => b, fa: Maybe<a>): b => (fa.isNothing ? b : f(fa.value)));
+} = autocurry3(<a, b>(b: b, f: (_: a) => b, fa: Maybe<a>): b => (fa.isNothing ? b : f(fa.value)));
 
 export const bind: Bind1<TMaybe>['bind'] = maybe(Nothing as Maybe<unknown>);
 
@@ -46,7 +46,7 @@ export const fromMaybe = <a>(a: a): ((fa: Maybe<a>) => a) => maybe(a)(x => x);
 
 export const fromMaybeL = <a>(thunk: () => a): ((fa: Maybe<a>) => a) => maybeL(thunk)(x => x);
 
-export const alt: Alt1<TMaybe>['alt'] = curry2((fx, fy) => (fx.isNothing ? fy : fx));
+export const alt: Alt1<TMaybe>['alt'] = autocurry2((fx, fy) => (fx.isNothing ? fy : fx));
 
 export const empty: Plus1<TMaybe>['empty'] = () => Nothing;
 

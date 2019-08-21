@@ -1,5 +1,5 @@
+import { autocurry2 } from '../autocurry';
 import { constant } from '../constant';
-import { curry, curry2 } from '../curry';
 import { Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
 import { thrush } from '../thrush';
 
@@ -51,7 +51,8 @@ type Helper = {
   };
 };
 
-export const mapTo: Helper['mapTo'] = ({ map }: Functor) => curry2((a, fb) => map(constant(a), fb));
+export const mapTo: Helper['mapTo'] = ({ map }: Functor) =>
+  autocurry2((a, fb) => map(constant(a), fb));
 
 export const flap: Helper['flap'] = ({ map }: Functor) =>
-  curry2((a, ff) => map<any, any>(thrush(a), ff));
+  autocurry2((a, ff) => map<any, any>(thrush(a), ff));

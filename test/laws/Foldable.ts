@@ -1,6 +1,6 @@
 import * as jsc from 'jsverify';
 import { eqNumber, eqString, monoidString } from '../../src';
-import { curry2, curry3 } from '../../src/curry';
+import { autocurry2, autocurry3 } from '../../src/autocurry';
 import { Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
 import { Foldable1, Foldable2 } from '../../src/typeclasses/Foldable';
 import { Monoid } from '../../src/typeclasses/Monoid';
@@ -23,7 +23,7 @@ const laws = <a, i, r>(
       eqI(
         foldable.foldl(f)(z)(x),
         foldable.foldMap<(_: i) => i>({
-          append: curry3((f, g, x) => g(f(x))),
+          append: autocurry3((f, g, x) => g(f(x))),
           mempty: () => x => x,
         })(x => y => f(y)(x))(x)(z)
       )
@@ -33,7 +33,7 @@ const laws = <a, i, r>(
       eqI(
         foldable.foldr(f)(z)(x),
         foldable.foldMap<(_: i) => i>({
-          append: curry3((f, g, x) => f(g(x))),
+          append: autocurry3((f, g, x) => f(g(x))),
           mempty: () => x => x,
         })(f)(x)(z)
       )
@@ -43,7 +43,9 @@ const laws = <a, i, r>(
       eqR(
         foldable.foldMap(monoid)(f)(x),
         foldable
-          .foldMap<i[]>({ append: curry2((x, y) => x.concat(y)), mempty: () => [] })(x => [x])(x)
+          .foldMap<i[]>({ append: autocurry2((x, y) => x.concat(y)), mempty: () => [] })(x => [x])(
+            x
+          )
           .reduceRight((acc, x) => monoid.append(f(x), acc), monoid.mempty())
       )
     ),

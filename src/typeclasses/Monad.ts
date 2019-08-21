@@ -1,4 +1,4 @@
-import { curry, curry2 } from '../curry';
+import { autocurry2 } from '../autocurry';
 import { Generic1, Generic2 } from '../Generic';
 import { Applicative1, Applicative2 } from './Applicative';
 import { Bind1, Bind2 } from './Bind';
@@ -36,7 +36,7 @@ type PartialHelper<keys extends keyof Monad1<never> & keyof Monad2<never>> = {
 export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = ({
   bind,
   pure,
-}: Pick<Monad, 'bind' | 'pure'>) => curry2((f: Function, fa) => bind(x => pure(f(x)))(fa));
+}: Pick<Monad, 'bind' | 'pure'>) => autocurry2((f: Function, fa) => bind(x => pure(f(x)))(fa));
 
 export const ap: PartialHelper<'bind' | 'pure'>['ap'] = ({
   bind,

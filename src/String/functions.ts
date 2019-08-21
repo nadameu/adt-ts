@@ -1,10 +1,10 @@
+import { autocurry2 } from '../autocurry';
 import { Eq } from '../typeclasses/Eq';
-import { Semigroup } from '../typeclasses/Semigroup';
-import { curry2 } from '../curry';
 import { Monoid } from '../typeclasses/Monoid';
+import { Semigroup } from '../typeclasses/Semigroup';
 
 export const eq: Eq<string>['eq'] = (a, b) => a === b;
 
-export const append: Semigroup<string>['append'] = curry2((x, y) => `${x}${y}`);
+export const append: Semigroup<string>['append'] = autocurry2((x, y) => `${x}${y}`);
 
 export const mempty: Monoid<string>['mempty'] = () => '';
