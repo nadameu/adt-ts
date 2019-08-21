@@ -1,5 +1,5 @@
-import { Monoid } from './Monoid';
+import { Monoid0 } from './Monoid';
 
-export interface Group<a> extends Monoid<a> {
+export interface Group<a> extends Monoid0<a> {
   ginverse: (_: a) => a;
 }

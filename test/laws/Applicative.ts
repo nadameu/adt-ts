@@ -11,16 +11,15 @@ export const makeApplicative1Laws = <f extends Generic1>(applicative: Applicativ
   return {
     identity: (): void =>
       jsc.assertForall(makeArb(jsc.number), v =>
-        eq(applicative.apply(applicative.pure(<a>(a: a) => a))(v), v)
+        eq(applicative.apply(applicative.pure(<a>(a: a) => a))(v))(v)
       ),
     homomorphism: (): void =>
       jsc.assertForall(jsc.fn(jsc.number), jsc.number, (f, x) =>
-        eq(applicative.apply(applicative.pure(f))(applicative.pure(x)), applicative.pure(f(x)))
+        eq(applicative.apply(applicative.pure(f))(applicative.pure(x)))(applicative.pure(f(x)))
       ),
     interchange: (): void =>
       jsc.assertForall(makeArb(jsc.fn(jsc.number)), jsc.number, (u, y) =>
-        eq(
-          applicative.apply(u)(applicative.pure(y)),
+        eq(applicative.apply(u)(applicative.pure(y)))(
           applicative.apply(applicative.pure((f: (_: number) => number) => f(y)))(u)
         )
       ),
@@ -36,16 +35,15 @@ export const makeApplicative2Laws = <f extends Generic2>(applicative: Applicativ
   return {
     identity: (): void =>
       jsc.assertForall(makeArb(jsc.number, jsc.number), v =>
-        eq(applicative.apply(applicative.pure(<a>(a: a) => a))(v), v)
+        eq(applicative.apply(applicative.pure(<a>(a: a) => a))(v))(v)
       ),
     homomorphism: (): void =>
       jsc.assertForall(jsc.fn(jsc.number), jsc.number, (f, x) =>
-        eq(applicative.apply(applicative.pure(f))(applicative.pure(x)), applicative.pure(f(x)))
+        eq(applicative.apply(applicative.pure(f))(applicative.pure(x)))(applicative.pure(f(x)))
       ),
     interchange: (): void =>
       jsc.assertForall(makeArb(jsc.number, jsc.fn(jsc.number)), jsc.number, (u, y) =>
-        eq(
-          applicative.apply(u)(applicative.pure(y)),
+        eq(applicative.apply(u)(applicative.pure(y)))(
           applicative.apply(applicative.pure((f: (_: number) => number) => f(y)))(u)
         )
       ),

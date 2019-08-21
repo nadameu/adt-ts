@@ -28,10 +28,10 @@ import { TEither } from './internal';
 
 export const makeEqEither = <a, b>(eqA: Eq<a>, eqB: Eq<b>) =>
   ({
-    eq: (fx, fy) =>
+    eq: fx => fy =>
       fx.isLeft
-        ? fy.isLeft && eqA.eq(fx.leftValue, fy.leftValue)
-        : fy.isRight && eqB.eq(fx.rightValue, fy.rightValue),
+        ? fy.isLeft && eqA.eq(fx.leftValue)(fy.leftValue)
+        : fy.isRight && eqB.eq(fx.rightValue)(fy.rightValue),
   } as Eq<Either<a, b>>);
 
 export const functorEither = { map } as Functor2<TEither>;

@@ -1,4 +1,3 @@
-import { autocurry2, autocurry3 } from '../autocurry';
 import { Alt1 } from '../typeclasses/Alt';
 import { Applicative1 } from '../typeclasses/Applicative';
 import { applyDefault, Bind1 } from '../typeclasses/Bind';
@@ -6,7 +5,7 @@ import { Foldable1, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
 import { liftM1, Monad1 } from '../typeclasses/Monad';
 import { MonadError1 } from '../typeclasses/MonadError';
 import { MonadThrow1 } from '../typeclasses/MonadThrow';
-import { Monoid, Monoid1 } from '../typeclasses/Monoid';
+import { Monoid0, Monoid1 } from '../typeclasses/Monoid';
 import { Plus1 } from '../typeclasses/Plus';
 import {
   sequenceDefault,
@@ -16,16 +15,10 @@ import {
 import { Just, Maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
 
-export const maybe: {
-  <a, b>(b: b, f: (_: a) => b, fa: Maybe<a>): b;
-  <a, b>(b: b, f: (_: a) => b): (fa: Maybe<a>) => b;
-  <b>(b: b): {
-    <a>(f: (_: a) => b, fa: Maybe<a>): b;
-    <a>(f: (_: a) => b): (fa: Maybe<a>) => b;
-  };
-} = autocurry3(<a, b>(b: b, f: (_: a) => b, fa: Maybe<a>): b => (fa.isNothing ? b : f(fa.value)));
+export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
+  fa.isNothing ? b : f(fa.value);
 
-export const bind: Bind1<TMaybe>['bind'] = maybe(Nothing as Maybe<unknown>);
+export const bind: Bind1<TMaybe>['bind'] = maybe<Maybe<any>>(Nothing);
 
 export const pure: Applicative1<TMaybe>['pure'] = Just;
 
@@ -46,7 +39,7 @@ export const fromMaybe = <a>(a: a): ((fa: Maybe<a>) => a) => maybe(a)(x => x);
 
 export const fromMaybeL = <a>(thunk: () => a): ((fa: Maybe<a>) => a) => maybeL(thunk)(x => x);
 
-export const alt: Alt1<TMaybe>['alt'] = autocurry2((fx, fy) => (fx.isNothing ? fy : fx));
+export const alt: Alt1<TMaybe>['alt'] = fx => fy => (fx.isNothing ? fy : fx);
 
 export const empty: Plus1<TMaybe>['empty'] = () => Nothing;
 
@@ -54,7 +47,7 @@ export const throwError: MonadThrow1<TMaybe>['throwError'] = empty;
 
 export const catchError: MonadError1<TMaybe>['catchError'] = f => maybeL(f)(Just);
 
-export const foldMap: Foldable1<TMaybe>['foldMap'] = <m>(monoid: Monoid<m> | Monoid1<any>) =>
+export const foldMap: Foldable1<TMaybe>['foldMap'] = <m>(monoid: Monoid0<m> | Monoid1<any>) =>
   maybeL(monoid.mempty);
 
 export const foldl = foldlDefault({ foldMap } as Foldable1<TMaybe>);

@@ -11,11 +11,11 @@ export const makeMonadError1Laws = <f extends Generic1>(monadError: MonadError1<
   return {
     catch: (): void =>
       jsc.assertForall(jsc.fn(makeArb(jsc.number)), f =>
-        eq(monadError.catchError(() => f(undefined))(monadError.throwError()), f(undefined))
+        eq(monadError.catchError(() => f(undefined))(monadError.throwError()))(f(undefined))
       ),
     pure: (): void =>
       jsc.assertForall(jsc.fn(makeArb(jsc.number)), jsc.number, (f, a) =>
-        eq(monadError.catchError(() => f(undefined))(monadError.pure(a)), monadError.pure(a))
+        eq(monadError.catchError(() => f(undefined))(monadError.pure(a)))(monadError.pure(a))
       ),
   };
 };
@@ -29,11 +29,11 @@ export const makeMonadError2Laws = <f extends Generic2>(monadError: MonadError2<
   return {
     catch: (): void =>
       jsc.assertForall(jsc.number, jsc.fn(makeArb(jsc.number, jsc.number)), (e, f) =>
-        eq(monadError.catchError(f)(monadError.throwError(e)), f(e))
+        eq(monadError.catchError(f)(monadError.throwError(e)))(f(e))
       ),
     pure: (): void =>
       jsc.assertForall(jsc.fn(makeArb(jsc.number, jsc.number)), jsc.number, (f, a) =>
-        eq(monadError.catchError(f)(monadError.pure(a)), monadError.pure(a))
+        eq(monadError.catchError(f)(monadError.pure(a)))(monadError.pure(a))
       ),
   };
 };

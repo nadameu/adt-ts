@@ -9,7 +9,6 @@ export interface Plus2<f extends Generic2> extends Alt2<f> {
   empty: <a = never, b = never>() => Type2<f, a, b>;
 }
 
-export type AnyPlus = Pick<
-  Plus1<Generic1> & Plus2<Generic2>,
-  keyof Plus1<never> & keyof Plus2<never>
->;
+export type Plus = {
+  [k in keyof Plus1<never> & keyof Plus2<never>]: Plus1<Generic1>[k];
+};

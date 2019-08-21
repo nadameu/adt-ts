@@ -1,8 +1,7 @@
-import { autocurry2 } from '../autocurry';
-import { Monoid } from '../typeclasses/Monoid';
-import { Semigroup } from '../typeclasses/Semigroup';
+import { Monoid0 } from '../typeclasses/Monoid';
+import { Semigroup0 } from '../typeclasses/Semigroup';
 
-const append: Semigroup<boolean>['append'] = autocurry2((x: boolean, y: boolean) => x && y);
+const append: Semigroup0<boolean>['append'] = x => y => x && y;
 
-export const semigroupConj = { append } as Semigroup<boolean>;
-export const monoidConj = { append, mempty: () => true } as Monoid<boolean>;
+export const semigroupConj = { append } as Semigroup0<boolean>;
+export const monoidConj = { append, mempty: () => true } as Monoid0<boolean>;

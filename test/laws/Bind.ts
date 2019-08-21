@@ -14,7 +14,7 @@ export const makeBind1Laws = <f extends Generic1>(bind: Bind1<f>) => (
         makeArb(jsc.number),
         jsc.fn(makeArb(jsc.number)),
         jsc.fn(makeArb(jsc.number)),
-        (x, f, g) => eq(bind.bind(g)(bind.bind(f)(x)), bind.bind(k => bind.bind(g)(f(k)))(x))
+        (x, f, g) => eq(bind.bind(g)(bind.bind(f)(x)))(bind.bind(k => bind.bind(g)(f(k)))(x))
       ),
   };
 };
@@ -31,7 +31,7 @@ export const makeBind2Laws = <f extends Generic2>(bind: Bind2<f>) => (
         makeArb(jsc.number, jsc.number),
         jsc.fn(makeArb(jsc.number, jsc.number)),
         jsc.fn(makeArb(jsc.number, jsc.number)),
-        (x, f, g) => eq(bind.bind(g)(bind.bind(f)(x)), bind.bind(k => bind.bind(g)(f(k)))(x))
+        (x, f, g) => eq(bind.bind(g)(bind.bind(f)(x)))(bind.bind(k => bind.bind(g)(f(k)))(x))
       ),
   };
 };

@@ -8,3 +8,7 @@ export interface MonadError1<f extends Generic1> extends MonadThrow1<f> {
 export interface MonadError2<f extends Generic2> extends MonadThrow2<f> {
   catchError: <e, a>(f: (_: e) => Type2<f, e, a>) => (fea: Type2<f, e, a>) => Type2<f, e, a>;
 }
+
+export type MonadError = {
+  [k in keyof MonadError1<never> & keyof MonadError2<never>]: MonadError1<Generic1>[k];
+};

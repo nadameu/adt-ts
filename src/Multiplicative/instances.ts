@@ -1,9 +1,8 @@
-import { autocurry2 } from '../autocurry';
-import { Monoid } from '../typeclasses/Monoid';
-import { Semigroup } from '../typeclasses/Semigroup';
+import { Monoid0 } from '../typeclasses/Monoid';
+import { Semigroup0 } from '../typeclasses/Semigroup';
 
-const append: Semigroup<number>['append'] = autocurry2((x, y) => x * y);
-export const semigroupMultiplicative = { append } as Semigroup<number>;
+const append: Semigroup0<number>['append'] = x => y => x * y;
+export const semigroupMultiplicative = { append } as Semigroup0<number>;
 
-const mempty: Monoid<number>['mempty'] = () => 1;
-export const monoidMultiplicative = { append, mempty } as Monoid<number>;
+const mempty: Monoid0<number>['mempty'] = () => 1;
+export const monoidMultiplicative = { append, mempty } as Monoid0<number>;

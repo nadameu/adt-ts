@@ -12,3 +12,7 @@ export interface Category3<c extends GenericFn3> extends Semigroupoid3<c> {
     _: TypeFn3<c, a, b, b> extends (_: infer b) => any ? b : never
   ) => TypeFn3<c, a, b, b> extends (_: any) => infer b ? b : never;
 }
+
+export type Category = {
+  [k in keyof Category2<never> & keyof Category3<never>]: Category2<GenericFn2>[k];
+};

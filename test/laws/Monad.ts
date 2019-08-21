@@ -11,10 +11,10 @@ export const makeMonad1Laws = <f extends Generic1>(monad: Monad1<f>) => (
   return {
     leftIdentity: (): void =>
       jsc.assertForall(jsc.number, jsc.fn(makeArb(jsc.number)), (x, f) =>
-        eq(monad.bind(f)(monad.pure(x)), f(x))
+        eq(monad.bind(f)(monad.pure(x)))(f(x))
       ),
     rightIdentity: (): void =>
-      jsc.assertForall(makeArb(jsc.number), x => eq(monad.bind(monad.pure)(x), x)),
+      jsc.assertForall(makeArb(jsc.number), x => eq(monad.bind(monad.pure)(x))(x)),
   };
 };
 
@@ -27,9 +27,9 @@ export const makeMonad2Laws = <f extends Generic2>(monad: Monad2<f>) => (
   return {
     leftIdentity: (): void =>
       jsc.assertForall(jsc.number, jsc.fn(makeArb(jsc.number, jsc.number)), (x, f) =>
-        eq(monad.bind(f)(monad.pure(x)), f(x))
+        eq(monad.bind(f)(monad.pure(x)))(f(x))
       ),
     rightIdentity: (): void =>
-      jsc.assertForall(makeArb(jsc.number, jsc.number), x => eq(monad.bind(monad.pure)(x), x)),
+      jsc.assertForall(makeArb(jsc.number, jsc.number), x => eq(monad.bind(monad.pure)(x))(x)),
   };
 };

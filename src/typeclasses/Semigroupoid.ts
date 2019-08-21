@@ -8,16 +8,19 @@ export interface Semigroupoid3<f extends GenericFn3> extends IdentifiedFn3<f> {
   compose: Helpers3<f>['compose'];
 }
 
-export type AnySemigroupoid = Pick<
-  Semigroupoid2<GenericFn2> & Semigroupoid3<GenericFn3>,
-  keyof Semigroupoid2<never> & keyof Semigroupoid3<never>
->;
+export type Semigroupoid = {
+  [k in keyof Semigroupoid2<never> & keyof Semigroupoid3<never>]: Semigroupoid2<GenericFn2>[k];
+};
 
 interface Helpers2<f extends GenericFn2> {
   compose: <b, c>(f: TypeFn<f, b, c>) => <a>(g: TypeFn<f, a, b>) => TypeFn<f, a, c>;
+  composeFlipped: <a, b>(f: TypeFn<f, a, b>) => <c>(g: TypeFn<f, b, c>) => TypeFn<f, a, c>;
 }
 interface Helpers3<f extends GenericFn3> {
   compose: <a, c, d>(f: TypeFn3<f, a, c, d>) => <b>(g: TypeFn3<f, a, b, c>) => TypeFn3<f, a, b, d>;
+  composeFlipped: <a, b, c>(
+    f: TypeFn3<f, a, b, c>
+  ) => <d>(g: TypeFn3<f, a, c, d>) => TypeFn3<f, a, b, d>;
 }
 type Helper = {
   [k in keyof Helpers2<never>]: {
@@ -26,6 +29,6 @@ type Helper = {
   };
 };
 
-export const composeFlipped: Helper['compose'] = (semigroupoid: AnySemigroupoid) => (
+export const composeFlipped: Helper['composeFlipped'] = ({ compose }: Semigroupoid) => (
   f: (_: any) => unknown
-) => (g: (_: any) => unknown): ((_: any) => unknown) => semigroupoid.compose(g)(f);
+) => (g: (_: any) => unknown) => compose(g)(f);

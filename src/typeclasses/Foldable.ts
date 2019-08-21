@@ -1,6 +1,5 @@
-import { autocurry2 } from '../autocurry';
 import { Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
-import { AnyMonoid, Monoid, Monoid1 } from './Monoid';
+import { Monoid, Monoid0, Monoid1 } from './Monoid';
 
 export interface Foldable1<f extends Generic1> extends Identified1<f> {
   foldl: Helpers1<f>['foldl'];
@@ -14,10 +13,9 @@ export interface Foldable2<f extends Generic2> extends Identified2<f> {
   foldMap: Helpers2<f>['foldMap'];
 }
 
-export type AnyFoldable = Pick<
-  Foldable1<Generic1> & Foldable2<Generic2>,
-  keyof Foldable1<Generic1> & keyof Foldable2<Generic2>
->;
+export type Foldable = {
+  [k in keyof Foldable1<never> & keyof Foldable2<never>]: Foldable1<Generic1>[k];
+};
 
 interface Helpers1<f extends Generic1> {
   foldl: <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (fa: Type1<f, a>) => b;
@@ -59,13 +57,13 @@ interface Helpers2Monoid1<f extends Generic2, m extends Generic1> {
 }
 type Helper1Monoid<f extends Generic1> = {
   [k in keyof Helpers1Monoid0<never, never>]: {
-    <m>(monoid: Monoid<m>): Helpers1Monoid0<f, m>[k];
+    <m>(monoid: Monoid0<m>): Helpers1Monoid0<f, m>[k];
     <m extends Generic1>(monoid: Monoid1<m>): Helpers1Monoid1<f, m>[k];
   };
 };
 type Helper2Monoid<f extends Generic2> = {
   [k in keyof Helpers2Monoid0<never, never>]: {
-    <m>(monoid: Monoid<m>): Helpers2Monoid0<f, m>[k];
+    <m>(monoid: Monoid0<m>): Helpers2Monoid0<f, m>[k];
     <m extends Generic1>(monoid: Monoid1<m>): Helpers2Monoid1<f, m>[k];
   };
 };
@@ -76,37 +74,33 @@ type HelperMonoid = {
   };
 };
 
-const toDLList = (() => {
+const { monoidDLList, toDLList } = (() => {
   type DLNode<a> = { prev: DLNode<a> | null; value: a; next: DLNode<a> | null };
   type DLList<a> = { first: DLNode<a>; last: DLNode<a> } | null;
-  const toList: {
-    <f extends Generic1>(foldable: Pick<Foldable1<f>, 'Generic1Type' | 'foldMap'>): <a>(
-      fa: Type1<f, a>
-    ) => DLList<a>;
-    <f extends Generic2>(foldable: Pick<Foldable2<f>, 'Generic2Type' | 'foldMap'>): <a, b>(
-      fab: Type2<f, a, b>
-    ) => DLList<b>;
-  } = ({ foldMap }: Pick<AnyFoldable, 'foldMap'>) =>
-    foldMap<DLList<any>>({
-      append: autocurry2((left, right) => {
-        if (left === null) return right;
-        if (right === null) return left;
-        left.last.next = right.first;
-        left.last = right.last;
-        return left;
-      }),
-      mempty: () => null,
-    } as Monoid<DLList<any>>)<unknown>(value => {
-      const node = { prev: null, value, next: null };
-      return { first: node, last: node };
-    });
-  return toList;
+  interface TDLList extends Generic1 {
+    type: DLList<this['a']>;
+  }
+  const monoidDLList = {
+    append: left => right => {
+      if (left === null) return right;
+      if (right === null) return left;
+      left.last.next = right.first;
+      left.last = right.last;
+      return left;
+    },
+    mempty: () => null,
+  } as Monoid1<TDLList>;
+  const toDLList = <a>(value: a): DLList<a> => {
+    const node = { prev: null, value, next: null };
+    return { first: node, last: node };
+  };
+  return { monoidDLList, toDLList };
 })();
 
-export const foldlDefault: PartialHelper<'foldMap'>['foldl'] = (
-  foldable: Pick<AnyFoldable, 'foldMap'>
-) => <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (fa: unknown): b => {
-  const list = toDLList(foldable as Foldable1<Generic1>)(fa);
+export const foldlDefault: PartialHelper<'foldMap'>['foldl'] = ({
+  foldMap,
+}: Pick<Foldable, 'foldMap'>) => <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (fa: unknown): b => {
+  const list = foldMap(monoidDLList)(toDLList)(fa);
   if (list === null) return b;
   let acc = b;
   let current: typeof list.first['next'] = list.first;
@@ -117,10 +111,10 @@ export const foldlDefault: PartialHelper<'foldMap'>['foldl'] = (
   return acc;
 };
 
-export const foldrDefault: PartialHelper<'foldMap'>['foldr'] = (
-  foldable: Pick<AnyFoldable, 'foldMap'>
-) => <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (fa: unknown): b => {
-  const list = toDLList(foldable as Foldable1<Generic1>)(fa);
+export const foldrDefault: PartialHelper<'foldMap'>['foldr'] = ({
+  foldMap,
+}: Pick<Foldable, 'foldMap'>) => <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (fa: unknown): b => {
+  const list = foldMap(monoidDLList)(toDLList)(fa);
   if (list === null) return b;
   let acc = b;
   let current: typeof list.last['prev'] = list.last;
@@ -133,13 +127,13 @@ export const foldrDefault: PartialHelper<'foldMap'>['foldr'] = (
 
 export const foldMapDefaultL: PartialHelper<'foldl'>['foldMap'] = ({
   foldl,
-}: Pick<AnyFoldable, 'foldl'>) => ({ append, mempty }: AnyMonoid) => <a>(f: (_: a) => unknown) =>
-  foldl<a, unknown>(acc => x => append(acc, f(x)))(mempty());
+}: Pick<Foldable, 'foldl'>) => ({ append, mempty }: Monoid) => <a>(f: (_: a) => unknown) =>
+  foldl<a, unknown>(acc => x => append(acc)(f(x)))(mempty());
 
 export const foldMapDefaultR: PartialHelper<'foldr'>['foldMap'] = ({
   foldr,
-}: Pick<AnyFoldable, 'foldr'>) => ({ append, mempty }: AnyMonoid) => <a>(f: (_: a) => unknown) =>
-  foldr<a, unknown>(x => acc => append(f(x), acc))(mempty());
+}: Pick<Foldable, 'foldr'>) => ({ append, mempty }: Monoid) => <a>(f: (_: a) => unknown) =>
+  foldr<a, unknown>(x => append(f(x)))(mempty());
 
-export const fold: HelperMonoid['fold'] = ({ foldMap }: AnyFoldable) => (monoid: AnyMonoid) =>
-  /*#__PURE__#*/ foldMap(monoid as Monoid<unknown>)(x => x);
+export const fold: HelperMonoid['fold'] = ({ foldMap }: Foldable) => (monoid: Monoid) =>
+  /*#__PURE__#*/ foldMap(monoid as Monoid0<unknown>)(x => x);

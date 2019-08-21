@@ -15,14 +15,13 @@ export const makeAlternativeLaws = <f extends Generic1>(alternative: Alternative
         makeArb(jsc.fn(jsc.number)),
         makeArb(jsc.number),
         (f, g, x) =>
-          eq(
-            alternative.apply(alternative.alt(f, g))(x),
-            alternative.alt(alternative.apply(f)(x), alternative.apply(g)(x))
+          eq(alternative.apply(alternative.alt(f)(g))(x))(
+            alternative.alt(alternative.apply(f)(x))(alternative.apply(g)(x))
           )
       ),
     annihilation: (): void =>
       jsc.assertForall(makeArb(jsc.number), f =>
-        eq(alternative.apply(alternative.empty())(f), alternative.empty())
+        eq(alternative.apply(alternative.empty())(f))(alternative.empty())
       ),
   };
 };

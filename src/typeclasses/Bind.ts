@@ -1,4 +1,5 @@
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { thrush } from '../thrush';
 import { Apply1, Apply2 } from './Apply';
 
 export interface Bind1<f extends Generic1> extends Apply1<f> {
@@ -9,18 +10,15 @@ export interface Bind2<f extends Generic2> extends Apply2<f> {
   bind: Helpers2<f>['bind'];
 }
 
-export type AnyBind = Pick<
-  Bind1<Generic1> & Bind2<Generic2>,
-  keyof Bind1<Generic1> & keyof Bind2<Generic2>
->;
+export type Bind = {
+  [k in keyof Bind1<never> & keyof Bind2<never>]: Bind1<Generic1>[k];
+};
 
 interface Helpers1<f extends Generic1> {
-  apply: Bind1<f>['apply'];
   bind: <a, b>(f: (_: a) => Type1<f, b>) => (fa: Type1<f, a>) => Type1<f, b>;
   join: <a>(ffa: Type1<f, Type1<f, a>>) => Type1<f, a>;
 }
 interface Helpers2<f extends Generic2> {
-  apply: Bind2<f>['apply'];
   bind: <a, b, c>(f: (_: b) => Type2<f, a, c>) => (fab: Type2<f, a, b>) => Type2<f, a, c>;
   join: <a, b>(fafab: Type2<f, a, Type2<f, a, b>>) => Type2<f, a, b>;
 }
@@ -30,17 +28,20 @@ type Helper = {
     <f extends Generic2>(bind: Bind2<f>): Helpers2<f>[k];
   };
 };
-type PartialHelper<keys extends keyof Bind1<Generic1> & keyof Bind2<Generic2>> = {
-  [k in keyof Helpers1<never>]: {
-    <f extends Generic1>(_: Pick<Bind1<f>, 'Generic1Type' | keys>): Helpers1<f>[k];
-    <f extends Generic2>(_: Pick<Bind2<f>, 'Generic2Type' | keys>): Helpers2<f>[k];
-  };
+
+export type BindMap1<f extends Generic1> = {
+  [k in 'Generic1Type' | 'bind' | 'map']: Bind1<f>[k];
+};
+export type BindMap2<f extends Generic2> = {
+  [k in 'Generic2Type' | 'bind' | 'map']: Bind2<f>[k];
+};
+export type BindMap = {
+  [k in 'bind' | 'map']: BindMap1<Generic1>[k];
 };
 
-export const join: Helper['join'] = ({ bind }: AnyBind) => bind(x => x);
+export const join: Helper['join'] = ({ bind }: Bind) => bind(x => x);
 
-export const applyDefault: PartialHelper<'bind' | 'map'>['apply'] = ({
-  bind,
-  map,
-}: Pick<AnyBind, 'bind' | 'map'>) => (ff: unknown) => (fa: unknown) =>
-  bind<(_: unknown) => unknown, unknown>(f => map(f)(fa))(ff);
+export const applyDefault: {
+  <f extends Generic1>({ bind, map }: BindMap1<f>): Bind1<f>['apply'];
+  <f extends Generic2>({ bind, map }: BindMap2<f>): Bind2<f>['apply'];
+} = ({ bind, map }: BindMap) => (ff: unknown) => bind(a => map(thrush(a))(ff));

@@ -31,7 +31,7 @@ import { TMaybe } from './internal';
 
 export const makeEqMaybe = <a>(eq: Eq<a>) =>
   ({
-    eq: (fx, fy) => (fx.isNothing ? fy.isNothing : fy.isJust && eq.eq(fx.value, fy.value)),
+    eq: fx => fy => (fx.isNothing ? fy.isNothing : fy.isJust && eq.eq(fx.value)(fy.value)),
   } as Eq<Maybe<a>>);
 
 export const functorMaybe = { map } as Functor1<TMaybe>;

@@ -11,7 +11,7 @@ export const makeMonadThrow1Laws = <f extends Generic1>(monadThrow: MonadThrow1<
   return {
     leftZero: (): void =>
       jsc.assertForall(jsc.fn(makeArb(jsc.number)), f =>
-        eq(monadThrow.bind(f)(monadThrow.throwError()), monadThrow.throwError())
+        eq(monadThrow.bind(f)(monadThrow.throwError()))(monadThrow.throwError())
       ),
   };
 };
@@ -25,7 +25,7 @@ export const makeMonadThrow2Laws = <f extends Generic2>(monadThrow: MonadThrow2<
   return {
     leftZero: (): void =>
       jsc.assertForall(jsc.number, jsc.fn(makeArb(jsc.number, jsc.number)), (e, f) =>
-        eq(monadThrow.bind(f)(monadThrow.throwError(e)), monadThrow.throwError(e))
+        eq(monadThrow.bind(f)(monadThrow.throwError(e)))(monadThrow.throwError(e))
       ),
   };
 };

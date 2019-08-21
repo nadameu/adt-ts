@@ -1,11 +1,10 @@
-import { autocurry2 } from '../autocurry';
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
-import { AnyApplicative, Applicative1, Applicative2 } from './Applicative';
+import { Applicative, Applicative1, Applicative2 } from './Applicative';
 import { lift2 } from './Apply';
-import { AnyFoldable, Foldable1, Foldable2 } from './Foldable';
+import { Foldable, Foldable1, Foldable2 } from './Foldable';
 import { Functor1, Functor2 } from './Functor';
-import { Monoid, Monoid1 } from './Monoid';
-import { AnyPlus, Plus1, Plus2 } from './Plus';
+import { Monoid0, Monoid1 } from './Monoid';
+import { Plus, Plus1, Plus2 } from './Plus';
 
 export interface Traversable1<t extends Generic1> extends Functor1<t>, Foldable1<t> {
   traverse: Helpers1<t>['traverse'];
@@ -17,10 +16,9 @@ export interface Traversable2<t extends Generic2> extends Functor2<t>, Foldable2
   sequence: Helpers2<t>['sequence'];
 }
 
-export type AnyTraversable = Pick<
-  Traversable1<Generic1> & Traversable2<Generic2>,
-  keyof Traversable1<never> & keyof Traversable2<never>
->;
+export type Traversable = {
+  [k in keyof Traversable1<never> & keyof Traversable2<never>]: Traversable1<Generic1>[k];
+};
 
 interface Helpers1<t extends Generic1> {
   traverse: Helper1Applicative<t>['traverse'];
@@ -83,13 +81,13 @@ type HelperApplicative = {
 
 export const sequenceDefault: PartialHelper<'traverse'>['sequence'] = ({
   traverse,
-}: Pick<AnyTraversable, 'traverse'>) => (applicative: AnyApplicative) =>
-  traverse(applicative as Applicative1<Generic1>)<unknown, unknown>(x => x);
+}: Pick<Traversable, 'traverse'>) => (applicative: Applicative) =>
+  traverse(applicative as Applicative1<Generic1>)(x => x);
 
 export const traverseDefault: PartialHelper<'map' | 'sequence'>['traverse'] = ({
   map,
   sequence,
-}: Pick<AnyTraversable, 'map' | 'sequence'>) => (applicative: AnyApplicative) => (
+}: Pick<Traversable, 'map' | 'sequence'>) => (applicative: Applicative) => (
   f: (_: any) => unknown
 ) => (ta: unknown) => sequence(applicative as Applicative1<Generic1>)(map(f)(ta));
 
@@ -100,15 +98,13 @@ export const traverseDefaultFoldablePlus: {
   <t extends Generic2>(
     foldablePlus: Pick<Foldable2<t> & Plus2<t>, 'Generic2Type' | 'alt' | 'empty' | 'foldMap'>
   ): Helper2Applicative<t>['traverse'];
-} = ({ alt, empty, foldMap }: Pick<AnyFoldable & AnyPlus, 'alt' | 'empty' | 'foldMap'>) => (
-  applicative: AnyApplicative
-) => {
-  const liftedAlt = lift2(applicative as Applicative1<Generic1>)(alt);
-  return foldMap({
-    append: autocurry2((x, y) => liftedAlt(x)(y)),
+} = ({ alt, empty, foldMap }: Pick<Foldable & Plus, 'alt' | 'empty' | 'foldMap'>) => (
+  applicative: Applicative
+) =>
+  foldMap({
+    append: lift2(applicative as Applicative1<Generic1>)(alt),
     mempty: () => applicative.pure(empty()),
-  } as Monoid<unknown>);
-};
+  } as Monoid0<unknown>);
 
 export const traverseDefaultFoldableMonoid = <t extends Generic1>({
   append,
@@ -117,10 +113,8 @@ export const traverseDefaultFoldableMonoid = <t extends Generic1>({
 }: Pick<
   Foldable1<t> & Monoid1<t>,
   'Generic1Type' | 'append' | 'mempty' | 'foldMap'
->): Helper1Applicative<t>['traverse'] => (applicative: AnyApplicative) => {
-  const liftedAlt = lift2(applicative as Applicative1<Generic1>)(append);
-  return foldMap({
-    append: autocurry2((x, y) => liftedAlt(x)(y)),
+>): Helper1Applicative<t>['traverse'] => (applicative: Applicative) =>
+  foldMap({
+    append: lift2(applicative as Applicative1<Generic1>)(append),
     mempty: () => applicative.pure(mempty()),
-  } as Monoid<unknown>);
-};
+  } as Monoid0<unknown>);

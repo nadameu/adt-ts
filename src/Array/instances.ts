@@ -30,7 +30,7 @@ import { TArray } from './internal';
 
 export const makeEqArray = <a>(eq: Eq<a>) =>
   ({
-    eq: (xs, ys) => xs.length === ys.length && xs.every((_, i) => eq.eq(xs[i], ys[i])),
+    eq: xs => ys => xs.length === ys.length && xs.every((_, i) => eq.eq(xs[i])(ys[i])),
   } as Eq<Array<a>>);
 
 export const functorArray = { map } as Functor1<TArray>;

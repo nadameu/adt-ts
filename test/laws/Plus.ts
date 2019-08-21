@@ -10,10 +10,10 @@ export const makePlusLaws = <f extends Generic1>(plus: Plus1<f>) => (
   const eq = makeEq(eqNumber).eq;
   return {
     leftIdentity: (): void =>
-      jsc.assertForall(makeArb(jsc.number), x => eq(plus.alt(plus.empty(), x), x)),
+      jsc.assertForall(makeArb(jsc.number), x => eq(plus.alt(plus.empty())(x))(x)),
     rightIdentity: (): void =>
-      jsc.assertForall(makeArb(jsc.number), x => eq(plus.alt(x, plus.empty()), x)),
+      jsc.assertForall(makeArb(jsc.number), x => eq(plus.alt(x)(plus.empty()))(x)),
     annihilation: (): void =>
-      jsc.assertForall(jsc.fn(jsc.number), f => eq(plus.map(f)(plus.empty()), plus.empty())),
+      jsc.assertForall(jsc.fn(jsc.number), f => eq(plus.map(f)(plus.empty()))(plus.empty())),
   };
 };

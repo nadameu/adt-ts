@@ -5,18 +5,18 @@ import { Alt1, Alt2 } from '../../src/typeclasses/Alt';
 import { Eq } from '../../src/typeclasses/Eq';
 
 const laws = <a>(
-  alt: { alt(x: a, y: a): a; map(f: Function, fa: a): a },
+  alt: { alt(x: a): (y: a) => a; map(f: Function): (fa: a) => a },
   a: jsc.Arbitrary<a>,
   f: jsc.Arbitrary<(_: any) => any>,
-  eq: (x: a, y: a) => boolean
+  eq: (x: a) => (y: a) => boolean
 ) => ({
   associativity: (): void =>
     jsc.assertForall(a, a, a, (x, y, z) =>
-      eq(alt.alt(alt.alt(x, y), z), alt.alt(x, alt.alt(y, z)))
+      eq(alt.alt(alt.alt(x)(y))(z))(alt.alt(x)(alt.alt(y)(z)))
     ),
   distributivity: (): void =>
     jsc.assertForall(f, a, a, (f, x, y) =>
-      eq(alt.alt(alt.map(f, x), alt.map(f, y)), alt.map(f, alt.alt(x, y)))
+      eq(alt.alt(alt.map(f)(x))(alt.map(f)(y)))(alt.map(f)(alt.alt(x)(y)))
     ),
 });
 

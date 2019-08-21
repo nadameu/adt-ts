@@ -22,9 +22,8 @@ export const makeApply1Laws = <f extends Generic1>(apply: Apply1<f>) => (
                   f(g(x))
                 )(a)
               )(u)
-            )(v),
-            apply.apply(a)(apply.apply(u)(v))
-          )
+            )(v)
+          )(apply.apply(a)(apply.apply(u)(v)))
       ),
   };
 };
@@ -49,9 +48,8 @@ export const makeApply2Laws = <f extends Generic2>(apply: Apply2<f>) => (
                   f(g(x))
                 )(a)
               )(u)
-            )(v),
-            apply.apply(a)(apply.apply(u)(v))
-          )
+            )(v)
+          )(apply.apply(a)(apply.apply(u)(v)))
       ),
   };
 };
