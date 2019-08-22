@@ -1,4 +1,5 @@
 export * from './Additive';
+export * from './Alternate';
 export * from './Array';
 export * from './Boolean';
 export * from './Conj';
