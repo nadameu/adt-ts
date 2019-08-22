@@ -15,6 +15,7 @@ import {
   monadThrowMaybe,
   Nothing,
   plusMaybe,
+  traversableMaybe,
 } from '../src/Maybe';
 import { TMaybe } from '../src/Maybe/internal';
 import { makeAlt1Laws } from './laws/Alt';
@@ -29,12 +30,16 @@ import { makeMonad1Laws } from './laws/Monad';
 import { makeMonadError1Laws } from './laws/MonadError';
 import { makeMonadThrow1Laws } from './laws/MonadThrow';
 import { makePlusLaws } from './laws/Plus';
+import { makeTraversableLaws } from './laws/Traversable';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> =>
-  jsc.oneof([
-    jsc.constant(Nothing).smap(x => x, x => x, _ => `Nothing`),
-    arb.smap(Just, x => x.value, x => `Just(${x.value})`),
+const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> => {
+  const arbMaybe: jsc.Arbitrary<Maybe<a>> = jsc.oneof([
+    jsc.constant(Nothing),
+    arb.smap(Just, x => x.value),
   ]);
+  arbMaybe.show = fa => (fa.isNothing ? 'Nothing' : `Just(${(arb.show || String)(fa.value)})`);
+  return arbMaybe;
+};
 
 describe('Functor', () => {
   const functorLaws = makeFunctor1Laws(functorMaybe)(makeEqMaybe)(makeArb);
@@ -107,4 +112,11 @@ describe('Eq', () => {
   test('Eq - reflexivity', eqLaws.reflexivity);
   test('Eq - symmetry', eqLaws.symmetry);
   test('Eq - transitivity', eqLaws.transitivity);
+});
+
+describe('Traversable', () => {
+  const traversableLaws = makeTraversableLaws(traversableMaybe)(makeEqMaybe)(makeArb);
+  test('Traversable - naturality', traversableLaws.naturality);
+  test('Traversable - identity', traversableLaws.identity);
+  test('Traversable - composition', traversableLaws.composition);
 });

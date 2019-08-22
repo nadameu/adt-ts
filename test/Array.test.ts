@@ -12,6 +12,7 @@ import {
   monoidArray,
   plusArray,
   semigroupArray,
+  traversableArray,
 } from '../src/Array';
 import { TArray } from '../src/Array/internal';
 import { makeAlt1Laws } from './laws/Alt';
@@ -26,6 +27,7 @@ import { makeMonad1Laws } from './laws/Monad';
 import { makeMonoid1Laws } from './laws/Monoid';
 import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
+import { makeTraversableLaws } from './laws/Traversable';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Array<a>> => jsc.array(arb);
 
@@ -100,4 +102,11 @@ describe('Monoid', () => {
   const monoidLaws = makeMonoid1Laws(monoidArray)(makeEqArray)(makeArb);
   test('Monoid - left unit', monoidLaws.leftUnit);
   test('Monoid - right unit', monoidLaws.rightUnit);
+});
+
+describe('Traversable', () => {
+  const traversableLaws = makeTraversableLaws(traversableArray)(makeEqArray)(makeArb);
+  test('Traversable - naturality', traversableLaws.naturality);
+  test('Traversable - identity', traversableLaws.identity);
+  test('Traversable - composition', traversableLaws.composition);
 });

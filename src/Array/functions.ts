@@ -1,15 +1,12 @@
+import { Generic1, Type1 } from '../Generic';
 import { Applicative1 } from '../typeclasses/Applicative';
-import { Apply1 } from '../typeclasses/Apply';
+import { Apply1, lift2 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
 import { Foldable1, foldMapDefaultR } from '../typeclasses/Foldable';
 import { Functor1 } from '../typeclasses/Functor';
 import { Monoid1 } from '../typeclasses/Monoid';
 import { Semigroup1 } from '../typeclasses/Semigroup';
-import {
-  sequenceDefault,
-  Traversable1,
-  traverseDefaultFoldableMonoid,
-} from '../typeclasses/Traversable';
+import { sequenceDefault, Traversable1 } from '../typeclasses/Traversable';
 import { TArray } from './internal';
 
 export const forEach = <a>(f: (_: a) => void) => (xs: a[]) => {
@@ -100,11 +97,12 @@ export const append: Semigroup1<TArray>['append'] = <a>(xs: a[]) => (ys: a[]) =>
 
 export const mempty: Monoid1<TArray>['mempty'] = () => [];
 
-export const traverse = traverseDefaultFoldableMonoid({
-  append,
-  foldMap,
-  mempty,
-} as Foldable1<TArray> & Monoid1<TArray>);
+export const traverse: Traversable1<TArray>['traverse'] = (<m extends Generic1>(
+  applicative: Applicative1<m>
+) => <a, b>(f: (_: a) => Type1<m, b>): ((xs: a[]) => Type1<m, b[]>) => {
+  const push = lift2(applicative)((xs: b[]) => (x: b) => (xs.push(x), xs));
+  return foldl<a, Type1<m, b[]>>(acc => x => push(acc)(f(x)))(applicative.pure([] as b[]));
+}) as any;
 
 export const sequence = sequenceDefault({ traverse } as Traversable1<TArray>);
 

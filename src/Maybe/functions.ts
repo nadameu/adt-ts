@@ -1,5 +1,6 @@
+import { Generic1, Type1 } from '../Generic';
 import { Alt1 } from '../typeclasses/Alt';
-import { Applicative1 } from '../typeclasses/Applicative';
+import { Applicative, Applicative1 } from '../typeclasses/Applicative';
 import { applyDefault, Bind1 } from '../typeclasses/Bind';
 import { Foldable1, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
 import { liftM1, Monad1 } from '../typeclasses/Monad';
@@ -7,11 +8,7 @@ import { MonadError1 } from '../typeclasses/MonadError';
 import { MonadThrow1 } from '../typeclasses/MonadThrow';
 import { Monoid0, Monoid1 } from '../typeclasses/Monoid';
 import { Plus1 } from '../typeclasses/Plus';
-import {
-  sequenceDefault,
-  Traversable1,
-  traverseDefaultFoldablePlus,
-} from '../typeclasses/Traversable';
+import { Traversable1 } from '../typeclasses/Traversable';
 import { Just, Maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
 
@@ -54,10 +51,10 @@ export const foldl = foldlDefault({ foldMap } as Foldable1<TMaybe>);
 
 export const foldr = foldrDefault({ foldMap } as Foldable1<TMaybe>);
 
-export const traverse = traverseDefaultFoldablePlus({
-  alt,
-  empty,
-  foldMap,
-} as Foldable1<TMaybe> & Plus1<TMaybe>);
+export const traverse: Traversable1<TMaybe>['traverse'] = (<f extends Generic1>(
+  applicative: Applicative1<f>
+) => <a, b>(f: (_: a) => Type1<f, b>): ((ta: Maybe<a>) => Type1<f, Maybe<b>>) =>
+  maybe(applicative.pure(Nothing))(x => applicative.map(Just)(f(x)))) as any;
 
-export const sequence = sequenceDefault({ traverse } as Traversable1<TMaybe>);
+export const sequence: Traversable1<TMaybe>['sequence'] = (applicative: Applicative) =>
+  maybe(applicative.pure(Nothing))(applicative.map(Just));
