@@ -2,6 +2,7 @@ import { Generic1, Generic2 } from '../Generic';
 import { thrush } from '../thrush';
 import { Applicative1, Applicative2 } from './Applicative';
 import { Bind1, Bind2 } from './Bind';
+import { compose } from '../Fn/functions';
 
 export interface Monad1<f extends Generic1> extends Applicative1<f>, Bind1<f> {}
 
@@ -35,7 +36,7 @@ type PartialHelper<keys extends keyof Monad1<never> & keyof Monad2<never>> = {
 export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = ({
   bind,
   pure,
-}: Pick<Monad, 'bind' | 'pure'>) => (f: (_: any) => unknown) => bind(x => pure(f(x)));
+}: Pick<Monad, 'bind' | 'pure'>) => (f: (_: any) => unknown) => bind(compose(pure)(f));
 
 export const ap: PartialHelper<'bind' | 'pure'>['ap'] = (bind: Pick<Monad, 'bind' | 'pure'>) => (
   ff: unknown

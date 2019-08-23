@@ -26,8 +26,16 @@ import {
   sequence,
   throwError,
   traverse,
+  compact,
+  filter,
+  filterMap,
+  partition,
+  partitionMap,
+  separate,
 } from './functions';
 import { TMaybe } from './internal';
+import { Filterable1 } from '../typeclasses/Filterable';
+import { Compactable1 } from '../typeclasses/Compactable';
 
 export const makeEqMaybe = <a>(eq: Eq<a>) =>
   ({
@@ -50,3 +58,13 @@ export const plusMaybe = { alt, empty, map } as Plus1<TMaybe>;
 export const traversableMaybe = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable1<
   TMaybe
 >;
+export const compactableMaybe = { compact, separate } as Compactable1<TMaybe>;
+export const filterableMaybe = {
+  compact,
+  filter,
+  filterMap,
+  map,
+  partition,
+  partitionMap,
+  separate,
+} as Filterable1<TMaybe>;

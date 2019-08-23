@@ -56,3 +56,7 @@ export const noteL = <a>(thunk: () => a): (<b>(fb: Maybe<b>) => Either<a, b>) =>
 export const hush: <a, b>(fab: Either<a, b>) => Maybe<b> = either<unknown, Maybe<any>>(
   () => Nothing
 )(Just);
+
+export const swap: <a, b>(fab: Either<a, b>) => Either<b, a> = either<any, Either<any, any>>(Right)(
+  Left
+);

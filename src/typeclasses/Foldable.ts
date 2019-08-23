@@ -1,3 +1,6 @@
+import { makeMonoidDual } from '../Dual/instances';
+import { monoidEndo } from '../Endo/instances';
+import { compose, flip, identity } from '../Fn/functions';
 import { Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
 import { Monoid, Monoid0, Monoid1 } from './Monoid';
 
@@ -74,56 +77,17 @@ type HelperMonoid = {
   };
 };
 
-const { monoidDLList, toDLList } = (() => {
-  type DLNode<a> = { prev: DLNode<a> | null; value: a; next: DLNode<a> | null };
-  type DLList<a> = { first: DLNode<a>; last: DLNode<a> } | null;
-  interface TDLList extends Generic1 {
-    type: DLList<this['a']>;
-  }
-  const monoidDLList = {
-    append: left => right => {
-      if (left === null) return right;
-      if (right === null) return left;
-      left.last.next = right.first;
-      left.last = right.last;
-      return left;
-    },
-    mempty: () => null,
-  } as Monoid1<TDLList>;
-  const toDLList = <a>(value: a): DLList<a> => {
-    const node = { prev: null, value, next: null };
-    return { first: node, last: node };
-  };
-  return { monoidDLList, toDLList };
-})();
-
-export const foldlDefault: PartialHelper<'foldMap'>['foldl'] = ({
+export const foldlDefault: PartialHelper<'foldMap'>['foldl'] = <f extends Generic1>({
   foldMap,
-}: Pick<Foldable, 'foldMap'>) => <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (fa: unknown): b => {
-  const list = foldMap(monoidDLList)(toDLList)(fa);
-  if (list === null) return b;
-  let acc = b;
-  let current: typeof list.first['next'] = list.first;
-  while (current !== null) {
-    acc = f(acc)(current.value as a);
-    current = current.next;
-  }
-  return acc;
-};
+}: Pick<Foldable, 'foldMap'>) => <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (
+  fa: Type1<f, a>
+): b => foldMap(makeMonoidDual(monoidEndo))(flip(f))(fa)(b);
 
-export const foldrDefault: PartialHelper<'foldMap'>['foldr'] = ({
+export const foldrDefault: PartialHelper<'foldMap'>['foldr'] = <f extends Generic1>({
   foldMap,
-}: Pick<Foldable, 'foldMap'>) => <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (fa: unknown): b => {
-  const list = foldMap(monoidDLList)(toDLList)(fa);
-  if (list === null) return b;
-  let acc = b;
-  let current: typeof list.last['prev'] = list.last;
-  while (current !== null) {
-    acc = f(current.value as a)(acc);
-    current = current.prev;
-  }
-  return acc;
-};
+}: Pick<Foldable, 'foldMap'>) => <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (
+  fa: Type1<f, a>
+): b => foldMap(monoidEndo)(f)(fa)(b);
 
 export const foldMapDefaultL: PartialHelper<'foldl'>['foldMap'] = ({
   foldl,
@@ -133,7 +97,7 @@ export const foldMapDefaultL: PartialHelper<'foldl'>['foldMap'] = ({
 export const foldMapDefaultR: PartialHelper<'foldr'>['foldMap'] = ({
   foldr,
 }: Pick<Foldable, 'foldr'>) => ({ append, mempty }: Monoid) => <a>(f: (_: a) => unknown) =>
-  foldr<a, unknown>(x => append(f(x)))(mempty());
+  foldr<a, unknown>(compose(append)(f))(mempty());
 
 export const fold: HelperMonoid['fold'] = ({ foldMap }: Foldable) => (monoid: Monoid) =>
-  /*#__PURE__#*/ foldMap(monoid as Monoid0<unknown>)(x => x);
+  /*#__PURE__#*/ foldMap(monoid as Monoid0<unknown>)(identity);

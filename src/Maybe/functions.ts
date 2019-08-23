@@ -1,7 +1,7 @@
 import { Generic1, Type1 } from '../Generic';
 import { Alt1 } from '../typeclasses/Alt';
 import { Applicative, Applicative1 } from '../typeclasses/Applicative';
-import { applyDefault, Bind1 } from '../typeclasses/Bind';
+import { applyDefault, Bind1, join } from '../typeclasses/Bind';
 import { Foldable1, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
 import { liftM1, Monad1 } from '../typeclasses/Monad';
 import { MonadError1 } from '../typeclasses/MonadError';
@@ -11,6 +11,11 @@ import { Plus1 } from '../typeclasses/Plus';
 import { Traversable1 } from '../typeclasses/Traversable';
 import { Just, Maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
+import { Filterable1, partitionDefault, filterDefault } from '../typeclasses/Filterable';
+import { Either } from '../Either/definitions';
+import { either } from '../Either/functions';
+import { Compactable1 } from '../typeclasses/Compactable';
+import { thrush } from '../thrush';
 
 export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? b : f(fa.value);
@@ -22,12 +27,6 @@ export const pure: Applicative1<TMaybe>['pure'] = Just;
 export const map = liftM1({ bind, pure } as Monad1<TMaybe>);
 
 export const apply = applyDefault({ bind, map } as Bind1<TMaybe>);
-
-export const filter: {
-  <a>(p: (_: a) => boolean): (fa: Maybe<a>) => Maybe<a>;
-  <a, b extends a>(r: (x: a) => x is b): (fa: Maybe<a>) => Maybe<b>;
-} = <a>(p: (_: a) => boolean): ((fa: Maybe<a>) => Maybe<a>) =>
-  bind(x => (p(x) ? Just(x) : Nothing));
 
 export const maybeL = <b>(f: () => b) => <a>(g: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? f() : g(fa.value);
@@ -58,3 +57,25 @@ export const traverse: Traversable1<TMaybe>['traverse'] = (<f extends Generic1>(
 
 export const sequence: Traversable1<TMaybe>['sequence'] = (applicative: Applicative) =>
   maybe(applicative.pure(Nothing))(applicative.map(Just));
+
+export const partitionMap: Filterable1<TMaybe>['partitionMap'] = <a, b, c>(
+  f: (_: a) => Either<b, c>
+) => {
+  type Result = { left: Maybe<b>; right: Maybe<c> };
+  return maybe<Result>({ left: Nothing, right: Nothing })<a>(x =>
+    either<b, Result>(b => ({ left: Just(b), right: Nothing }))<c>(c => ({
+      left: Nothing,
+      right: Just(c),
+    }))(f(x))
+  );
+};
+
+export const partition = partitionDefault({ partitionMap } as Filterable1<TMaybe>);
+
+export const filterMap: Filterable1<TMaybe>['filterMap'] = bind;
+
+export const filter = filterDefault({ filterMap } as Filterable1<TMaybe>);
+
+export const compact: Compactable1<TMaybe>['compact'] = filterMap(x => x);
+
+export const separate: Compactable1<TMaybe>['separate'] = partitionMap(x => x);

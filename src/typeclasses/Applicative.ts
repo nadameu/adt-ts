@@ -26,4 +26,4 @@ export type ApplyPure = {
 export const liftA1: {
   <f extends Generic1>({ apply, pure }: ApplyPure1<f>): Applicative1<f>['map'];
   <f extends Generic2>({ apply, pure }: ApplyPure2<f>): Applicative2<f>['map'];
-} = ({ apply, pure }: ApplyPure) => (f: (_: any) => unknown) => (fa: unknown) => apply(pure(f))(fa);
+} = ({ apply, pure }: ApplyPure) => (f: (_: any) => unknown) => apply(pure(f));

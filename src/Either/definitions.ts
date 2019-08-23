@@ -1,5 +1,4 @@
 export type Either<a, b> = Left<a> | Right<b>;
-export function Either<a, b>() {}
 
 export interface Left<a> {
   isLeft: true;

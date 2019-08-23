@@ -1,5 +1,4 @@
 export type Maybe<a> = Nothing | Just<a>;
-export const Maybe = class Maybe<a> {};
 
 export interface Nothing {
   isJust: false;

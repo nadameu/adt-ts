@@ -1,4 +1,5 @@
 import { GenericFn2, IdentifiedFn, TypeFn, GenericFn3, IdentifiedFn3, TypeFn3 } from '../Generic';
+import { flip } from '../Fn/functions';
 
 export interface Semigroupoid2<f extends GenericFn2> extends IdentifiedFn<f> {
   compose: Helpers2<f>['compose'];
@@ -29,6 +30,5 @@ type Helper = {
   };
 };
 
-export const composeFlipped: Helper['composeFlipped'] = ({ compose }: Semigroupoid) => (
-  f: (_: any) => unknown
-) => (g: (_: any) => unknown) => compose(g)(f);
+export const composeFlipped: Helper['composeFlipped'] = ({ compose }: Semigroupoid) =>
+  flip(compose);

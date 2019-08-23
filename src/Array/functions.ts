@@ -1,13 +1,30 @@
 import { Generic1, Type1 } from '../Generic';
-import { Applicative1 } from '../typeclasses/Applicative';
+import { Maybe } from '../Maybe/definitions';
+import { Applicative, Applicative1 } from '../typeclasses/Applicative';
 import { Apply1, lift2 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
 import { Foldable1, foldMapDefaultR } from '../typeclasses/Foldable';
-import { Functor1 } from '../typeclasses/Functor';
+import { flap, Functor1 } from '../typeclasses/Functor';
 import { Monoid1 } from '../typeclasses/Monoid';
 import { Semigroup1 } from '../typeclasses/Semigroup';
 import { sequenceDefault, Traversable1 } from '../typeclasses/Traversable';
+import {
+  Witherable1,
+  partitionMapByWilt,
+  filterMapByWither,
+  witherDefault,
+  wiltDefault,
+} from '../typeclasses/Witherable';
 import { TArray } from './internal';
+import { Either } from '../Either/definitions';
+import {
+  partitionDefault,
+  Filterable1,
+  filterDefault,
+  filterMapDefault,
+  maybeBool,
+} from '../typeclasses/Filterable';
+import { Compactable1 } from '../typeclasses/Compactable';
 
 export const forEach = <a>(f: (_: a) => void) => (xs: a[]) => {
   const len = xs.length;
@@ -97,15 +114,59 @@ export const append: Semigroup1<TArray>['append'] = <a>(xs: a[]) => (ys: a[]) =>
 
 export const mempty: Monoid1<TArray>['mempty'] = () => [];
 
-export const traverse: Traversable1<TArray>['traverse'] = (<m extends Generic1>(
-  applicative: Applicative1<m>
-) => <a, b>(f: (_: a) => Type1<m, b>): ((xs: a[]) => Type1<m, b[]>) => {
-  const push = lift2(applicative)((xs: b[]) => (x: b) => (xs.push(x), xs));
-  return foldl<a, Type1<m, b[]>>(acc => x => push(acc)(f(x)))(applicative.pure([] as b[]));
-}) as any;
+export const traverse: Traversable1<TArray>['traverse'] = <m extends Generic1>(
+  applicative: Applicative
+) => <a, b>(f: (_: a) => Type1<m, b>) => (as: a[]): Type1<m, b[]> => {
+  const push = lift2(applicative as Applicative1<m>)((bs: b[]) => (b: b) => (i: number) => {
+    bs[i] = b;
+    return bs;
+  });
+  const fl = flap(applicative as Applicative1<m>);
+
+  let fbs = (applicative as Applicative1<m>).pure(new Array<b>(as.length));
+  const len = as.length;
+  for (let i = 0; i < len; i++) {
+    const fb = f(as[i]);
+    fbs = fl(i)(push(fbs)(fb));
+  }
+  return fbs;
+};
 
 export const sequence = sequenceDefault({ traverse } as Traversable1<TArray>);
 
 export const alt = append;
 
 export const empty = mempty;
+
+export const filterMap: Filterable1<TArray>['filterMap'] = <a, b>(f: (_: a) => Maybe<b>) => (
+  as: a[]
+): b[] => {
+  const bs: b[] = [];
+  const len = as.length;
+  for (let i = 0; i < len; i++) {
+    const maybeB = f(as[i]);
+    if (maybeB.isJust) bs.push(maybeB.value);
+  }
+  return bs;
+};
+export const filter = filterDefault({ filterMap } as Filterable1<TArray>);
+export const compact: Compactable1<TArray>['compact'] = filterMap(x => x);
+
+export const partitionMap: Filterable1<TArray>['partitionMap'] = <a, b, c>(
+  f: (_: a) => Either<b, c>
+) => (as: a[]) => {
+  const left: b[] = [];
+  const right: c[] = [];
+  const len = as.length;
+  for (let i = 0; i < len; i++) {
+    const either = f(as[i]);
+    if (either.isLeft) left.push(either.leftValue);
+    else right.push(either.rightValue);
+  }
+  return { left, right };
+};
+export const partition = partitionDefault({ partitionMap } as Filterable1<TArray>);
+export const separate: Compactable1<TArray>['separate'] = partitionMap(x => x);
+
+export const wither = witherDefault({ compact, traverse } as Witherable1<TArray>);
+export const wilt = wiltDefault({ separate, traverse } as Witherable1<TArray>);

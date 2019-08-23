@@ -1,6 +1,8 @@
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { thrush } from '../thrush';
 import { Apply1, Apply2 } from './Apply';
+import { compose } from '../Fn/functions';
+import { Z_UNKNOWN } from 'zlib';
 
 export interface Bind1<f extends Generic1> extends Apply1<f> {
   bind: Helpers1<f>['bind'];
@@ -44,4 +46,5 @@ export const join: Helper['join'] = ({ bind }: Bind) => bind(x => x);
 export const applyDefault: {
   <f extends Generic1>({ bind, map }: BindMap1<f>): Bind1<f>['apply'];
   <f extends Generic2>({ bind, map }: BindMap2<f>): Bind2<f>['apply'];
-} = ({ bind, map }: BindMap) => (ff: unknown) => bind(a => map(thrush(a))(ff));
+} = <f extends Generic1>({ bind, map }: BindMap) => <a, b>(ff: Type1<f, (_: a) => b>) =>
+  bind(a => map(thrush(a))(ff));

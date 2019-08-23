@@ -25,8 +25,19 @@ import {
   pure,
   sequence,
   traverse,
+  compact,
+  filter,
+  filterMap,
+  separate,
+  partition,
+  partitionMap,
+  wither,
+  wilt,
 } from './functions';
 import { TArray } from './internal';
+import { Compactable1 } from '../typeclasses/Compactable';
+import { Filterable1 } from '../typeclasses/Filterable';
+import { Witherable1 } from '../typeclasses/Witherable';
 
 export const makeEqArray = <a>(eq: Eq<a>) =>
   ({
@@ -50,3 +61,30 @@ export const traversableArray = { foldMap, foldl, foldr, map, sequence, traverse
 
 export const semigroupArray = { append } as Semigroup1<TArray>;
 export const monoidArray = { append, mempty } as Monoid1<TArray>;
+
+export const compactableArray = { compact, separate } as Compactable1<TArray>;
+export const filterableArray = {
+  compact,
+  filter,
+  filterMap,
+  map,
+  partition,
+  partitionMap,
+  separate,
+} as Filterable1<TArray>;
+export const witherableArray = {
+  compact,
+  filter,
+  filterMap,
+  foldMap,
+  foldl,
+  foldr,
+  map,
+  partition,
+  partitionMap,
+  separate,
+  sequence,
+  traverse,
+  wilt,
+  wither,
+} as Witherable1<TArray>;
