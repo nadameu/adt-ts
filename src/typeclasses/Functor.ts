@@ -1,6 +1,5 @@
-import { constant } from '../constant';
+import { constant, thrush } from '../Fn/functions';
 import { Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
-import { thrush } from '../thrush';
 
 export interface Functor1<f extends Generic1> extends Identified1<f> {
   map: Helpers1<f>['map'];

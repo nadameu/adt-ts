@@ -1,8 +1,7 @@
+import { compose, thrush } from '../Fn/functions';
 import { Generic1, Generic2 } from '../Generic';
-import { thrush } from '../thrush';
 import { Applicative1, Applicative2 } from './Applicative';
 import { Bind1, Bind2 } from './Bind';
-import { compose } from '../Fn/functions';
 
 export interface Monad1<f extends Generic1> extends Applicative1<f>, Bind1<f> {}
 

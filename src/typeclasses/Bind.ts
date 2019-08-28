@@ -1,8 +1,6 @@
+import { thrush } from '../Fn/functions';
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
-import { thrush } from '../thrush';
 import { Apply1, Apply2 } from './Apply';
-import { compose } from '../Fn/functions';
-import { Z_UNKNOWN } from 'zlib';
 
 export interface Bind1<f extends Generic1> extends Apply1<f> {
   bind: Helpers1<f>['bind'];
