@@ -17,12 +17,12 @@ test('Simple', async () => {
 
     const Nothing = { isJust: false, isNothing: true };
     const Just = (value) => ({ isJust: true, isNothing: false, value });
+    const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
 
     const applyDefault = ({ bind, map }) => (ff) => bind(a => map(thrush(a))(ff));
 
     const liftM1 = ({ bind, pure, }) => (f) => bind(compose(pure)(f));
 
-    const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
     const bind = maybe(Nothing);
     const pure = Just;
     const map = liftM1({ bind, pure });
