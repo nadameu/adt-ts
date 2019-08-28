@@ -1,7 +1,10 @@
+import { Either, either } from '../Either/definitions';
 import { Generic1, Type1 } from '../Generic';
 import { Alt1 } from '../typeclasses/Alt';
 import { Applicative, Applicative1 } from '../typeclasses/Applicative';
-import { applyDefault, Bind1, join } from '../typeclasses/Bind';
+import { applyDefault, Bind1 } from '../typeclasses/Bind';
+import { Compactable1 } from '../typeclasses/Compactable';
+import { Filterable1, filterDefault, partitionDefault } from '../typeclasses/Filterable';
 import { Foldable1, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
 import { liftM1, Monad1 } from '../typeclasses/Monad';
 import { MonadError1 } from '../typeclasses/MonadError';
@@ -9,16 +12,8 @@ import { MonadThrow1 } from '../typeclasses/MonadThrow';
 import { Monoid0, Monoid1 } from '../typeclasses/Monoid';
 import { Plus1 } from '../typeclasses/Plus';
 import { Traversable1 } from '../typeclasses/Traversable';
-import { Just, Maybe, Nothing } from './definitions';
+import { Just, Maybe, maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
-import { Filterable1, partitionDefault, filterDefault } from '../typeclasses/Filterable';
-import { Either } from '../Either/definitions';
-import { either } from '../Either/functions';
-import { Compactable1 } from '../typeclasses/Compactable';
-import { thrush } from '../thrush';
-
-export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
-  fa.isNothing ? b : f(fa.value);
 
 export const bind: Bind1<TMaybe>['bind'] = maybe<Maybe<any>>(Nothing);
 

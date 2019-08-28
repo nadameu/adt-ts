@@ -1,6 +1,6 @@
 import { Generic1, Type1 } from '../Generic';
-import { Just, Maybe, Nothing } from '../Maybe/definitions';
-import { maybe, maybeL } from '../Maybe/functions';
+import { Just, Maybe, maybe, Nothing } from '../Maybe/definitions';
+import { maybeL } from '../Maybe/functions';
 import { Alt1, Alt2 } from '../typeclasses/Alt';
 import { Applicative, Applicative2 } from '../typeclasses/Applicative';
 import { Bind2 } from '../typeclasses/Bind';
@@ -8,13 +8,10 @@ import { Foldable2, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
 import { ap, liftM1, Monad2 } from '../typeclasses/Monad';
 import { MonadError2 } from '../typeclasses/MonadError';
 import { MonadThrow2 } from '../typeclasses/MonadThrow';
-import { Monoid0, Monoid } from '../typeclasses/Monoid';
+import { Monoid } from '../typeclasses/Monoid';
 import { sequenceDefault, Traversable2 } from '../typeclasses/Traversable';
-import { Either, Left, Right } from './definitions';
+import { Either, either, Left, Right } from './definitions';
 import { TEither } from './internal';
-
-export const either = <a, c>(f: (_: a) => c) => <b>(g: (_: b) => c) => (fab: Either<a, b>): c =>
-  fab.isLeft ? f(fab.leftValue) : g(fab.rightValue);
 
 export const bind: Bind2<TEither>['bind'] = either<any, Either<any, any>>(Left);
 
