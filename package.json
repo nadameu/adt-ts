@@ -13,10 +13,10 @@
     "build-esm": "tsc -p tsconfig-esm.json",
     "clean": "rimraf dist .rpt2_cache",
     "dev": "rollup -c -w",
+    "prepare": "npm run build",
     "prettier-write": "prettier --write \"./*.js\" \"src/**\" \"test/**\"",
-    "pretest": "npm run build",
     "test": "jest",
-    "typecheck": "tsc"
+    "type-check": "tsc"
   },
   "dependencies": {},
   "devDependencies": {
