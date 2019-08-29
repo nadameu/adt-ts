@@ -5,12 +5,13 @@ test('Simple', async () => {
   const bundle = await rollup({
     input: { 'src/index': path.resolve(__dirname, 'tree-shaking.aux.js') },
   });
-  const { output } = await bundle.generate({
-    format: 'esm',
+  const {
+    output: [output],
+  } = await bundle.generate({
+    format: 'es',
   });
-  expect(output.map(x => x.code)).toMatchInlineSnapshot(`
-    Array [
-      "const compose = (f) => (g) => (a) => f(g(a));
+  expect(output.code).toMatchInlineSnapshot(`
+    "const compose = (f) => (g) => (a) => f(g(a));
     const thrush = (a) => (f) => f(a);
 
     const lift2 = ({ apply, map }) => (f) => compose(apply)(map(f));
@@ -31,7 +32,6 @@ test('Simple', async () => {
     const applyMaybe = { apply, map };
 
     console.log(lift2(applyMaybe)(x => y => x > y)(Nothing)(Just(40)));
-    ",
-    ]
+    "
   `);
 });
