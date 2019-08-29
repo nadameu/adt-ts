@@ -1,9 +1,23 @@
 {
   "name": "pure-ts",
   "version": "1.0.0",
+  "files": [
+    "dist"
+  ],
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "typings": "dist/esm/index.d.ts",
+  "scripts": {
+    "build": "npm run clean && npm run build-cjs && npm run build-esm",
+    "build-cjs": "tsc -p tsconfig-cjs.json",
+    "build-esm": "tsc -p tsconfig-esm.json",
+    "clean": "rimraf dist .rpt2_cache",
+    "dev": "rollup -c -w",
+    "prettier-write": "prettier --write \"./*.js\" \"src/**\" \"test/**\"",
+    "pretest": "npm run build",
+    "test": "jest",
+    "typecheck": "tsc"
+  },
   "dependencies": {},
   "devDependencies": {
     "@nadameu/pipe": "^2.0.0",
@@ -18,19 +32,5 @@
     "ts-node": "^8.3.0",
     "tslib": "^1.10.0",
     "typescript": "^3.5.3"
-  },
-  "scripts": {
-    "clean": "rimraf dist .rpt2_cache",
-    "build-cjs": "tsc -p tsconfig-cjs.json",
-    "build-esm": "tsc -p tsconfig-esm.json",
-    "build": "npm run clean && npm run build-cjs && npm run build-esm",
-    "dev": "rollup -c -w",
-    "pretest": "npm run build",
-    "prettier-write": "prettier --write \"./*.js\" \"src/**\" \"test/**\"",
-    "test": "jest",
-    "typecheck": "tsc"
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }
