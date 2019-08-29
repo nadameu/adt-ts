@@ -15,6 +15,8 @@ import { Traversable1 } from '../typeclasses/Traversable';
 import { Just, Maybe, maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
 
+export { maybe };
+
 export const bind: Bind1<TMaybe>['bind'] = maybe<Maybe<any>>(Nothing);
 
 export const pure: Applicative1<TMaybe>['pure'] = Just;

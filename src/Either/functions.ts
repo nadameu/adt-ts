@@ -13,6 +13,8 @@ import { sequenceDefault, Traversable2 } from '../typeclasses/Traversable';
 import { Either, either, Left, Right } from './definitions';
 import { TEither } from './internal';
 
+export { either };
+
 export const bind: Bind2<TEither>['bind'] = either<any, Either<any, any>>(Left);
 
 export const pure: Applicative2<TEither>['pure'] = Right;
