@@ -61,3 +61,11 @@ export type TypeFn<f extends GenericFn2, a, b> = f extends never
 export type TypeFn3<f extends GenericFn3, a, b, c> = f extends never
   ? never
   : (f & { a: a; b: b; c: c })['type'];
+
+export interface Generic2as1<f extends Generic2> extends Generic1 {
+  type: Type2<f, unknown, this['a']>;
+}
+
+export interface Generic1as2<f extends Generic1> extends Generic2 {
+  type: Type1<f, this['b']>;
+}

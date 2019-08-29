@@ -10,5 +10,5 @@ export interface MonadThrow2<f extends Generic2> extends Monad2<f> {
 }
 
 export type MonadThrow = {
-  [k in keyof MonadThrow1<never> & keyof MonadThrow2<never>]: MonadThrow1<Generic1>[k];
+  [k in keyof MonadThrow1<never> & keyof MonadThrow2<never>]: MonadThrow2<Generic2>[k];
 };

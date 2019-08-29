@@ -1,55 +1,42 @@
 import * as jsc from 'jsverify';
-import { eqNumber } from '../../src';
-import { Generic1, Type1, Generic2, Type2 } from '../../src/Generic';
-import { Apply1, Apply2 } from '../../src/typeclasses/Apply';
+import { compose, eqNumber, eqString } from '../../src';
+import { Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
+import { Apply, Apply1, Apply2 } from '../../src/typeclasses/Apply';
 import { Eq } from '../../src/typeclasses/Eq';
 
-export const makeApply1Laws = <f extends Generic1>(apply: Apply1<f>) => (
-  makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
-) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) => {
-  const eq = makeEq(eqNumber).eq;
+const laws = <f extends Generic1, a>(
+  apply0: Apply,
+  fa: jsc.Arbitrary<Type1<f, a>>,
+  ff: jsc.Arbitrary<Type1<f, (_: a) => a>>,
+  eq: (_: Type1<f, a>) => (_: Type1<f, a>) => boolean
+) => {
+  const { apply, map } = apply0 as Apply1<f>;
   return {
     composition: (): void =>
-      jsc.assertForall(
-        makeArb(jsc.fn(jsc.number)),
-        makeArb(jsc.fn(jsc.number)),
-        makeArb(jsc.number),
-        (a, u, v) =>
-          eq(
-            apply.apply(
-              apply.apply(
-                apply.map((f: (_: number) => number) => (g: (_: number) => number) => (x: number) =>
-                  f(g(x))
-                )(a)
-              )(u)
-            )(v)
-          )(apply.apply(a)(apply.apply(u)(v)))
+      jsc.assertForall(ff, ff, fa, (a, u, v) =>
+        eq(apply(apply(map(compose)(a))(u))(v))(apply(a)(apply(u)(v)))
       ),
   };
 };
+
+export const makeApply1Laws = <f extends Generic1>(apply: Apply1<f>) => (
+  makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
+) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
+  laws<f, number>(
+    apply as Apply,
+    makeArb(jsc.number),
+    makeArb(jsc.fn(jsc.number)),
+    makeEq(eqNumber).eq
+  );
 
 export const makeApply2Laws = <f extends Generic2>(apply: Apply2<f>) => (
   makeEq: <a, b>(eqA: Eq<a>, eqB: Eq<b>) => Eq<Type2<f, a, b>>
 ) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>
-) => {
-  const eq = makeEq(eqNumber, eqNumber).eq;
-  return {
-    composition: (): void =>
-      jsc.assertForall(
-        makeArb(jsc.number, jsc.fn(jsc.number)),
-        makeArb(jsc.number, jsc.fn(jsc.number)),
-        makeArb(jsc.number, jsc.number),
-        (a, u, v) =>
-          eq(
-            apply.apply(
-              apply.apply(
-                apply.map((f: (_: number) => number) => (g: (_: number) => number) => (x: number) =>
-                  f(g(x))
-                )(a)
-              )(u)
-            )(v)
-          )(apply.apply(a)(apply.apply(u)(v)))
-      ),
-  };
-};
+) =>
+  laws<Generic2as1<f>, number>(
+    apply as Apply,
+    makeArb(jsc.string, jsc.number),
+    makeArb(jsc.string, jsc.fn(jsc.number)),
+    makeEq(eqString, eqNumber).eq
+  );

@@ -1,63 +1,52 @@
 import * as jsc from 'jsverify';
-import { eqNumber, eqString, monoidString } from '../../src';
-import { Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
-import { Foldable1, Foldable2 } from '../../src/typeclasses/Foldable';
-import { Monoid0 } from '../../src/typeclasses/Monoid';
+import {
+  array,
+  eqNumber,
+  flip,
+  makeEqArray,
+  makeMonoidDual,
+  monoidArray,
+  monoidEndo,
+} from '../../src';
+import { Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
+import { Eq } from '../../src/typeclasses/Eq';
+import { Foldable, Foldable1, Foldable2 } from '../../src/typeclasses/Foldable';
 
-const laws = <a, i, r>(
-  foldable: {
-    foldl<b>(f: (_: b) => (_: i) => b): (z: b) => (fi: a) => b;
-    foldr<b>(f: (_: i) => (_: b) => b): (z: b) => (fi: a) => b;
-    foldMap<b>(monoid: Pick<Monoid0<b>, 'append' | 'mempty'>): (f: (_: i) => b) => (fi: a) => b;
-  },
+const laws = <f extends Generic1, a>(
+  foldable: Foldable,
   a: jsc.Arbitrary<a>,
-  i: jsc.Arbitrary<i>,
-  f: (_: i) => r,
-  monoid: Pick<Monoid0<r>, 'append' | 'mempty'>,
-  eqI: (x: i) => (y: i) => boolean,
-  eqR: (x: r) => (y: r) => boolean
-) => ({
-  foldl: (): void =>
-    jsc.assertForall(a, i, jsc.fn(jsc.fn(jsc.nat)), (x, z, f: (_: i) => (_: i) => i) =>
-      eqI(foldable.foldl(f)(z)(x))(
-        foldable.foldMap<(_: i) => i>({
-          append: f => g => x => g(f(x)),
-          mempty: () => x => x,
-        })(x => y => f(y)(x))(x)(z)
-      )
-    ),
-  foldr: (): void =>
-    jsc.assertForall(a, i, jsc.fn(jsc.fn(jsc.nat)), (x, z, f: (_: i) => (_: i) => i) =>
-      eqI(foldable.foldr(f)(z)(x))(
-        foldable.foldMap<(_: i) => i>({
-          append: f => g => x => f(g(x)),
-          mempty: () => x => x,
-        })(f)(x)(z)
-      )
-    ),
-  foldMap: (): void =>
-    jsc.assertForall(a, x =>
-      eqR(foldable.foldMap(monoid)(f)(x))(
-        foldable
-          .foldMap<i[]>({ append: x => y => x.concat(y), mempty: () => [] })(x => [x])(x)
-          .reduceRight((acc, x) => monoid.append(f(x))(acc), monoid.mempty())
-      )
-    ),
-});
+  fa: jsc.Arbitrary<Type1<f, a>>,
+  eq: Eq<a>['eq']
+) => {
+  const { foldMap, foldl, foldr } = foldable as Foldable1<f>;
+  return {
+    foldl: (): void =>
+      jsc.assertForall(fa, a, jsc.fn(jsc.fn(a)), (fa, z, f) =>
+        eq(foldl(f)(z)(fa))(foldMap(makeMonoidDual(monoidEndo))(flip(f))(fa)(z))
+      ),
+    foldr: (): void =>
+      jsc.assertForall(fa, a, jsc.fn(jsc.fn(a)), (fa, z, f) =>
+        eq(foldr(f)(z)(fa))(foldMap(monoidEndo)(f)(fa)(z))
+      ),
+    foldMap: (): void =>
+      jsc.assertForall(fa, fa =>
+        makeEqArray({ eq } as Eq<a>).eq(foldMap(monoidArray)(array.pure)(fa))(
+          foldl<a, a[]>(xs => x => (xs.push(x), xs))([])(fa)
+        )
+      ),
+  };
+};
 
 export const makeFoldable1Laws = <f extends Generic1>(foldable: Foldable1<f>) => (
   makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>
-) => laws(foldable, makeArb(jsc.nat), jsc.nat, String, monoidString, eqNumber.eq, eqString.eq);
+) => laws<f, number>(foldable as Foldable, jsc.nat, makeArb(jsc.nat), eqNumber.eq);
 
 export const makeFoldable2Laws = <f extends Generic2>(foldable: Foldable2<f>) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>
 ) =>
-  laws(
-    foldable,
-    makeArb(jsc.string, jsc.nat),
+  laws<Generic2as1<f>, number>(
+    foldable as Foldable,
     jsc.nat,
-    String,
-    monoidString,
-    eqNumber.eq,
-    eqString.eq
+    makeArb(jsc.string, jsc.nat),
+    eqNumber.eq
   );

@@ -3,7 +3,7 @@ import { eqNumber } from '../../src';
 import { Generic1, Type1 } from '../../src/Generic';
 import { Applicative1 } from '../../src/typeclasses/Applicative';
 import { Eq } from '../../src/typeclasses/Eq';
-import { Traversable1 } from '../../src/typeclasses/Traversable';
+import { Traversable, Traversable1 } from '../../src/typeclasses/Traversable';
 
 declare const phantom: unique symbol;
 interface F<a> {
@@ -95,41 +95,38 @@ const makeApplicativeCompose = <f extends Generic1, g extends Generic1>(
     pure: a => Compose(aF.pure(aG.pure(a))),
   } as Applicative1<TCompose<f, g>>);
 
-export const makeTraversableLaws = <t extends Generic1>(traversable: Traversable1<t>) => (
-  makeEq: <a>(_: Eq<a>) => Eq<Type1<t, a>>
-) => (makeArb: <a>(_: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<t, a>>) => {
+const laws = <t extends Generic1, a>(
+  traversable: Traversable,
+  ta: jsc.Arbitrary<Type1<t, a>>,
+  a: jsc.Arbitrary<a>,
+  eq: Eq<Type1<t, a>>['eq']
+) => {
+  const { foldMap, foldl, foldr, map, sequence, traverse } = traversable as Traversable1<t>;
   return {
     naturality: (): void => {
-      const eq = makeEqG(makeEq(eqNumber)).eq;
-      return jsc.assertForall(jsc.fn(makeArbF(jsc.nat)), makeArb(jsc.nat), (f, ta) => {
-        const a = t(traversable.traverse(applicativeF)(f)(ta));
-        const b = traversable.traverse(applicativeG)(x => t(f(x)))(ta);
-        return eq(a)(b);
+      const eqG = makeEqG({ eq } as Eq<Type1<t, a>>).eq;
+      return jsc.assertForall(jsc.fn(makeArbF(a)), ta, (f, ta) => {
+        const a = t(traverse(applicativeF)(f)(ta));
+        const b = traverse(applicativeG)(x => t(f(x)))(ta);
+        return eqG(a)(b);
       });
     },
     identity: (): void => {
-      const eq = makeEq(eqNumber).eq;
-      jsc.assertForall(makeArb(jsc.number), ta =>
-        eq(traversable.traverse(applicativeIdentity)(Identity)(ta))(Identity(ta))
-      );
+      jsc.assertForall(ta, ta => eq(traverse(applicativeIdentity)(Identity)(ta))(Identity(ta)));
     },
     composition: (): void => {
       const applicativeCompose = makeApplicativeCompose(applicativeF, applicativeG);
-      const eq = makeEqF(makeEqG(makeEq(eqNumber))).eq;
-      return jsc.assertForall(
-        jsc.fn(makeArbF(jsc.number)),
-        jsc.fn(makeArbG(jsc.number)),
-        makeArb(jsc.number),
-        (f, g, ta) => {
-          const a = traversable.traverse(applicativeCompose)((x: number) =>
-            applicativeF.map(g)(f(x))
-          )(ta);
-          const b = applicativeF.map(traversable.traverse(applicativeG)(g))(
-            traversable.traverse(applicativeF)(f)(ta)
-          );
-          return eq(a)(b);
-        }
-      );
+      const eqCompose = makeEqF(makeEqG({ eq } as Eq<Type1<t, a>>)).eq;
+      return jsc.assertForall(jsc.fn(makeArbF(a)), jsc.fn(makeArbG(a)), ta, (f, g, ta) => {
+        const a = traverse(applicativeCompose)((x: a) => applicativeF.map(g)(f(x)))(ta);
+        const b = applicativeF.map(traverse(applicativeG)(g))(traverse(applicativeF)(f)(ta));
+        return eqCompose(a)(b);
+      });
     },
   };
 };
+
+export const makeTraversableLaws = <t extends Generic1>(traversable: Traversable1<t>) => (
+  makeEq: <a>(_: Eq<a>) => Eq<Type1<t, a>>
+) => (makeArb: <a>(_: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<t, a>>) =>
+  laws<t, number>(traversable as Traversable, makeArb(jsc.number), jsc.number, makeEq(eqNumber).eq);

@@ -2,27 +2,27 @@ import * as jsc from 'jsverify';
 import { eqNumber, eqString } from '../../src';
 import { Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
 import { Eq } from '../../src/typeclasses/Eq';
-import { Monoid0, Monoid1, Monoid2 } from '../../src/typeclasses/Monoid';
+import { Monoid, Monoid0, Monoid1, Monoid2 } from '../../src/typeclasses/Monoid';
+import { leftIdentity, rightIdentity } from './helpers';
 
-export const makeMonoidLaws = <a>(monoid: Monoid0<a>) => (eq: Eq<a>) => (arb: jsc.Arbitrary<a>) => {
+const laws = <a>(monoid: Monoid, a: jsc.Arbitrary<a>, eq: Eq<a>['eq']) => {
+  const { append, mempty } = monoid as Monoid0<a>;
   return {
-    leftUnit: (): void => jsc.assertForall(arb, x => eq.eq(monoid.append(monoid.mempty())(x))(x)),
-    rightUnit: (): void => jsc.assertForall(arb, x => eq.eq(monoid.append(x)(monoid.mempty()))(x)),
+    leftUnit: (): void => jsc.assertForall(a, leftIdentity(eq)(append)(mempty())),
+    rightUnit: (): void => jsc.assertForall(a, rightIdentity(eq)(append)(mempty())),
   };
 };
 
-export const makeMonoid1Laws = <f extends Generic1>({ append, mempty }: Monoid1<f>) => (
+export const makeMonoidLaws = <a>(monoid: Monoid0<a>) => (eq: Eq<a>) => (arb: jsc.Arbitrary<a>) =>
+  laws(monoid as Monoid, arb, eq.eq);
+
+export const makeMonoid1Laws = <f extends Generic1>(monoid: Monoid1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
 ) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
-  makeMonoidLaws<Type1<f, number>>({ append, mempty } as Monoid0<Type1<f, number>>)(
-    makeEq(eqNumber)
-  )(makeArb(jsc.number));
+  laws(monoid as Monoid, makeArb(jsc.number), makeEq(eqNumber).eq);
 
-export const makeMonoid2Laws = <f extends Generic2>({ append, mempty }: Monoid2<f>) => (
+export const makeMonoid2Laws = <f extends Generic2>(monoid: Monoid2<f>) => (
   makeEq: <a, b>(eqA: Eq<a>, eqB: Eq<b>) => Eq<Type2<f, a, b>>
 ) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>
-) =>
-  makeMonoidLaws<Type2<f, string, number>>({ append, mempty } as Monoid0<Type2<f, string, number>>)(
-    makeEq(eqString, eqNumber)
-  )(makeArb(jsc.string, jsc.number));
+) => laws(monoid as Monoid, makeArb(jsc.string, jsc.number), makeEq(eqString, eqNumber).eq);

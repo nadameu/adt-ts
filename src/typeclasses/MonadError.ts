@@ -1,4 +1,4 @@
-import { Generic1, Type1, Generic2, Type2 } from '../Generic';
+import { Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { MonadThrow1, MonadThrow2 } from './MonadThrow';
 
 export interface MonadError1<f extends Generic1> extends MonadThrow1<f> {
@@ -10,5 +10,5 @@ export interface MonadError2<f extends Generic2> extends MonadThrow2<f> {
 }
 
 export type MonadError = {
-  [k in keyof MonadError1<never> & keyof MonadError2<never>]: MonadError1<Generic1>[k];
+  [k in keyof MonadError1<never> & keyof MonadError2<never>]: MonadError2<Generic2>[k];
 };

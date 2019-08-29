@@ -15,6 +15,7 @@ export * from './Last';
 export * from './Maybe';
 export * from './Multiplicative';
 export * from './Number';
+export * from './Ordering';
 export * from './Star';
 export * from './String';
 export { liftA1 } from './typeclasses/Applicative';
