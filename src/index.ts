@@ -12,6 +12,7 @@ export * from './First';
 export * from './Fn';
 export * from './Identity';
 export * from './Last';
+export * from './List';
 export * from './Maybe';
 export * from './Multiplicative';
 export * from './Number';

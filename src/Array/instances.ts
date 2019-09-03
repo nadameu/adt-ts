@@ -41,8 +41,15 @@ import { Witherable1 } from '../typeclasses/Witherable';
 
 export const makeEqArray = <a>(eq: Eq<a>) =>
   ({
-    eq: xs => ys => xs.length === ys.length && xs.every((_, i) => eq.eq(xs[i])(ys[i])),
-  } as Eq<Array<a>>);
+    eq: xs => ys => {
+      const len = xs.length;
+      if (len !== ys.length) return false;
+      for (let i = 0; i < len; i++) {
+        if (!eq.eq(xs[i])(ys[i])) return false;
+      }
+      return true;
+    },
+  } as Eq<ArrayLike<a>>);
 
 export const functorArray = { map } as Functor1<TArray>;
 export const applyArray = { apply, map } as Apply1<TArray>;
