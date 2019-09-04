@@ -1,33 +1,29 @@
+import { Either, Left, Right } from '../../Either/definitions';
+import { Generic1, Generic2, Type1, Type2 } from '../../Generic';
+import { Applicative1 } from '../../typeclasses/Applicative';
+import { Apply, Apply1, Apply2, lift2 } from '../../typeclasses/Apply';
+import { Foldable1 } from '../../typeclasses/Foldable';
 import { ap, Monad1 } from '../../typeclasses/Monad';
+import { Monoid0 } from '../../typeclasses/Monoid';
+import { Semigroup0, Semigroup1 } from '../../typeclasses/Semigroup';
+import { sequenceDefault, Traversable1 } from '../../typeclasses/Traversable';
 import {
   Append,
   Cons,
+  ConsList,
+  isCons,
   isNil,
+  isSnoc,
   List,
   ListTag,
+  NEConsList,
+  NEList,
+  NESnocList,
   Nil,
   Snoc,
-  NEList,
-  ConsList,
-  NEConsList,
   SnocList,
-  NESnocList,
-  isCons,
-  isSnoc,
 } from '../definitions';
 import { TList } from '../internal';
-import { Foldable1 } from '../../typeclasses/Foldable';
-import { Generic1, Type1, Generic2, Type2 } from '../../Generic';
-import { Applicative1, Applicative } from '../../typeclasses/Applicative';
-import { lift2, Apply1, Apply2, Apply } from '../../typeclasses/Apply';
-import { Monoid0, Monoid1, Monoid } from '../../typeclasses/Monoid';
-import { Either, Right, Left, either } from '../../Either/definitions';
-import { Traversable1, sequenceDefault } from '../../typeclasses/Traversable';
-import { Semigroup1, Semigroup0, Semigroup } from '../../typeclasses/Semigroup';
-import { Maybe, Nothing, Just } from '../../Maybe/definitions';
-import { thrush } from '../../Fn/functions';
-import { makeMonoidAlternate } from '../../Alternate/instances';
-import { plusMaybe, makeMonoidMaybe } from '../../Maybe/instances';
 
 export const cons: {
   <a>(head: a): {
@@ -48,7 +44,8 @@ export const append: {
 } = <a>(left: List<a>) => (right: List<a>): any =>
   isNil(left) ? right : isNil(right) ? left : Append(left)(right);
 export const nil: List<never> & ConsList<never> & SnocList<never> = Nil;
-export const mempty = (): List<never> & ConsList<never> & SnocList<never> => nil;
+export const mempty = <a = never>(): List<a> & ConsList<a> & SnocList<a> => nil;
+export const alt = append;
 export const empty = mempty;
 export const singleton: <a>(value: a) => NEList<a> = Snoc(Nil);
 export const pure = singleton;
