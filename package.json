@@ -1,6 +1,12 @@
 {
   "name": "pure-ts",
   "version": "1.0.0",
+  "description": "TypeScript library inspired by PureScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nadameu/pure-ts.git"
+  },
+  "license": "GPL-3.0",
   "files": [
     "dist"
   ],
@@ -12,7 +18,6 @@
     "build-cjs": "tsc -p tsconfig-cjs.json",
     "build-esm": "tsc -p tsconfig-esm.json",
     "clean": "rimraf dist .rpt2_cache",
-    "dev": "rollup -c -w",
     "prepare": "npm run build",
     "prettier-write": "prettier --write \"./*.js\" \"src/**\" \"test/**\"",
     "test": "jest",
