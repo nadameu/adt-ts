@@ -195,7 +195,7 @@ export const foldMapDefaultR: PartialHelper<'foldr'>['foldMap'] = ({
   foldr<a, unknown>(compose(append)(f))(mempty());
 
 export const fold: HelperMonoid['fold'] = ({ foldMap }: Foldable) => (monoid: Monoid) =>
-  /*#__PURE__#*/ foldMap(monoid as Monoid0<unknown>)(identity);
+  foldMap(monoid as Monoid0<unknown>)(identity);
 
 export const oneOf: HelperPlus['oneOf'] = <f extends Generic1>(foldable: Foldable) => <
   g extends Generic1
