@@ -124,7 +124,7 @@ export const append: Semigroup1<TArray>['append'] = <a>(xs: ArrayLike<a>) => (ys
   })(xs);
   forEach<a>(y => {
     result[i++] = y;
-  });
+  })(ys);
   return result;
 };
 
