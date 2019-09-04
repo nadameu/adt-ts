@@ -4,5 +4,5 @@
     "strict": true,
     "downlevelIteration": true
   },
-  "include": ["src/", "test/"]
+  "include": ["src", "test"]
 }
