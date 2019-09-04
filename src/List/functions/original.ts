@@ -3,6 +3,7 @@ import { Generic1, Generic2, Type1, Type2 } from '../../Generic';
 import { Applicative1 } from '../../typeclasses/Applicative';
 import { Apply, Apply1, Apply2, lift2 } from '../../typeclasses/Apply';
 import { Foldable1 } from '../../typeclasses/Foldable';
+import { fold1Default, Foldable1_1 } from '../../typeclasses/Foldable1';
 import { ap, Monad1 } from '../../typeclasses/Monad';
 import { Monoid0 } from '../../typeclasses/Monoid';
 import { Semigroup0, Semigroup1 } from '../../typeclasses/Semigroup';
@@ -23,7 +24,7 @@ import {
   Snoc,
   SnocList,
 } from '../definitions';
-import { TList } from '../internal';
+import { TList, TNEList } from '../internal';
 
 export const cons: {
   <a>(head: a): {
@@ -199,6 +200,8 @@ export const foldMap1: {
   const { init, last } = unsnoc(xs);
   return foldr<a, b>(x => append(f(x)))(f(last))(init);
 };
+
+export const fold1 = fold1Default({ foldMap1 } as Foldable1_1<TNEList>);
 
 export const traverse: Traversable1<TList>['traverse'] = <f extends Generic1>({
   apply,
