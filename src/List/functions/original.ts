@@ -81,7 +81,8 @@ export const uncons: {
   for (;;) {
     switch (current.tag) {
       case ListTag.Cons: {
-        return current;
+        const { head, tail } = current;
+        return Cons(head)(append(tail)(next));
       }
       case ListTag.Snoc: {
         next = cons(current.last)(next);
