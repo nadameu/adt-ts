@@ -6,7 +6,8 @@
     "rootDir": "src/",
     "outDir": "dist/esm/",
     "strict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "downlevelIteration": true
   },
   "include": ["src"]
 }
