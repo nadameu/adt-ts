@@ -38,7 +38,7 @@ export const makeEqList = <a>(eq: Eq<a>) =>
   ({
     eq: xs => ys => {
       let ix = uncons(xs);
-      let iy = uncons(xs);
+      let iy = uncons(ys);
       while (ix.tag === ListTag.Cons && iy.tag === ListTag.Cons) {
         if (!eq.eq(ix.head)(iy.head)) return false;
         ix = uncons(ix.tail);
