@@ -118,7 +118,8 @@ export const unsnoc: {
         break;
       }
       case ListTag.Snoc: {
-        return current;
+        const { init, last } = current;
+        return Snoc(append(next)(init))(last);
       }
       case ListTag.Append: {
         next = append(next)(current.left);
