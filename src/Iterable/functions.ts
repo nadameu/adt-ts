@@ -1,17 +1,15 @@
+import { Generic1, Type1 } from '../Generic';
+import { list } from '../List';
+import { ConsList, isCons, ListTag, NEConsList, SnocList } from '../List/definitions';
 import { Applicative1 } from '../typeclasses/Applicative';
 import { Apply1, lift2 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
+import { Foldable1, foldMapDefaultL } from '../typeclasses/Foldable';
 import { Functor1 } from '../typeclasses/Functor';
 import { Monoid1 } from '../typeclasses/Monoid';
 import { Semigroup1 } from '../typeclasses/Semigroup';
+import { sequenceDefault, Traversable1 } from '../typeclasses/Traversable';
 import { TIterable } from './internal';
-import { foldMapDefaultL, Foldable1, fold } from '../typeclasses/Foldable';
-import { Traversable1, sequenceDefault } from '../typeclasses/Traversable';
-import { Type1, Generic1 } from '../Generic';
-import { SSL_OP_NO_TICKET } from 'constants';
-import { list } from '../List';
-import { monoidList } from '../List/instances';
-import { List, ConsList, NEConsList, ListTag, SnocList } from '../List/definitions';
 
 export const map: Functor1<TIterable>['map'] = f => fa => ({
   *[Symbol.iterator]() {
@@ -80,7 +78,7 @@ export const traverse: Traversable1<TIterable>['traverse'] = (<m extends Generic
     return {
       *[Symbol.iterator]() {
         let current = list;
-        while (current.tag === ListTag.Cons) {
+        while (isCons(current)) {
           yield current.head;
           current = current.tail;
         }
