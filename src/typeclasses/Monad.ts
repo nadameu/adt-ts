@@ -1,5 +1,4 @@
-import { compose, thrush } from '../Fn/functions';
-import { Generic1, Generic2 } from '../Generic';
+import { Generic1, Generic2, Type1 } from '../Generic';
 import { Applicative1, Applicative2 } from './Applicative';
 import { Bind1, Bind2 } from './Bind';
 
@@ -32,11 +31,14 @@ type PartialHelper<keys extends keyof Monad1<never> & keyof Monad2<never>> = {
   };
 };
 
-export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = ({
+export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = (<f extends Generic1>({
   bind,
   pure,
-}: Pick<Monad, 'bind' | 'pure'>) => (f: (_: any) => unknown) => bind(compose(pure)(f));
+}: Monad1<f>) => <a, b>(f: (_: a) => b): ((fa: Type1<f, a>) => Type1<f, b>) =>
+  bind(x => pure(f(x)))) as any;
 
-export const ap: PartialHelper<'bind' | 'pure'>['ap'] = (bind: Pick<Monad, 'bind' | 'pure'>) => (
-  ff: unknown
-) => bind.bind(x => liftM1(bind as Monad1<Generic1>)(thrush(x))(ff));
+export const ap: PartialHelper<'bind' | 'pure'>['ap'] = (<f extends Generic1>({
+  bind,
+  pure,
+}: Monad1<f>) => <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>): Type1<f, b> =>
+  bind<(_: a) => b, b>(f => liftM1<f>({ bind, pure } as Monad1<f>)(f)(fa))(ff)) as any;
