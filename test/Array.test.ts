@@ -14,6 +14,7 @@ import {
   semigroupArray,
   traversableArray,
 } from '../src/Array';
+import { forEachWithIndex } from '../src/Array/functions';
 import { TArray } from '../src/Array/internal';
 import { makeAlt1Laws } from './laws/Alt';
 import { makeAlternativeLaws } from './laws/Alternative';
@@ -29,7 +30,18 @@ import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Array<a>> => jsc.array(arb);
+const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<ArrayLike<a>> =>
+  jsc.array(arb).smap(
+    xs => {
+      const ys: { [index: number]: a; length: number } = { length: xs.length };
+      forEachWithIndex<a>(i => x => {
+        ys[i] = x;
+      })(xs);
+      return ys;
+    },
+    xs => Array.from(xs),
+    xs => jsc.array(arb).show!(Array.from(xs))
+  );
 
 describe('Functor', () => {
   const functorLaws = makeFunctor1Laws(functorArray)(makeEqArray)(makeArb);
