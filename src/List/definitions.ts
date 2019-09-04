@@ -1,8 +1,8 @@
 export const enum ListTag {
+  Nil,
   Cons,
   Snoc,
   Append,
-  Nil,
 }
 
 export type NEList<a> = Cons<a> | Snoc<a> | Append<a>;
