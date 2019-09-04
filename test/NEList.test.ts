@@ -1,5 +1,6 @@
 import * as jsc from 'jsverify';
 import {
+  altNEList,
   applicativeNEList,
   applyNEList,
   array,
@@ -7,16 +8,14 @@ import {
   foldableNEList,
   functorNEList,
   list,
-  NEList,
   makeEqNEList,
-  altNEList,
   monadNEList,
+  NEList,
   semigroupNEList,
   traversableNEList,
 } from '../src';
 import { TNEList } from '../src/List/internal';
 import { makeAlt1Laws } from './laws/Alt';
-import { makeAlternativeLaws } from './laws/Alternative';
 import { makeApplicative1Laws } from './laws/Applicative';
 import { makeApply1Laws } from './laws/Apply';
 import { makeBind1Laws } from './laws/Bind';
@@ -24,8 +23,6 @@ import { makeEq1Laws } from './laws/Eq';
 import { makeFoldable1Laws } from './laws/Foldable';
 import { makeFunctor1Laws } from './laws/Functor';
 import { makeMonad1Laws } from './laws/Monad';
-import { makeMonoid1Laws } from './laws/Monoid';
-import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
