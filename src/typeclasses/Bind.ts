@@ -1,4 +1,4 @@
-import { thrush } from '../Fn/functions';
+import { flip } from '../Fn/functions';
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { Apply1, Apply2 } from './Apply';
 
@@ -44,5 +44,6 @@ export const join: Helper['join'] = ({ bind }: Bind) => bind(x => x);
 export const applyDefault: {
   <f extends Generic1>({ bind, map }: BindMap1<f>): Bind1<f>['apply'];
   <f extends Generic2>({ bind, map }: BindMap2<f>): Bind2<f>['apply'];
-} = <f extends Generic1>({ bind, map }: BindMap) => <a, b>(ff: Type1<f, (_: a) => b>) =>
-  bind(a => map(thrush(a))(ff));
+} = (<f extends Generic1>({ bind, map }: BindMap1<f>) =>
+  flip(<a, b>(fa: Type1<f, a>) => bind<(_: a) => b, b>(f => map(f)(fa)))) as any;
+

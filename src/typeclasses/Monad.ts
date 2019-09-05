@@ -1,6 +1,7 @@
 import { Generic1, Generic2, Type1 } from '../Generic';
 import { Applicative1, Applicative2 } from './Applicative';
 import { Bind1, Bind2 } from './Bind';
+import { compose, flip } from '../Fn/functions';
 
 export interface Monad1<f extends Generic1> extends Applicative1<f>, Bind1<f> {}
 
@@ -35,10 +36,7 @@ export const liftM1: PartialHelper<'bind' | 'pure'>['liftM1'] = (<f extends Gene
   bind,
   pure,
 }: Monad1<f>) => <a, b>(f: (_: a) => b): ((fa: Type1<f, a>) => Type1<f, b>) =>
-  bind(x => pure(f(x)))) as any;
+  bind(compose(pure)(f))) as any;
 
-export const ap: PartialHelper<'bind' | 'pure'>['ap'] = (<f extends Generic1>({
-  bind,
-  pure,
-}: Monad1<f>) => <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>): Type1<f, b> =>
-  bind<(_: a) => b, b>(f => liftM1<f>({ bind, pure } as Monad1<f>)(f)(fa))(ff)) as any;
+export const ap: PartialHelper<'bind' | 'pure'>['ap'] = (<f extends Generic1>(monad: Monad1<f>) =>
+  flip(<a, b>(fa: Type1<f, a>) => monad.bind<(_: a) => b, b>(f => liftM1(monad)(f)(fa)))) as any;

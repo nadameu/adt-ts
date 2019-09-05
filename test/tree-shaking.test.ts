@@ -12,7 +12,7 @@ test('Simple', async () => {
   });
   expect(output.code).toMatchInlineSnapshot(`
     "const compose = (f) => (g) => (a) => f(g(a));
-    const thrush = (a) => (f) => f(a);
+    const flip = (f) => (b) => (a) => f(a)(b);
 
     const lift2 = ({ apply, map }) => (f) => compose(apply)(map(f));
 
@@ -20,9 +20,9 @@ test('Simple', async () => {
     const Just = (value) => ({ isJust: true, isNothing: false, value });
     const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
 
-    const applyDefault = ({ bind, map }) => (ff) => bind(a => map(thrush(a))(ff));
+    const applyDefault = (({ bind, map }) => flip((fa) => bind(f => map(f)(fa))));
 
-    const liftM1 = ({ bind, pure, }) => (f) => bind(compose(pure)(f));
+    const liftM1 = (({ bind, pure, }) => (f) => bind(compose(pure)(f)));
 
     const bind = maybe(Nothing);
     const pure = Just;
