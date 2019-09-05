@@ -1,8 +1,8 @@
 import { Generic1, Type1 } from '../Generic';
 import { list } from '../List';
-import { ConsList, isCons, ListTag, NEConsList, SnocList } from '../List/definitions';
+import { ConsList, isCons, isSnoc, NEConsList, SnocList } from '../List/definitions';
 import { Applicative1 } from '../typeclasses/Applicative';
-import { Apply1, lift2 } from '../typeclasses/Apply';
+import { lift2, Apply1 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
 import { Foldable1, foldMapDefaultL } from '../typeclasses/Foldable';
 import { Functor1 } from '../typeclasses/Functor';
@@ -58,7 +58,7 @@ export const foldl = <a, b>(f: (_: b) => (_: a) => b) => (b0: b) => (xs: Iterabl
 export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterable<a>): b => {
   let ys = foldl<a, SnocList<a>>(list.snoc)(list.nil)(xs);
   let acc = b0;
-  while (ys.tag === ListTag.Snoc) {
+  while (isSnoc(ys)) {
     acc = f(ys.last)(acc);
     ys = ys.init;
   }
