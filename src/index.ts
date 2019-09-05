@@ -13,6 +13,7 @@ export * from './Fn';
 export * from './Identity';
 export * from './Iterable';
 export * from './Last';
+export * from './LazyList';
 export * from './List';
 export * from './Maybe';
 export * from './Multiplicative';
