@@ -22,7 +22,7 @@ export * from './Star';
 export * from './String';
 export { liftA1 } from './typeclasses/Applicative';
 export { lift2, lift3, lift4, lift5 } from './typeclasses/Apply';
-export { join } from './typeclasses/Bind';
+export { composeK, join, pipeK, wrapBind } from './typeclasses/Bind';
 export { cleared } from './typeclasses/Filterable';
 export { fold } from './typeclasses/Foldable';
 export { flap, mapTo } from './typeclasses/Functor';
