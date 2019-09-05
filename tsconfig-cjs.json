@@ -1,14 +1,11 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es5",
     "module": "commonjs",
+    "noEmit": false,
     "declaration": false,
     "rootDir": "src/",
-    "outDir": "dist/cjs/",
-    "strict": true,
-    "moduleResolution": "node",
-    "downlevelIteration": true,
-    "importHelpers": true
+    "outDir": "dist/cjs/"
   },
-  "include": ["src"]
+  "include": ["src/"]
 }
