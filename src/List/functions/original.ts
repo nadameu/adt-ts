@@ -44,7 +44,7 @@ export const append: {
   };
 } = <a>(left: List<a>) => (right: List<a>): any =>
   isNil(left) ? right : isNil(right) ? left : Append(left)(right);
-export const nil: List<never> & ConsList<never> & SnocList<never> = Nil;
+export const nil = Nil;
 export const mempty = <a = never>(): List<a> & ConsList<a> & SnocList<a> => nil;
 export const alt = append;
 export const empty = mempty;
