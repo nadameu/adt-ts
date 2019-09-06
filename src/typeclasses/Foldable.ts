@@ -5,13 +5,13 @@ import { monoidDisj } from '../Disj/instances';
 import { makeMonoidDual } from '../Dual/instances';
 import { monoidEndo } from '../Endo/instances';
 import { compose, constant, flip, identity } from '../Fn/functions';
-import { Generic1, Generic2, Identified1, Identified2, Type1, Type2, Anon } from '../Generic';
+import { Anon, Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { monoidMultiplicative } from '../Multiplicative/instances';
 import { Ordering } from '../Ordering/definitions';
-import { Monoid, Monoid_0, Monoid_1 } from './Monoid';
-import { Plus, Plus_1, Plus_2 } from './Plus';
-import { Semigroup, Semigroup_0, Semigroup_1 } from './Semigroup';
+import { Monoid_0, Monoid_1 } from './Monoid';
+import { Plus_1, Plus_2 } from './Plus';
+import { Semigroup_0, Semigroup_1 } from './Semigroup';
 
 export interface Foldable_1<f extends Generic1> extends Identified1<f> {
   foldl: Helpers1<f>['foldl'];
@@ -200,7 +200,7 @@ export const fold: HelperMonoid['fold'] = <f extends Generic1>({
 export const oneOf: HelperPlus['oneOf'] = <f extends Generic1>(foldable: Anon<Foldable_1<f>>) => <
   g extends Generic1
 >(
-  plus: Plus
+  plus: Anon<Plus_1<g>>
 ): (<a>(fga: Type1<f, Type1<g, a>>) => Type1<g, a>) =>
   oneOfMap(foldable as Foldable_1<f>)(plus as Plus_1<g>)(identity);
 
