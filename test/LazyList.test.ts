@@ -1,19 +1,28 @@
 import * as jsc from 'jsverify';
 import {
+  alternativeLazyList,
+  altLazyList,
   applicativeLazyList,
   applyLazyList,
   bindLazyList,
   ConsResult,
+  constant,
   foldableLazyList,
   functorLazyList,
   LazyList,
+  lazyList,
   makeEqLazyList,
   monadLazyList,
   monoidLazyList,
   NilResult,
+  plusLazyList,
   semigroupLazyList,
+  traversableLazyList,
+  identity,
 } from '../src';
 import { TLazyList } from '../src/LazyList/internal';
+import { makeAlt1Laws } from './laws/Alt';
+import { makeAlternativeLaws } from './laws/Alternative';
 import { makeApplicative1Laws } from './laws/Applicative';
 import { makeApply1Laws } from './laws/Apply';
 import { makeBind1Laws } from './laws/Bind';
@@ -22,15 +31,13 @@ import { makeFoldable1Laws } from './laws/Foldable';
 import { makeFunctor1Laws } from './laws/Functor';
 import { makeMonad1Laws } from './laws/Monad';
 import { makeMonoid1Laws } from './laws/Monoid';
+import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
+import { makeTraversableLaws } from './laws/Traversable';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<LazyList<a>> => {
   const base = jsc.array(arb);
-  return base.smap(
-    fromArray,
-    xs => Array.from(toIterable(xs)),
-    xs => base.show!(Array.from(toIterable(xs)))
-  );
+  return base.smap(fromArray, xs => toArray(xs), xs => base.show!(toArray(xs)));
 };
 
 const fromArray = <a>(array: a[]): LazyList<a> => () => {
@@ -52,6 +59,21 @@ const toIterable = <a>(list: LazyList<a>) => ({
   },
 });
 
+const toArray = <a>(xs: LazyList<a>) => Array.from(toIterable(xs));
+
+test('Stack safety', () => {
+  const aLotOfIntegers = lazyList.range(0)(1e6);
+  const exhaust = lazyList.foldl<number, null>(constant(constant(null)))(null);
+  const f = () => exhaust(aLotOfIntegers);
+  expect(f).not.toThrow();
+  const g = () => exhaust(lazyList.bind(lazyList.pure)(aLotOfIntegers));
+  expect(g).not.toThrow();
+  const h = () => exhaust(lazyList.map(identity)(aLotOfIntegers));
+  expect(h).not.toThrow();
+  const i = () => exhaust(lazyList.append(aLotOfIntegers)(aLotOfIntegers));
+  expect(i).not.toThrow();
+});
+
 describe('Functor', () => {
   const functorLaws = makeFunctor1Laws(functorLazyList)(makeEqLazyList)(makeArb);
   test('Functor - identity', functorLaws.identity);
@@ -70,24 +92,24 @@ describe('Applicative', () => {
   test('Applicative - interchange', applicativeLaws.interchange);
 });
 
-// describe('Alt', () => {
-//   const altLaws = makeAlt1Laws(altLazyList)(makeEqLazyList)(makeArb);
-//   test('Alt - associativity', altLaws.associativity);
-//   test('Alt - distributivity', altLaws.distributivity);
-// });
+describe('Alt', () => {
+  const altLaws = makeAlt1Laws(altLazyList)(makeEqLazyList)(makeArb);
+  test('Alt - associativity', altLaws.associativity);
+  test('Alt - distributivity', altLaws.distributivity);
+});
 
-// describe('Plus', () => {
-//   const plusLaws = makePlusLaws(plusLazyList)(makeEqLazyList)(makeArb);
-//   test('Plus - left identity', plusLaws.leftIdentity);
-//   test('Plus - right identity', plusLaws.rightIdentity);
-//   test('Plus - annihilation', plusLaws.annihilation);
-// });
+describe('Plus', () => {
+  const plusLaws = makePlusLaws(plusLazyList)(makeEqLazyList)(makeArb);
+  test('Plus - left identity', plusLaws.leftIdentity);
+  test('Plus - right identity', plusLaws.rightIdentity);
+  test('Plus - annihilation', plusLaws.annihilation);
+});
 
-// describe('Alternative', () => {
-//   const alternativeLaws = makeAlternativeLaws(alternativeLazyList)(makeEqLazyList)(makeArb);
-//   test('Alternative - distributivity', alternativeLaws.distributivity);
-//   test('Alternative - annihilation', alternativeLaws.annihilation);
-// });
+describe('Alternative', () => {
+  const alternativeLaws = makeAlternativeLaws(alternativeLazyList)(makeEqLazyList)(makeArb);
+  test('Alternative - distributivity', alternativeLaws.distributivity);
+  test('Alternative - annihilation', alternativeLaws.annihilation);
+});
 
 describe('Foldable', () => {
   const foldableLaws = makeFoldable1Laws(foldableLazyList)(makeArb);
@@ -125,9 +147,14 @@ describe('Monoid', () => {
   test('Monoid - right unit', monoidLaws.rightUnit);
 });
 
-// describe('Traversable', () => {
-//   const traversableLaws = makeTraversableLaws(traversableLazyList)(makeEqLazyList)(makeArb);
-//   test('Traversable - naturality', traversableLaws.naturality);
-//   test('Traversable - identity', traversableLaws.identity);
-//   test('Traversable - composition', traversableLaws.composition);
-// });
+describe('Traversable', () => {
+  const traversableLaws = makeTraversableLaws(traversableLazyList)(makeEqLazyList)(makeArb);
+  test('Traversable - naturality', traversableLaws.naturality);
+  test('Traversable - identity', traversableLaws.identity);
+  test('Traversable - composition', traversableLaws.composition);
+});
+
+test('range', () => {
+  expect(toArray(lazyList.range(1)(10))).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  expect(toArray(lazyList.range(10)(7))).toEqual([10, 9, 8, 7]);
+});
