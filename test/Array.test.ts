@@ -13,6 +13,7 @@ import {
   plusArray,
   semigroupArray,
   traversableArray,
+  array,
 } from '../src/Array';
 import { forEachWithIndex } from '../src/Array/functions';
 import { TArray } from '../src/Array/internal';
@@ -29,6 +30,7 @@ import { makeMonoid1Laws } from './laws/Monoid';
 import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
+import { applicativeIdentity, constant, Right, Just, applicativeMaybe, number } from '../src';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<ArrayLike<a>> =>
   jsc.array(arb).smap(
@@ -121,4 +123,10 @@ describe('Traversable', () => {
   test('Traversable - naturality', traversableLaws.naturality);
   test('Traversable - identity', traversableLaws.identity);
   test('Traversable - composition', traversableLaws.composition);
+});
+
+test('Stack safety for traversal', () => {
+  const arr = array.range(0)(1e6);
+  const trav = array.sequence(applicativeIdentity)(arr);
+  expect(() => array.foldl<number, null>(constant(constant(null)))(null)(trav)).not.toThrow();
 });
