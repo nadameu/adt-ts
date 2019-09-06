@@ -1,7 +1,7 @@
 import { Either, Left, Right } from '../../Either/definitions';
-import { Generic1, Generic2, Type1, Type2 } from '../../Generic';
+import { Anon, Generic1, Generic2, Type1, Type2 } from '../../Generic';
 import { Applicative_1 } from '../../typeclasses/Applicative';
-import { Apply, Apply_1, Apply_2, lift2 } from '../../typeclasses/Apply';
+import { Apply_1, Apply_2, lift2 } from '../../typeclasses/Apply';
 import { Foldable_1 } from '../../typeclasses/Foldable';
 import { fold1Default, Foldable1_1 } from '../../typeclasses/Foldable1';
 import { ap, Monad_1 } from '../../typeclasses/Monad';
@@ -198,7 +198,9 @@ export const foldMap1: {
     f: (_: a) => Type1<m, b>
   ) => (fa: NEList<a>) => Type1<m, b>;
   <m>(semigroup: Semigroup_0<m>): <a>(f: (_: a) => m) => (fa: NEList<a>) => m;
-} = <b>({ append }: Pick<Semigroup_0<b>, 'append'>) => <a>(f: (_: a) => b) => (xs: NEList<a>): b => {
+} = <b>({ append }: Pick<Semigroup_0<b>, 'append'>) => <a>(f: (_: a) => b) => (
+  xs: NEList<a>
+): b => {
   const { init, last } = unsnoc(xs);
   return foldr<a, b>(x => append(f(x)))(f(last))(init);
 };
@@ -238,7 +240,7 @@ export const traverse1: {
   <m extends Generic2>(apply: Apply_2<m>): <a, b, c>(
     f: (_: a) => Type2<m, b, c>
   ) => (ta: NEList<a>) => Type2<m, b, NEList<c>>;
-} = <f extends Generic1>(apply: Apply) => <a, b>(f: (_: a) => Type1<f, b>) => (
+} = <f extends Generic1>(apply: Anon<Apply_1<f>>) => <a, b>(f: (_: a) => Type1<f, b>) => (
   ta: NEList<a>
 ): Type1<f, NEList<b>> => {
   const liftedCons = lift2(apply as Apply_1<f>)(cons);
@@ -255,5 +257,5 @@ export const sequence1: {
   <m extends Generic2>(apply: Apply_2<m>): <a, b>(
     tmab: NEList<Type2<m, a, b>>
   ) => Type2<m, a, NEList<b>>;
-} = <m extends Generic1>(apply: Apply) =>
+} = <m extends Generic1>(apply: Anon<Apply_1<m>>) =>
   traverse1(apply as Apply_1<m>)<Type1<m, unknown>, Type1<m, unknown>>(x => x);

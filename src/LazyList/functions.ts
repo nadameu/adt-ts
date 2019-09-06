@@ -1,8 +1,8 @@
 import { flip } from '../Fn/functions';
-import { Generic1, Type1 } from '../Generic';
+import { Anon, Generic1, Type1 } from '../Generic';
 import { Applicative_1 } from '../typeclasses/Applicative';
 import { lift2 } from '../typeclasses/Apply';
-import { applyDefault, Bind_1, BindMap_1 } from '../typeclasses/Bind';
+import { applyDefault, BindMap_1, Bind_1 } from '../typeclasses/Bind';
 import { Foldable_1, foldMapDefaultL } from '../typeclasses/Foldable';
 import { Functor_1 } from '../typeclasses/Functor';
 import { Monoid_0, Monoid_1 } from '../typeclasses/Monoid';
@@ -52,10 +52,9 @@ export const foldMapWithIndex: {
     f: (_: number) => (_: a) => Type1<m, b>
   ) => (fa: LazyList<a>) => Type1<m, b>;
   <m>(monoid: Monoid_0<m>): <a>(f: (_: number) => (_: a) => m) => (fa: LazyList<a>) => m;
-} = (<m>({ append, mempty }: Monoid_0<m>) => <a>(
+} = <m>({ append, mempty }: Anon<Monoid_0<m>>) => <a>(
   f: (_: number) => (_: a) => m
-): ((fa: LazyList<a>) => m) =>
-  foldlWithIndex<a, m>(i => m => a => append(m)(f(i)(a)))(mempty())) as any;
+): ((fa: LazyList<a>) => m) => foldlWithIndex<a, m>(i => m => a => append(m)(f(i)(a)))(mempty());
 
 const reverse: <a>(fa: LazyList<a>) => LazyList<a> = foldl(flip(cons))(nil);
 
@@ -118,13 +117,13 @@ export const range = (start: number) => (end: number): LazyList<number> => {
   return descending(start);
 };
 
-export const traverse: Traversable_1<TLazyList>['traverse'] = (<m extends Generic1>(
-  applicative: Applicative_1<m>
+export const traverse: Traversable_1<TLazyList>['traverse'] = <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, b>): ((as: LazyList<a>) => Type1<m, LazyList<b>>) =>
   (liftedCons =>
     foldr<a, Type1<m, LazyList<b>>>(a => mbs => liftedCons(f(a))(mbs))(applicative.pure(nil)))(
-    lift2(applicative)(cons)
-  )) as any;
+    lift2(applicative as Applicative_1<m>)(cons)
+  );
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TLazyList>);
 
 export const alt = append;

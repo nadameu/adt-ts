@@ -1,8 +1,8 @@
 import { Either } from '../Either/definitions';
 import { flip } from '../Fn/functions';
-import { Generic1, Type1 } from '../Generic';
+import { Anon, Generic1, Type1 } from '../Generic';
 import { Maybe } from '../Maybe/definitions';
-import { Applicative, Applicative_1 } from '../typeclasses/Applicative';
+import { Applicative_1 } from '../typeclasses/Applicative';
 import { Apply_1, lift2 } from '../typeclasses/Apply';
 import { Bind_1 } from '../typeclasses/Bind';
 import { Compactable_1 } from '../typeclasses/Compactable';
@@ -116,7 +116,9 @@ export const foldrWithIndex = <a, b>(f: (_: number) => (_: a) => (_: b) => b) =>
 
 export const foldMap = foldMapDefaultR({ foldr } as Foldable_1<TArray>);
 
-export const append: Semigroup_1<TArray>['append'] = <a>(xs: ArrayLike<a>) => (ys: ArrayLike<a>) => {
+export const append: Semigroup_1<TArray>['append'] = <a>(xs: ArrayLike<a>) => (
+  ys: ArrayLike<a>
+) => {
   const result: a[] = new Array(xs.length + ys.length);
   let i = 0;
   forEach<a>(x => {
@@ -130,12 +132,16 @@ export const append: Semigroup_1<TArray>['append'] = <a>(xs: ArrayLike<a>) => (y
 
 export const mempty: Monoid_1<TArray>['mempty'] = () => [];
 
-export const traverse: Traversable_1<TArray>['traverse'] = <f extends Generic1>(
-  applicative: Applicative<f>
-) => <a, b>(f: (_: a) => Type1<f, b>) => (as: ArrayLike<a>): Type1<f, ArrayLike<b>> =>
+export const traverse: Traversable_1<TArray>['traverse'] = <f extends Generic1>({
+  apply,
+  map,
+  pure,
+}: Anon<Applicative_1<f>>) => <a, b>(f: (_: a) => Type1<f, b>) => (
+  as: ArrayLike<a>
+): Type1<f, ArrayLike<b>> =>
   foldrWithIndex<a, Type1<f, b[]>>(i => x =>
-    lift2(applicative as Applicative_1<f>)((b: b) => (bs: b[]) => ((bs[i] = b), bs))(f(x))
-  )((applicative as Applicative_1<f>).pure(new Array(as.length)))(as);
+    lift2({ apply, map } as Apply_1<f>)((b: b) => (bs: b[]) => ((bs[i] = b), bs))(f(x))
+  )(pure(new Array(as.length)))(as);
 
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TArray>);
 
@@ -171,31 +177,34 @@ export const partitionMap: Filterable_1<TArray>['partitionMap'] = <a, b, c>(
 export const partition = partitionDefault({ partitionMap } as Filterable_1<TArray>);
 export const separate: Compactable_1<TArray>['separate'] = partitionMap(x => x);
 
-export const wither: Witherable_1<TArray>['wither'] = (<m extends Generic1>(
-  applicative: Applicative_1<m>
+export const wither: Witherable_1<TArray>['wither'] = <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, Maybe<b>>) => (as: ArrayLike<a>): Type1<m, ArrayLike<b>> => {
-  const lifted = lift2(applicative)<Maybe<b>, b[], b[]>(b => bs =>
+  const lifted = lift2(applicative as Applicative_1<m>)<Maybe<b>, b[], b[]>(b => bs =>
     b.isNothing ? bs : (bs.push(b.value), bs)
   );
   const g = flip((a: a) => lifted(f(a)));
   return foldl(g)(applicative.pure([]))(as);
-}) as any;
+};
 
 type WiltResult<a, b> = { left: a[]; right: b[] };
-export const wilt: Witherable_1<TArray>['wilt'] = (<m extends Generic1>(
-  applicative: Applicative_1<m>
+export const wilt: Witherable_1<TArray>['wilt'] = <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
 ) => <a, b, c>(f: (_: a) => Type1<m, Either<b, c>>) => (
   as: ArrayLike<a>
 ): Type1<m, WiltResult<b, c>> => {
-  const lifted = lift2(applicative)<Either<b, c>, WiltResult<b, c>, WiltResult<b, c>>(
-    b => ({ left, right }) =>
-      b.isLeft
-        ? { left: (left.push(b.leftValue), left), right }
-        : { left, right: (right.push(b.rightValue), right) }
+  const lifted = lift2(applicative as Applicative_1<m>)<
+    Either<b, c>,
+    WiltResult<b, c>,
+    WiltResult<b, c>
+  >(b => ({ left, right }) =>
+    b.isLeft
+      ? { left: (left.push(b.leftValue), left), right }
+      : { left, right: (right.push(b.rightValue), right) }
   );
   const g = flip((a: a) => lifted(f(a)));
   return foldl(g)(applicative.pure({ left: [], right: [] }))(as);
-}) as any;
+};
 
 export const range = (start: number) => (end: number): number[] => {
   if (!Number.isInteger(start) || !Number.isInteger(end))

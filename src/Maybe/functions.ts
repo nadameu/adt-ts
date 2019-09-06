@@ -1,7 +1,7 @@
 import { Either, either } from '../Either/definitions';
-import { Generic1, Type1 } from '../Generic';
+import { Anon, Generic1, Type1 } from '../Generic';
 import { Alt_1 } from '../typeclasses/Alt';
-import { Applicative, Applicative_1 } from '../typeclasses/Applicative';
+import { Applicative_1 } from '../typeclasses/Applicative';
 import { applyDefault, Bind_1 } from '../typeclasses/Bind';
 import { Compactable_1 } from '../typeclasses/Compactable';
 import { Filterable_1, filterDefault, partitionDefault } from '../typeclasses/Filterable';
@@ -47,13 +47,17 @@ export const foldl = foldlDefault({ foldMap } as Foldable_1<TMaybe>);
 
 export const foldr = foldrDefault({ foldMap } as Foldable_1<TMaybe>);
 
-export const traverse: Traversable_1<TMaybe>['traverse'] = (<f extends Generic1>(
-  applicative: Applicative_1<f>
-) => <a, b>(f: (_: a) => Type1<f, b>): ((ta: Maybe<a>) => Type1<f, Maybe<b>>) =>
-  maybe(applicative.pure(Nothing))(x => applicative.map(Just)(f(x)))) as any;
+export const traverse: Traversable_1<TMaybe>['traverse'] = <f extends Generic1>({
+  map,
+  pure,
+}: Anon<Applicative_1<f>, 'map' | 'pure'>) => <a, b>(
+  f: (_: a) => Type1<f, b>
+): ((ta: Maybe<a>) => Type1<f, Maybe<b>>) => maybe(pure(Nothing))(x => map(Just)(f(x)));
 
-export const sequence: Traversable_1<TMaybe>['sequence'] = (applicative: Applicative) =>
-  maybe(applicative.pure(Nothing))(applicative.map(Just));
+export const sequence: Traversable_1<TMaybe>['sequence'] = <f extends Generic1>({
+  map,
+  pure,
+}: Anon<Applicative_1<f>, 'map' | 'pure'>) => maybe(pure(Nothing))(map(Just));
 
 export const partitionMap: Filterable_1<TMaybe>['partitionMap'] = <a, b, c>(
   f: (_: a) => Either<b, c>

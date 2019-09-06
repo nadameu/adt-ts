@@ -37,7 +37,7 @@ export const liftM1: BindPureHelper['liftM1'] = <f extends Generic1>({
 }: Anon<BindPure_1<f>>) => <a, b>(f: (_: a) => b): ((fa: Type1<f, a>) => Type1<f, b>) =>
   bind(compose(pure)(f));
 
-export const ap: BindPureHelper['ap'] = (<f extends Generic1>(monad: Anon<BindPure_1<f>>) =>
+export const ap: BindPureHelper['ap'] = <f extends Generic1>(monad: Anon<BindPure_1<f>>) =>
   flip(<a, b>(fa: Type1<f, a>) =>
     monad.bind<(_: a) => b, b>(f => liftM1(monad as BindPure_1<f>)(f)(fa))
-  )) as any;
+  );

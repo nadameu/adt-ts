@@ -1,4 +1,4 @@
-import { Generic1, Type1 } from '../Generic';
+import { Anon, Generic1, Type1 } from '../Generic';
 import { list } from '../List';
 import { ConsList, isCons, isSnoc, SnocList } from '../List/definitions';
 import { Applicative_1 } from '../typeclasses/Applicative';
@@ -67,11 +67,11 @@ export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterabl
 
 export const foldMap = foldMapDefaultL({ foldl } as Foldable_1<TIterable>);
 
-export const traverse: Traversable_1<TIterable>['traverse'] = (<m extends Generic1>({
+export const traverse: Traversable_1<TIterable>['traverse'] = <m extends Generic1>({
   apply,
   map,
   pure,
-}: Applicative_1<m>) => <a, b>(f: (_: a) => Type1<m, b>) => (
+}: Anon<Applicative_1<m>>) => <a, b>(f: (_: a) => Type1<m, b>) => (
   as: Iterable<a>
 ): Type1<m, Iterable<b>> => {
   const liftedCons: <a>(
@@ -90,7 +90,7 @@ export const traverse: Traversable_1<TIterable>['traverse'] = (<m extends Generi
       },
     })
   )(mbs);
-}) as any;
+};
 
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TIterable>);
 

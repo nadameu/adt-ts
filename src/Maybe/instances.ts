@@ -1,44 +1,44 @@
+import { Anon, Generic1 } from '../Generic';
 import { Alt_1 } from '../typeclasses/Alt';
 import { Alternative_1 } from '../typeclasses/Alternative';
 import { Applicative_1 } from '../typeclasses/Applicative';
 import { Apply_1 } from '../typeclasses/Apply';
 import { Bind_1 } from '../typeclasses/Bind';
+import { Compactable_1 } from '../typeclasses/Compactable';
 import { Eq } from '../typeclasses/Eq';
+import { Filterable_1 } from '../typeclasses/Filterable';
 import { Foldable_1 } from '../typeclasses/Foldable';
 import { Functor_1 } from '../typeclasses/Functor';
 import { Monad_1 } from '../typeclasses/Monad';
 import { MonadError_1 } from '../typeclasses/MonadError';
 import { MonadThrow_1 } from '../typeclasses/MonadThrow';
+import { Monoid_0, Monoid_1 } from '../typeclasses/Monoid';
 import { Plus_1 } from '../typeclasses/Plus';
+import { Semigroup_0, Semigroup_1 } from '../typeclasses/Semigroup';
 import { Traversable_1 } from '../typeclasses/Traversable';
-import { Maybe, Just } from './definitions';
+import { Just, Maybe } from './definitions';
 import {
   alt,
   apply,
   bind,
   catchError,
+  compact,
   empty,
+  filter,
+  filterMap,
   foldl,
   foldMap,
   foldr,
   map,
+  partition,
+  partitionMap,
   pure,
+  separate,
   sequence,
   throwError,
   traverse,
-  compact,
-  filter,
-  filterMap,
-  partition,
-  partitionMap,
-  separate,
 } from './functions';
 import { TMaybe, TMaybeF } from './internal';
-import { Filterable_1 } from '../typeclasses/Filterable';
-import { Compactable_1 } from '../typeclasses/Compactable';
-import { Semigroup_0, Semigroup_1, Semigroup } from '../typeclasses/Semigroup';
-import { Generic1 } from '../Generic';
-import { Monoid_1, Monoid_0 } from '../typeclasses/Monoid';
 
 export const makeEqMaybe = <a>(eq: Eq<a>) =>
   ({
@@ -75,22 +75,22 @@ export const filterableMaybe = {
 const makeAppend: {
   <m extends Generic1>(semigroup: Semigroup_1<m>): Semigroup_1<TMaybeF<m>>['append'];
   <m>(semigroup: Semigroup_0<m>): Semigroup_0<Maybe<m>>['append'];
-} = <m extends Generic1>({ append }: Semigroup): Semigroup_1<TMaybeF<m>>['append'] => x => y =>
-  x.isNothing ? y : y.isNothing ? x : Just((append as Semigroup_1<m>['append'])(x.value)(y.value));
+} = <m>({ append }: Anon<Semigroup_0<m>>): Semigroup_0<Maybe<m>>['append'] => x => y =>
+  x.isNothing ? y : y.isNothing ? x : Just(append(x.value)(y.value));
 
 export const makeSemigroupMaybe: {
   <m extends Generic1>(semigroup: Semigroup_1<m>): Semigroup_1<TMaybeF<m>>;
   <m>(semigroup: Semigroup_0<m>): Semigroup_0<Maybe<m>>;
-} = <m extends Generic1>(semigroup: Semigroup) =>
+} = <m>(semigroup: Anon<Semigroup_0<m>>) =>
   ({
-    append: makeAppend(semigroup as Semigroup_1<m>),
-  } as any);
+    append: makeAppend(semigroup as Semigroup_0<m>),
+  } as Semigroup_0<Maybe<m>> & Semigroup_1<TMaybe>);
 
 export const makeMonoidMaybe: {
   <m extends Generic1>(semigroup: Semigroup_1<m>): Monoid_1<TMaybeF<m>>;
   <m>(semigroup: Semigroup_0<m>): Monoid_0<Maybe<m>>;
-} = <m extends Generic1>(semigroup: Semigroup) =>
+} = <m>(semigroup: Anon<Semigroup_0<m>>) =>
   ({
-    append: makeAppend(semigroup as Semigroup_1<m>),
+    append: makeAppend(semigroup as Semigroup_0<m>),
     mempty: empty,
-  } as any);
+  } as Monoid_0<Maybe<m>> & Monoid_1<TMaybe>);
