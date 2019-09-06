@@ -1,18 +1,15 @@
 import { flip } from '../Fn/functions';
 import { Generic1, Type1 } from '../Generic';
 import { Applicative1 } from '../typeclasses/Applicative';
+import { lift2 } from '../typeclasses/Apply';
 import { applyDefault, Bind1, BindMap1 } from '../typeclasses/Bind';
 import { Foldable1, foldMapDefaultL } from '../typeclasses/Foldable';
 import { Functor1 } from '../typeclasses/Functor';
 import { Monoid0, Monoid1 } from '../typeclasses/Monoid';
 import { Semigroup1 } from '../typeclasses/Semigroup';
+import { sequenceDefault, Traversable1 } from '../typeclasses/Traversable';
 import { ConsResult, LazyCons, LazyList, LazyNil, NilResult } from './definitions';
 import { TLazyList } from './internal';
-import {
-  traverseDefaultFoldableMonoidApplicative,
-  sequenceDefault,
-  Traversable1,
-} from '../typeclasses/Traversable';
 
 export const cons: <a>(head: a) => (tail: LazyList<a>) => LazyList<a> = LazyCons;
 export const nil = LazyNil;
@@ -121,12 +118,13 @@ export const range = (start: number) => (end: number): LazyList<number> => {
   return descending(start);
 };
 
-export const traverse = traverseDefaultFoldableMonoidApplicative<TLazyList>({
-  append,
-  foldMap,
-  mempty,
-  pure,
-} as any);
+export const traverse: Traversable1<TLazyList>['traverse'] = (<m extends Generic1>(
+  applicative: Applicative1<m>
+) => <a, b>(f: (_: a) => Type1<m, b>): ((as: LazyList<a>) => Type1<m, LazyList<b>>) =>
+  (liftedCons =>
+    foldr<a, Type1<m, LazyList<b>>>(a => mbs => liftedCons(f(a))(mbs))(applicative.pure(nil)))(
+    lift2(applicative)(cons)
+  )) as any;
 export const sequence = sequenceDefault({ traverse } as Traversable1<TLazyList>);
 
 export const alt = append;

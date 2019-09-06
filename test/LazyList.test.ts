@@ -19,6 +19,7 @@ import {
   semigroupLazyList,
   traversableLazyList,
   identity,
+  applicativeIdentity,
 } from '../src';
 import { TLazyList } from '../src/LazyList/internal';
 import { makeAlt1Laws } from './laws/Alt';
@@ -157,4 +158,10 @@ describe('Traversable', () => {
 test('range', () => {
   expect(toArray(lazyList.range(1)(10))).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   expect(toArray(lazyList.range(10)(7))).toEqual([10, 9, 8, 7]);
+});
+
+test('Stack safety for traversal', () => {
+  const list = lazyList.range(0)(1e6);
+  const trav = lazyList.sequence(applicativeIdentity)(list);
+  expect(() => lazyList.foldl<number, null>(constant(constant(null)))(null)(trav)).not.toThrow();
 });
