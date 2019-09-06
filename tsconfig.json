@@ -3,6 +3,7 @@
     "target": "es2015",
     "noEmit": true,
     "strict": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "importHelpers": true
   },
