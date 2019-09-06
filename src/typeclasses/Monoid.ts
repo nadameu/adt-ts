@@ -1,16 +1,12 @@
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
-import { Semigroup0, Semigroup1, Semigroup2 } from './Semigroup';
+import { Semigroup_0, Semigroup_1, Semigroup_2 } from './Semigroup';
 
-export interface Monoid0<a> extends Semigroup0<a> {
+export interface Monoid_0<a> extends Semigroup_0<a> {
   mempty: () => a;
 }
-export interface Monoid1<f extends Generic1> extends Semigroup1<f> {
+export interface Monoid_1<f extends Generic1> extends Semigroup_1<f> {
   mempty: <a = never>() => Type1<f, a>;
 }
-export interface Monoid2<f extends Generic2> extends Semigroup2<f> {
+export interface Monoid_2<f extends Generic2> extends Semigroup_2<f> {
   mempty: <a = never, b = never>() => Type2<f, a, b>;
 }
-
-export type Monoid = {
-  [k in keyof Monoid0<never> & keyof Monoid1<never> & keyof Monoid2<never>]: Monoid0<unknown>[k];
-};

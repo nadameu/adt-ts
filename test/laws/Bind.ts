@@ -1,7 +1,7 @@
 import * as jsc from 'jsverify';
 import { eqNumber, eqString } from '../../src';
 import { Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
-import { Bind, Bind1, Bind2 } from '../../src/typeclasses/Bind';
+import { Bind, Bind_1, Bind_2 } from '../../src/typeclasses/Bind';
 import { Eq } from '../../src/typeclasses/Eq';
 
 const laws = <f extends Generic1, a>(
@@ -10,7 +10,7 @@ const laws = <f extends Generic1, a>(
   f: jsc.Arbitrary<(_: a) => Type1<f, a>>,
   eq: Eq<Type1<f, a>>['eq']
 ) => {
-  const { bind } = bind0 as Bind1<f>;
+  const { bind } = bind0 as Bind_1<f>;
   return {
     associativity: (): void =>
       jsc.assertForall(fa, f, f, (x, f, g) =>
@@ -19,7 +19,7 @@ const laws = <f extends Generic1, a>(
   };
 };
 
-export const makeBind1Laws = <f extends Generic1>(bind: Bind1<f>) => (
+export const makeBind1Laws = <f extends Generic1>(bind: Bind_1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
 ) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
   laws<f, number>(
@@ -29,7 +29,7 @@ export const makeBind1Laws = <f extends Generic1>(bind: Bind1<f>) => (
     makeEq(eqNumber).eq
   );
 
-export const makeBind2Laws = <f extends Generic2>(bind: Bind2<f>) => (
+export const makeBind2Laws = <f extends Generic2>(bind: Bind_2<f>) => (
   makeEq: <a, b>(eqA: Eq<a>, eqB: Eq<b>) => Eq<Type2<f, a, b>>
 ) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>

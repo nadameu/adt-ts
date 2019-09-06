@@ -1,7 +1,7 @@
 import * as jsc from 'jsverify';
 import { compose, eqNumber, eqString } from '../../src';
 import { Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
-import { Apply, Apply1, Apply2 } from '../../src/typeclasses/Apply';
+import { Apply, Apply_1, Apply_2 } from '../../src/typeclasses/Apply';
 import { Eq } from '../../src/typeclasses/Eq';
 
 const laws = <f extends Generic1, a>(
@@ -10,7 +10,7 @@ const laws = <f extends Generic1, a>(
   ff: jsc.Arbitrary<Type1<f, (_: a) => a>>,
   eq: (_: Type1<f, a>) => (_: Type1<f, a>) => boolean
 ) => {
-  const { apply, map } = apply0 as Apply1<f>;
+  const { apply, map } = apply0 as Apply_1<f>;
   return {
     composition: (): void =>
       jsc.assertForall(ff, ff, fa, (a, u, v) =>
@@ -19,7 +19,7 @@ const laws = <f extends Generic1, a>(
   };
 };
 
-export const makeApply1Laws = <f extends Generic1>(apply: Apply1<f>) => (
+export const makeApply1Laws = <f extends Generic1>(apply: Apply_1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
 ) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
   laws<f, number>(
@@ -29,7 +29,7 @@ export const makeApply1Laws = <f extends Generic1>(apply: Apply1<f>) => (
     makeEq(eqNumber).eq
   );
 
-export const makeApply2Laws = <f extends Generic2>(apply: Apply2<f>) => (
+export const makeApply2Laws = <f extends Generic2>(apply: Apply_2<f>) => (
   makeEq: <a, b>(eqA: Eq<a>, eqB: Eq<b>) => Eq<Type2<f, a, b>>
 ) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>

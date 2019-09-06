@@ -1,12 +1,12 @@
-import { Group } from '../typeclasses/Group';
-import { Monoid0 } from '../typeclasses/Monoid';
-import { Semigroup0 } from '../typeclasses/Semigroup';
+import { Group_0 } from '../typeclasses/Group';
+import { Monoid_0 } from '../typeclasses/Monoid';
+import { Semigroup_0 } from '../typeclasses/Semigroup';
 
-const append: Semigroup0<number>['append'] = x => y => x + y;
-export const semigroupAdditive = { append } as Semigroup0<number>;
+const append: Semigroup_0<number>['append'] = x => y => x + y;
+export const semigroupAdditive = { append } as Semigroup_0<number>;
 
-const mempty: Monoid0<number>['mempty'] = () => 0;
-export const monoidAdditive = { append, mempty } as Monoid0<number>;
+const mempty: Monoid_0<number>['mempty'] = () => 0;
+export const monoidAdditive = { append, mempty } as Monoid_0<number>;
 
-const ginverse: Group<number>['ginverse'] = x => -x;
-export const groupAdditive = { append, ginverse, mempty } as Group<number>;
+const ginverse: Group_0<number>['ginverse'] = x => -x;
+export const groupAdditive = { append, ginverse, mempty } as Group_0<number>;

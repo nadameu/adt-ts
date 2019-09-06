@@ -1,48 +1,48 @@
 import { Generic1, Type1 } from '../Generic';
 import { list } from '../List';
 import { ConsList, isCons, isSnoc, SnocList } from '../List/definitions';
-import { Applicative1 } from '../typeclasses/Applicative';
-import { Apply1, lift2 } from '../typeclasses/Apply';
-import { Bind1 } from '../typeclasses/Bind';
-import { Foldable1, foldMapDefaultL } from '../typeclasses/Foldable';
-import { Functor1 } from '../typeclasses/Functor';
-import { Monoid1 } from '../typeclasses/Monoid';
-import { Semigroup1 } from '../typeclasses/Semigroup';
-import { sequenceDefault, Traversable1 } from '../typeclasses/Traversable';
+import { Applicative_1 } from '../typeclasses/Applicative';
+import { Apply_1, lift2 } from '../typeclasses/Apply';
+import { Bind_1 } from '../typeclasses/Bind';
+import { Foldable_1, foldMapDefaultL } from '../typeclasses/Foldable';
+import { Functor_1 } from '../typeclasses/Functor';
+import { Monoid_1 } from '../typeclasses/Monoid';
+import { Semigroup_1 } from '../typeclasses/Semigroup';
+import { sequenceDefault, Traversable_1 } from '../typeclasses/Traversable';
 import { TIterable } from './internal';
 
-export const map: Functor1<TIterable>['map'] = f => fa => ({
+export const map: Functor_1<TIterable>['map'] = f => fa => ({
   *[Symbol.iterator]() {
     for (const x of fa) yield f(x);
   },
 });
 
-export const apply: Apply1<TIterable>['apply'] = fs => xs => ({
+export const apply: Apply_1<TIterable>['apply'] = fs => xs => ({
   *[Symbol.iterator]() {
     for (const f of fs) for (const x of xs) yield f(x);
   },
 });
 
-export const pure: Applicative1<TIterable>['pure'] = value => ({
+export const pure: Applicative_1<TIterable>['pure'] = value => ({
   *[Symbol.iterator]() {
     yield value;
   },
 });
 
-export const bind: Bind1<TIterable>['bind'] = f => xs => ({
+export const bind: Bind_1<TIterable>['bind'] = f => xs => ({
   *[Symbol.iterator]() {
     for (const x of xs) for (const y of f(x)) yield y;
   },
 });
 
-export const append: Semigroup1<TIterable>['append'] = xs => ys => ({
+export const append: Semigroup_1<TIterable>['append'] = xs => ys => ({
   *[Symbol.iterator]() {
     for (const x of xs) yield x;
     for (const y of ys) yield y;
   },
 });
 
-export const mempty: Monoid1<TIterable>['mempty'] = () => [];
+export const mempty: Monoid_1<TIterable>['mempty'] = () => [];
 
 export const alt = append;
 export const empty = mempty;
@@ -65,13 +65,13 @@ export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterabl
   return acc;
 };
 
-export const foldMap = foldMapDefaultL({ foldl } as Foldable1<TIterable>);
+export const foldMap = foldMapDefaultL({ foldl } as Foldable_1<TIterable>);
 
-export const traverse: Traversable1<TIterable>['traverse'] = (<m extends Generic1>({
+export const traverse: Traversable_1<TIterable>['traverse'] = (<m extends Generic1>({
   apply,
   map,
   pure,
-}: Applicative1<m>) => <a, b>(f: (_: a) => Type1<m, b>) => (
+}: Applicative_1<m>) => <a, b>(f: (_: a) => Type1<m, b>) => (
   as: Iterable<a>
 ): Type1<m, Iterable<b>> => {
   const liftedCons: <a>(
@@ -79,7 +79,7 @@ export const traverse: Traversable1<TIterable>['traverse'] = (<m extends Generic
   ) => (fxs: Type1<m, ConsList<a>>) => Type1<m, ConsList<a>> = lift2({
     apply,
     map,
-  } as Apply1<m>)(list.cons);
+  } as Apply_1<m>)(list.cons);
   const liftedNil = pure(list.nil);
   const ms = foldl<a, SnocList<Type1<m, b>>>(ys => x => list.snoc(ys)(f(x)))(list.nil)(as);
   const mbs = list.foldr<Type1<m, b>, Type1<m, ConsList<b>>>(liftedCons)(liftedNil)(ms);
@@ -92,7 +92,7 @@ export const traverse: Traversable1<TIterable>['traverse'] = (<m extends Generic
   )(mbs);
 }) as any;
 
-export const sequence = sequenceDefault({ traverse } as Traversable1<TIterable>);
+export const sequence = sequenceDefault({ traverse } as Traversable_1<TIterable>);
 
 export const range = (start: number) => (end: number): Iterable<number> => {
   if (!Number.isInteger(start) || !Number.isInteger(end))

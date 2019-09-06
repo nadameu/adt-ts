@@ -1,16 +1,16 @@
-import { Alt1 } from '../typeclasses/Alt';
-import { Alternative1 } from '../typeclasses/Alternative';
-import { Applicative1 } from '../typeclasses/Applicative';
-import { Apply1 } from '../typeclasses/Apply';
-import { Bind1 } from '../typeclasses/Bind';
+import { Alt_1 } from '../typeclasses/Alt';
+import { Alternative_1 } from '../typeclasses/Alternative';
+import { Applicative_1 } from '../typeclasses/Applicative';
+import { Apply_1 } from '../typeclasses/Apply';
+import { Bind_1 } from '../typeclasses/Bind';
 import { Eq } from '../typeclasses/Eq';
-import { Foldable1 } from '../typeclasses/Foldable';
-import { Functor1 } from '../typeclasses/Functor';
-import { Monad1 } from '../typeclasses/Monad';
-import { Monoid1 } from '../typeclasses/Monoid';
-import { Plus1 } from '../typeclasses/Plus';
-import { Semigroup1 } from '../typeclasses/Semigroup';
-import { Traversable1 } from '../typeclasses/Traversable';
+import { Foldable_1 } from '../typeclasses/Foldable';
+import { Functor_1 } from '../typeclasses/Functor';
+import { Monad_1 } from '../typeclasses/Monad';
+import { Monoid_1 } from '../typeclasses/Monoid';
+import { Plus_1 } from '../typeclasses/Plus';
+import { Semigroup_1 } from '../typeclasses/Semigroup';
+import { Traversable_1 } from '../typeclasses/Traversable';
 import {
   alt,
   append,
@@ -35,9 +35,9 @@ import {
   wilt,
 } from './functions';
 import { TArray } from './internal';
-import { Compactable1 } from '../typeclasses/Compactable';
-import { Filterable1 } from '../typeclasses/Filterable';
-import { Witherable1 } from '../typeclasses/Witherable';
+import { Compactable_1 } from '../typeclasses/Compactable';
+import { Filterable_1 } from '../typeclasses/Filterable';
+import { Witherable_1 } from '../typeclasses/Witherable';
 
 export const makeEqArray = <a>(eq: Eq<a>) =>
   ({
@@ -51,25 +51,25 @@ export const makeEqArray = <a>(eq: Eq<a>) =>
     },
   } as Eq<ArrayLike<a>>);
 
-export const functorArray = { map } as Functor1<TArray>;
-export const applyArray = { apply, map } as Apply1<TArray>;
-export const bindArray = { apply, bind, map } as Bind1<TArray>;
-export const applicativeArray = { apply, map, pure } as Applicative1<TArray>;
-export const monadArray = { apply, bind, map, pure } as Monad1<TArray>;
+export const functorArray = { map } as Functor_1<TArray>;
+export const applyArray = { apply, map } as Apply_1<TArray>;
+export const bindArray = { apply, bind, map } as Bind_1<TArray>;
+export const applicativeArray = { apply, map, pure } as Applicative_1<TArray>;
+export const monadArray = { apply, bind, map, pure } as Monad_1<TArray>;
 
-export const altArray = { alt, map } as Alt1<TArray>;
-export const plusArray = { alt, empty, map } as Plus1<TArray>;
-export const alternativeArray = { alt, apply, empty, map, pure } as Alternative1<TArray>;
+export const altArray = { alt, map } as Alt_1<TArray>;
+export const plusArray = { alt, empty, map } as Plus_1<TArray>;
+export const alternativeArray = { alt, apply, empty, map, pure } as Alternative_1<TArray>;
 
-export const foldableArray = { foldMap, foldl, foldr } as Foldable1<TArray>;
-export const traversableArray = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable1<
+export const foldableArray = { foldMap, foldl, foldr } as Foldable_1<TArray>;
+export const traversableArray = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable_1<
   TArray
 >;
 
-export const semigroupArray = { append } as Semigroup1<TArray>;
-export const monoidArray = { append, mempty } as Monoid1<TArray>;
+export const semigroupArray = { append } as Semigroup_1<TArray>;
+export const monoidArray = { append, mempty } as Monoid_1<TArray>;
 
-export const compactableArray = { compact, separate } as Compactable1<TArray>;
+export const compactableArray = { compact, separate } as Compactable_1<TArray>;
 export const filterableArray = {
   compact,
   filter,
@@ -78,7 +78,7 @@ export const filterableArray = {
   partition,
   partitionMap,
   separate,
-} as Filterable1<TArray>;
+} as Filterable_1<TArray>;
 export const witherableArray = {
   compact,
   filter,
@@ -94,4 +94,4 @@ export const witherableArray = {
   traverse,
   wilt,
   wither,
-} as Witherable1<TArray>;
+} as Witherable_1<TArray>;

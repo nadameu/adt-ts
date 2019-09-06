@@ -1,18 +1,14 @@
-import { Generic1, Generic2, Type1, Type2 } from '../Generic';
-import { Functor1, Functor2 } from './Functor';
-import { compose } from '../Fn/functions';
+import { composeN } from '../Fn/functions';
+import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Functor_1, Functor_2 } from './Functor';
 
-export interface Apply1<f extends Generic1> extends Functor1<f> {
+export interface Apply_1<f extends Generic1> extends Functor_1<f> {
   apply: Helpers1<f>['apply'];
 }
 
-export interface Apply2<f extends Generic2> extends Functor2<f> {
+export interface Apply_2<f extends Generic2> extends Functor_2<f> {
   apply: Helpers2<f>['apply'];
 }
-
-export type Apply = {
-  [k in keyof Apply1<never> & keyof Apply2<never>]: Apply1<Generic1>[k];
-};
 
 interface Helpers1<f extends Generic1> {
   apply: <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>) => Type1<f, b>;
@@ -30,15 +26,15 @@ interface Helpers2<f extends Generic2> {
 }
 type Helper = {
   [k in keyof Helpers1<never>]: {
-    <f extends Generic1>(apply: Apply1<f>): Helpers1<f>[k];
-    <f extends Generic2>(apply: Apply2<f>): Helpers2<f>[k];
+    <f extends Generic1>(apply: Apply_1<f>): Helpers1<f>[k];
+    <f extends Generic2>(apply: Apply_2<f>): Helpers2<f>[k];
   };
 };
 
-export const lift2: Helper['lift2'] = ({ apply, map }: Apply) => <a, b, c>(f: (_: a) => (_: b) => c) => compose(apply)(map(f));
+export const lift2: Helper['lift2'] = <f extends Generic1>({ apply, map }: Anon<Apply_1<f>>) => <a, b, c>(f: (_: a) => (_: b) => c) => composeN(apply, map(f));
 
-export const lift3: Helper['lift3'] = <f extends Generic1>(apply: Apply) => <a, b, c, d>(f: (_: a) => (_: b) => (_: c) => d) => (fa: Type1<f, a>) => compose(apply.apply)(lift2(apply as Apply1<f>)(f)(fa));
+export const lift3: Helper['lift3'] = <f extends Generic1>(apply: Anon<Apply_1<f>>) => <a, b, c, d>(f: (_: a) => (_: b) => (_: c) => d) => (fa: Type1<f, a>) => composeN(apply.apply, lift2(apply as Apply_1<f>)(f)(fa));
 
-export const lift4: Helper['lift4'] = <f extends Generic1>(apply: Apply) => <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => compose(apply.apply)(lift3(apply as Apply1<f>)(f)(fa)(fb));
+export const lift4: Helper['lift4'] = <f extends Generic1>(apply: Anon<Apply_1<f>>) => <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => composeN(apply.apply, lift3(apply as Apply_1<f>)(f)(fa)(fb));
 
-export const lift5: Helper['lift5'] = <f extends Generic1>(apply: Apply) => <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => (fc: Type1<f, c>) => compose(apply.apply)(lift4(apply as Apply1<f>)(f)(fa)(fb)(fc));
+export const lift5: Helper['lift5'] = <f extends Generic1>(apply: Anon<Apply_1<f>>) => <a, b, c, d, e, g>(f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => g) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => (fc: Type1<f, c>) => composeN(apply.apply, lift4(apply as Apply_1<f>)(f)(fa)(fb)(fc));

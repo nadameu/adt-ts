@@ -2,7 +2,7 @@ import * as jsc from 'jsverify';
 import { eqNumber, eqString } from '../../src';
 import { Generic1, Generic1as2, Generic2, Type1, Type2 } from '../../src/Generic';
 import { Eq } from '../../src/typeclasses/Eq';
-import { MonadError, MonadError1, MonadError2 } from '../../src/typeclasses/MonadError';
+import { MonadError, MonadError_1, MonadError_2 } from '../../src/typeclasses/MonadError';
 
 const laws = <f extends Generic2, e, a>(
   monadError: MonadError,
@@ -11,7 +11,7 @@ const laws = <f extends Generic2, e, a>(
   a: jsc.Arbitrary<a>,
   eq: Eq<Type2<f, e, a>>['eq']
 ) => {
-  const { catchError, pure, throwError } = monadError as MonadError2<f>;
+  const { catchError, pure, throwError } = monadError as MonadError_2<f>;
   return {
     catch: (): void =>
       jsc.assertForall(jsc.fn(fa), e, (f, e) => eq(catchError(f)(throwError(e)))(f(e))),
@@ -20,7 +20,7 @@ const laws = <f extends Generic2, e, a>(
   };
 };
 
-export const makeMonadError1Laws = <f extends Generic1>(monadError: MonadError1<f>) => (
+export const makeMonadError1Laws = <f extends Generic1>(monadError: MonadError_1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
 ) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
   laws<Generic1as2<f>, undefined, number>(
@@ -31,7 +31,7 @@ export const makeMonadError1Laws = <f extends Generic1>(monadError: MonadError1<
     makeEq(eqNumber).eq
   );
 
-export const makeMonadError2Laws = <f extends Generic2>(monadError: MonadError2<f>) => (
+export const makeMonadError2Laws = <f extends Generic2>(monadError: MonadError_2<f>) => (
   makeEq: <a, b>(eqA: Eq<a>, eqB: Eq<b>) => Eq<Type2<f, a, b>>
 ) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>

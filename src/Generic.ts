@@ -48,6 +48,22 @@ export interface IdentifiedFn3<f extends GenericFn3> {
   GenericFn3Type: f;
 }
 
+export type Anon<
+  obj extends
+    | Identified0<any>
+    | Identified1<any>
+    | Identified2<any>
+    | IdentifiedFn<any>
+    | IdentifiedFn3<any>,
+  keys extends Exclude<
+    keyof obj,
+    'NotGenericType' | 'Generic1Type' | 'Generic2Type' | 'GenericFn2Type' | 'GenericFn3Type'
+  > = Exclude<
+    keyof obj,
+    'NotGenericType' | 'Generic1Type' | 'Generic2Type' | 'GenericFn2Type' | 'GenericFn3Type'
+  >
+> = Pick<obj, keys>;
+
 export type Type1<f extends Generic1, a> = f extends never ? never : (f & { a: a })['type'];
 
 export type Type2<f extends Generic2, a, b> = f extends never

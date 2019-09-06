@@ -1,17 +1,17 @@
-import { Alt1 } from '../typeclasses/Alt';
-import { Alternative1 } from '../typeclasses/Alternative';
-import { Applicative1 } from '../typeclasses/Applicative';
-import { Apply1 } from '../typeclasses/Apply';
-import { Bind1 } from '../typeclasses/Bind';
+import { Alt_1 } from '../typeclasses/Alt';
+import { Alternative_1 } from '../typeclasses/Alternative';
+import { Applicative_1 } from '../typeclasses/Applicative';
+import { Apply_1 } from '../typeclasses/Apply';
+import { Bind_1 } from '../typeclasses/Bind';
 import { Eq } from '../typeclasses/Eq';
-import { Foldable1 } from '../typeclasses/Foldable';
+import { Foldable_1 } from '../typeclasses/Foldable';
 import { Foldable1_1 } from '../typeclasses/Foldable1';
-import { Functor1 } from '../typeclasses/Functor';
-import { Monad1 } from '../typeclasses/Monad';
-import { Monoid1 } from '../typeclasses/Monoid';
-import { Plus1 } from '../typeclasses/Plus';
-import { Semigroup1 } from '../typeclasses/Semigroup';
-import { Traversable1 } from '../typeclasses/Traversable';
+import { Functor_1 } from '../typeclasses/Functor';
+import { Monad_1 } from '../typeclasses/Monad';
+import { Monoid_1 } from '../typeclasses/Monoid';
+import { Plus_1 } from '../typeclasses/Plus';
+import { Semigroup_1 } from '../typeclasses/Semigroup';
+import { Traversable_1 } from '../typeclasses/Traversable';
 import { List, ListTag, NEList } from './definitions';
 import {
   alt,
@@ -48,38 +48,38 @@ export const makeEqList = <a>(eq: Eq<a>) =>
     },
   } as Eq<List<a>>);
 
-export const functorList = { map } as Functor1<TList>;
-export const applyList = { apply, map } as Apply1<TList>;
-export const applicativeList = { apply, map, pure } as Applicative1<TList>;
-export const bindList = { apply, bind, map } as Bind1<TList>;
-export const monadList = { apply, bind, map, pure } as Monad1<TList>;
+export const functorList = { map } as Functor_1<TList>;
+export const applyList = { apply, map } as Apply_1<TList>;
+export const applicativeList = { apply, map, pure } as Applicative_1<TList>;
+export const bindList = { apply, bind, map } as Bind_1<TList>;
+export const monadList = { apply, bind, map, pure } as Monad_1<TList>;
 
-export const semigroupList = { append } as Semigroup1<TList>;
-export const monoidList = { append, mempty } as Monoid1<TList>;
+export const semigroupList = { append } as Semigroup_1<TList>;
+export const monoidList = { append, mempty } as Monoid_1<TList>;
 
-export const altList = { alt, map } as Alt1<TList>;
-export const plusList = { alt, empty, map } as Plus1<TList>;
-export const alternativeList = { alt, apply, empty, map, pure } as Alternative1<TList>;
+export const altList = { alt, map } as Alt_1<TList>;
+export const plusList = { alt, empty, map } as Plus_1<TList>;
+export const alternativeList = { alt, apply, empty, map, pure } as Alternative_1<TList>;
 
-export const foldableList = { foldMap, foldl, foldr } as Foldable1<TList>;
-export const traversableList = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable1<
+export const foldableList = { foldMap, foldl, foldr } as Foldable_1<TList>;
+export const traversableList = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable_1<
   TList
 >;
 
 /* NELIST */
 export const makeEqNEList = makeEqList as <a>(eq: Eq<a>) => Eq<NEList<a>>;
 
-export const functorNEList = functorList as Functor1<TNEList>;
-export const applyNEList = applyList as Apply1<TNEList>;
-export const applicativeNEList = applicativeList as Applicative1<TNEList>;
-export const bindNEList = bindList as Bind1<TNEList>;
-export const monadNEList = monadList as Monad1<TNEList>;
+export const functorNEList = functorList as Functor_1<TNEList>;
+export const applyNEList = applyList as Apply_1<TNEList>;
+export const applicativeNEList = applicativeList as Applicative_1<TNEList>;
+export const bindNEList = bindList as Bind_1<TNEList>;
+export const monadNEList = monadList as Monad_1<TNEList>;
 
-export const semigroupNEList = { append } as Semigroup1<TNEList>;
+export const semigroupNEList = { append } as Semigroup_1<TNEList>;
 
-export const altNEList = altList as Alt1<TNEList>;
+export const altNEList = altList as Alt_1<TNEList>;
 
-export const foldableNEList = foldableList as Foldable1<TNEList>;
-export const traversableNEList = traversableList as Traversable1<TNEList>;
+export const foldableNEList = foldableList as Foldable_1<TNEList>;
+export const traversableNEList = traversableList as Traversable_1<TNEList>;
 
 export const foldable1NEList = { fold1, foldMap, foldMap1, foldl, foldr } as Foldable1_1<TNEList>;

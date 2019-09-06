@@ -1,48 +1,51 @@
 import { Generic1, Type1 } from '../Generic';
 import { Just, Maybe, maybe, Nothing } from '../Maybe/definitions';
 import { maybeL } from '../Maybe/functions';
-import { Alt1, Alt2 } from '../typeclasses/Alt';
-import { Applicative, Applicative2 } from '../typeclasses/Applicative';
-import { Bind2 } from '../typeclasses/Bind';
-import { Foldable2, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
-import { ap, liftM1, Monad2 } from '../typeclasses/Monad';
-import { MonadError2 } from '../typeclasses/MonadError';
-import { MonadThrow2 } from '../typeclasses/MonadThrow';
+import { Alt_1, Alt_2 } from '../typeclasses/Alt';
+import { Applicative, Applicative_2 } from '../typeclasses/Applicative';
+import { Bind_2 } from '../typeclasses/Bind';
+import { Foldable_2, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
+import { ap, liftM1, Monad_2 } from '../typeclasses/Monad';
+import { MonadError_2 } from '../typeclasses/MonadError';
+import { MonadThrow_2 } from '../typeclasses/MonadThrow';
 import { Monoid } from '../typeclasses/Monoid';
-import { sequenceDefault, Traversable2 } from '../typeclasses/Traversable';
+import { sequenceDefault, Traversable_2 } from '../typeclasses/Traversable';
 import { Either, either, Left, Right } from './definitions';
 import { TEither } from './internal';
 
 export { either };
 
-export const bind: Bind2<TEither>['bind'] = either<any, Either<any, any>>(Left);
+export const bind: Bind_2<TEither>['bind'] = either<any, Either<any, any>>(Left);
 
-export const pure: Applicative2<TEither>['pure'] = Right;
+export const pure: Applicative_2<TEither>['pure'] = Right;
 
-export const map = liftM1({ bind, pure } as Monad2<TEither>);
+export const map = liftM1({ bind, pure } as Monad_2<TEither>);
 
-export const apply = ap({ bind, pure } as Monad2<TEither>);
+export const apply = ap({ bind, pure } as Monad_2<TEither>);
 
-export const alt: Alt2<TEither>['alt'] = fx => fy => (fx.isLeft ? fy : fx);
+export const alt: Alt_2<TEither>['alt'] = fx => fy => (fx.isLeft ? fy : fx);
 
-export const throwError: MonadThrow2<TEither>['throwError'] = Left;
+export const throwError: MonadThrow_2<TEither>['throwError'] = Left;
 
-export const catchError: MonadError2<TEither>['catchError'] = f => either(f)(Right);
+export const catchError: MonadError_2<TEither>['catchError'] = f => either(f)(Right);
 
-export const foldMap: Foldable2<TEither>['foldMap'] = (monoid: Monoid) => either(monoid.mempty);
+export const foldMap: Foldable_2<TEither>['foldMap'] = (monoid: Monoid) => either(monoid.mempty);
 
-export const foldl = foldlDefault({ foldMap } as Foldable2<TEither>);
+export const foldl = foldlDefault({ foldMap } as Foldable_2<TEither>);
 
-export const foldr = foldrDefault({ foldMap } as Foldable2<TEither>);
+export const foldr = foldrDefault({ foldMap } as Foldable_2<TEither>);
 
-export const traverse: Traversable2<TEither>['traverse'] = (applicative: Applicative) => <b, c>(
-  f: (_: b) => Type1<Generic1, c>
-): (<a>(fab: Either<a, b>) => Type1<Generic1, Either<a, c>>) =>
-  either(a => applicative.pure(Left(a)))(b => applicative.map(Right)(f(b)));
+export const traverse: Traversable_2<TEither>['traverse'] = <f extends Generic1>({
+  map,
+  pure,
+}: Applicative<f, 'map' | 'pure'>) => <b, c>(
+  f: (_: b) => Type1<f, c>
+): (<a>(tab: Either<a, b>) => Type1<f, Either<a, c>>) =>
+  either(a => pure(Left(a)))(b => map(Right)(f(b)));
 
-export const sequence = sequenceDefault({ traverse } as Traversable2<TEither>);
+export const sequence = sequenceDefault({ traverse } as Traversable_2<TEither>);
 
-export const choose = <m extends Generic1>(alt: Alt1<m>) => <a>(ma: Type1<m, a>) => <b>(
+export const choose = <m extends Generic1>(alt: Alt_1<m>) => <a>(ma: Type1<m, a>) => <b>(
   mb: Type1<m, b>
 ): Type1<m, Either<a, b>> => alt.alt(alt.map(Left)(ma))(alt.map(Right)(mb));
 

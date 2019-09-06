@@ -1,11 +1,11 @@
+import { Either, Left, Right } from '../Either/definitions';
+import { compose, constant } from '../Fn/functions';
 import { Generic1, Type1 } from '../Generic';
-import { Compactable1 } from './Compactable';
-import { Functor1 } from './Functor';
-import { Either, Right, Left } from '../Either/definitions';
-import { Maybe, Just, Nothing } from '../Maybe/definitions';
-import { constant, compose } from '../Fn/functions';
+import { Just, Maybe, Nothing } from '../Maybe/definitions';
+import { Compactable_1, CompactMap_1, SeparateMap_1 } from './Compactable';
+import { Functor_1 } from './Functor';
 
-export interface Filterable1<f extends Generic1> extends Compactable1<f>, Functor1<f> {
+export interface Filterable_1<f extends Generic1> extends Compactable_1<f>, Functor_1<f> {
   partitionMap: <a, b, c>(
     p: (_: a) => Either<b, c>
   ) => (fa: Type1<f, a>) => { left: Type1<f, b>; right: Type1<f, c> };
@@ -29,13 +29,11 @@ export const maybeBool: {
 export const partitionMapDefault = <f extends Generic1>({
   map,
   separate,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'map' | 'separate'>): Filterable1<
-  f
->['partitionMap'] => p => fa => separate(map(p)(fa));
+}: SeparateMap_1<f>): Filterable_1<f>['partitionMap'] => p => fa => separate(map(p)(fa));
 
 export const partitionDefault = <f extends Generic1>({
   partitionMap,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'partitionMap'>): Filterable1<
+}: Pick<Filterable_1<f>, 'Generic1Type' | 'partitionMap'>): Filterable_1<
   f
 >['partition'] => p => fa => {
   const { left: no, right: yes } = partitionMap(eitherBool(p))(fa);
@@ -44,7 +42,7 @@ export const partitionDefault = <f extends Generic1>({
 
 export const partitionDefaultFilter = <f extends Generic1>({
   filter,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'filter'>): Filterable1<f>['partition'] => <a>(
+}: Pick<Filterable_1<f>, 'Generic1Type' | 'filter'>): Filterable_1<f>['partition'] => <a>(
   p: (_: a) => boolean
 ) => fa => {
   return { no: filter<a>(x => !p(x))(fa), yes: filter(p)(fa) };
@@ -53,12 +51,12 @@ export const partitionDefaultFilter = <f extends Generic1>({
 export const filterMapDefault = <f extends Generic1>({
   map,
   compact,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'compact' | 'map'>): Filterable1<f>['filterMap'] => p =>
+}: CompactMap_1<f>): Filterable_1<f>['filterMap'] => p =>
   compose<Type1<f, Maybe<unknown>>, Type1<f, unknown>>(compact)(map(p));
 
 export const partitionDefaultFilterMap = <f extends Generic1>({
   filterMap,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'filterMap'>): Filterable1<f>['partition'] => <a>(
+}: Pick<Filterable_1<f>, 'Generic1Type' | 'filterMap'>): Filterable_1<f>['partition'] => <a>(
   p: (_: a) => boolean
 ) => fa => ({
   no: filterMap<a, a>(maybeBool(x => !p(x)))(fa),
@@ -67,21 +65,21 @@ export const partitionDefaultFilterMap = <f extends Generic1>({
 
 export const filterDefault = <f extends Generic1>({
   filterMap,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'filterMap'>): Filterable1<f>['filter'] =>
+}: Pick<Filterable_1<f>, 'Generic1Type' | 'filterMap'>): Filterable_1<f>['filter'] =>
   compose<(_: any) => Maybe<unknown>, (fa: Type1<f, any>) => Type1<f, unknown>>(filterMap)<
     (_: any) => boolean
   >(maybeBool);
 
 export const filterDefaultPartition = <f extends Generic1>({
   partition,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'partition'>): Filterable1<f>['filter'] => p => fa =>
+}: Pick<Filterable_1<f>, 'Generic1Type' | 'partition'>): Filterable_1<f>['filter'] => p => fa =>
   partition(p)(fa).yes;
 
 export const filterDefaultPartitionMap = <f extends Generic1>({
   partitionMap,
-}: Pick<Filterable1<f>, 'Generic1Type' | 'partitionMap'>): Filterable1<f>['filter'] => p => fa =>
+}: Pick<Filterable_1<f>, 'Generic1Type' | 'partitionMap'>): Filterable_1<f>['filter'] => p => fa =>
   partitionMap(eitherBool(p))(fa).right;
 
 export const cleared = <f extends Generic1>(
-  filterable: Filterable1<f>
+  filterable: Filterable_1<f>
 ): (<a, b>(fa: Type1<f, a>) => Type1<f, b>) => filterable.filterMap(constant(Nothing));

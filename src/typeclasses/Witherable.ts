@@ -1,13 +1,13 @@
 import { Either } from '../Either/definitions';
 import { identity } from '../Fn/functions';
-import { Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
 import { Just, Maybe } from '../Maybe/definitions';
-import { Applicative, Applicative1, Applicative2 } from './Applicative';
-import { Filterable1 } from './Filterable';
-import { Traversable1 } from './Traversable';
+import { Applicative_1, Applicative_2 } from './Applicative';
+import { Filterable_1 } from './Filterable';
+import { Traversable_1 } from './Traversable';
 
-export interface Witherable1<t extends Generic1> extends Filterable1<t>, Traversable1<t> {
+export interface Witherable_1<t extends Generic1> extends Filterable_1<t>, Traversable_1<t> {
   wilt: Helpers1<t>['wilt'];
   wither: Helpers1<t>['wither'];
 }
@@ -40,58 +40,56 @@ interface Helpers1Applicative2<t extends Generic1, m extends Generic2> {
 }
 type Helper1Applicative<t extends Generic1> = {
   [k in keyof Helpers1Applicative1<never, never>]: {
-    <m extends Generic1>(applicative: Applicative1<m>): Helpers1Applicative1<t, m>[k];
-    <m extends Generic2>(applicative: Applicative2<m>): Helpers1Applicative2<t, m>[k];
+    <m extends Generic1>(applicative: Applicative_1<m>): Helpers1Applicative1<t, m>[k];
+    <m extends Generic2>(applicative: Applicative_2<m>): Helpers1Applicative2<t, m>[k];
   };
 };
 
 export const wiltDefault = <t extends Generic1>({
   separate,
   traverse,
-}: Pick<Witherable1<t>, 'Generic1Type' | 'separate' | 'traverse'>): Witherable1<t>['wilt'] => <
+}: Pick<Witherable_1<t>, 'Generic1Type' | 'separate' | 'traverse'>): Witherable_1<t>['wilt'] => <
   m extends Generic1
 >(
-  applicative: Applicative
+  applicative: Anon<Applicative_1<m>>
 ) => <a, b, c>(f: (_: a) => Type1<m, Either<b, c>>) => (ta: Type1<t, a>) =>
-  (applicative as Applicative1<m>).map(separate)(traverse(applicative as Applicative1<m>)(f)(ta));
+  applicative.map(separate)(traverse(applicative as Applicative_1<m>)(f)(ta));
 
 export const witherDefault = <t extends Generic1>({
   compact,
   traverse,
-}: Pick<Witherable1<t>, 'Generic1Type' | 'compact' | 'traverse'>): Witherable1<t>['wither'] => <
+}: Pick<Witherable_1<t>, 'Generic1Type' | 'compact' | 'traverse'>): Witherable_1<t>['wither'] => <
   m extends Generic1
 >(
-  applicative: Applicative
+  applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, Maybe<b>>) => (ta: Type1<t, a>) =>
-  (applicative as Applicative1<m>).map(compact)(traverse(applicative as Applicative1<m>)(f)(ta));
+  applicative.map(compact)(traverse(applicative as Applicative_1<m>)(f)(ta));
 
 export const partitionMapByWilt = <t extends Generic1>({
   wilt,
-}: Pick<Witherable1<t>, 'Generic1Type' | 'wilt'>): Witherable1<t>['partitionMap'] =>
+}: Pick<Witherable_1<t>, 'Generic1Type' | 'wilt'>): Witherable_1<t>['partitionMap'] =>
   wilt(applicativeIdentity);
 
 export const filterMapByWither = <t extends Generic1>({
   wither,
-}: Pick<Witherable1<t>, 'Generic1Type' | 'wither'>): Witherable1<t>['filterMap'] =>
+}: Pick<Witherable_1<t>, 'Generic1Type' | 'wither'>): Witherable_1<t>['filterMap'] =>
   wither(applicativeIdentity);
 
 export const traverseByWither = <t extends Generic1>({
   wither,
-}: Pick<Witherable1<t>, 'Generic1Type' | 'wither'>): Witherable1<t>['traverse'] => <
+}: Pick<Witherable_1<t>, 'Generic1Type' | 'wither'>): Witherable_1<t>['traverse'] => <
   m extends Generic1
 >(
-  applicative: Applicative
+  applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, b>) =>
-  wither(applicative as Applicative1<m>)<a, b>(x =>
-    (applicative as Applicative1<m>).map(Just)(f(x))
-  );
+  wither(applicative as Applicative_1<m>)<a, b>(x => applicative.map(Just)(f(x)));
 
 export const wilted = <t extends Generic1>(
-  witherable: Witherable1<t>
-): Helper1Applicative<t>['wilted'] => <m extends Generic1>(applicative: Applicative) =>
-  witherable.wilt(applicative as Applicative1<m>)<Type1<m, Either<any, any>>, any, any>(identity);
+  witherable: Witherable_1<t>
+): Helper1Applicative<t>['wilted'] => <m extends Generic1>(applicative: Anon<Applicative_1<m>>) =>
+  witherable.wilt(applicative as Applicative_1<m>)<Type1<m, Either<any, any>>, any, any>(identity);
 
 export const withered = <t extends Generic1>(
-  witherable: Witherable1<t>
-): Helper1Applicative<t>['withered'] => <m extends Generic1>(applicative: Applicative) =>
-  witherable.wither(applicative as Applicative1<m>)<Type1<m, Maybe<any>>, any>(identity);
+  witherable: Witherable_1<t>
+): Helper1Applicative<t>['withered'] => <m extends Generic1>(applicative: Anon<Applicative_1<m>>) =>
+  witherable.wither(applicative as Applicative_1<m>)<Type1<m, Maybe<any>>, any>(identity);

@@ -1,18 +1,14 @@
 import { flip } from '../Fn/functions';
-import { Generic1, Generic2, Type1, Type2 } from '../Generic';
-import { Apply1, Apply2 } from './Apply';
+import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Apply_1, Apply_2 } from './Apply';
 
-export interface Bind1<f extends Generic1> extends Apply1<f> {
+export interface Bind_1<f extends Generic1> extends Apply_1<f> {
   bind: Helpers1<f>['bind'];
 }
 
-export interface Bind2<f extends Generic2> extends Apply2<f> {
+export interface Bind_2<f extends Generic2> extends Apply_2<f> {
   bind: Helpers2<f>['bind'];
 }
-
-export type Bind = {
-  [k in keyof Bind1<never> & keyof Bind2<never>]: Bind1<Generic1>[k];
-};
 
 interface Helpers1<f extends Generic1> {
   bind: <a, b>(f: (_: a) => Type1<f, b>) => (fa: Type1<f, a>) => Type1<f, b>;
@@ -21,7 +17,7 @@ interface Helpers1<f extends Generic1> {
     f: (_: b) => Type1<f, c>
   ) => <a>(g: (_: a) => Type1<f, b>) => (_: a) => Type1<f, c>;
   pipeK: <a, b>(f: (_: a) => Type1<f, b>) => <c>(g: (_: b) => Type1<f, c>) => (_: a) => Type1<f, c>;
-  wrapBind: <a>(fa: Type1<f, a>) => WrappedBind1<f, a>;
+  wrapBind: <a>(fa: Type1<f, a>) => WrappedBind_1<f, a>;
 }
 interface Helpers2<f extends Generic2> {
   bind: <a, b, c>(f: (_: b) => Type2<f, a, c>) => (fab: Type2<f, a, b>) => Type2<f, a, c>;
@@ -32,42 +28,41 @@ interface Helpers2<f extends Generic2> {
   pipeK: <a, b, c>(
     f: (_: a) => Type2<f, b, c>
   ) => <d>(g: (_: c) => Type2<f, b, d>) => (_: a) => Type2<f, b, d>;
-  wrapBind: <a, b>(fab: Type2<f, a, b>) => WrappedBind2<f, a, b>;
+  wrapBind: <a, b>(fab: Type2<f, a, b>) => WrappedBind_2<f, a, b>;
 }
 type Helper = {
   [k in keyof Helpers1<never>]: {
-    <f extends Generic1>(bind: Bind1<f>): Helpers1<f>[k];
-    <f extends Generic2>(bind: Bind2<f>): Helpers2<f>[k];
+    <f extends Generic1>(bind: Bind_1<f>): Helpers1<f>[k];
+    <f extends Generic2>(bind: Bind_2<f>): Helpers2<f>[k];
   };
 };
 
-export type BindMap1<f extends Generic1> = {
-  [k in 'Generic1Type' | 'bind' | 'map']: Bind1<f>[k];
-};
-export type BindMap2<f extends Generic2> = {
-  [k in 'Generic2Type' | 'bind' | 'map']: Bind2<f>[k];
-};
-export type BindMap = {
-  [k in 'bind' | 'map']: BindMap1<Generic1>[k];
-};
+export type BindMap_1<f extends Generic1> = Pick<Bind_1<f>, 'Generic1Type' | 'bind' | 'map'>;
+export type BindMap_2<f extends Generic2> = Pick<Bind_2<f>, 'Generic2Type' | 'bind' | 'map'>;
 
-export const join: Helper['join'] = ({ bind }: Bind) => bind(x => x);
+export const join: Helper['join'] = <f extends Generic1>({ bind }: Anon<Bind_1<f>, 'bind'>) =>
+  bind<Type1<f, unknown>, Type1<f, unknown>>(x => x);
 
 export const applyDefault: {
-  <f extends Generic1>({ bind, map }: BindMap1<f>): Bind1<f>['apply'];
-  <f extends Generic2>({ bind, map }: BindMap2<f>): Bind2<f>['apply'];
-} = (<f extends Generic1>({ bind, map }: BindMap1<f>) =>
-  flip(<a, b>(fa: Type1<f, a>) => bind<(_: a) => b, b>(f => map(f)(fa)))) as any;
+  <f extends Generic1>({ bind, map }: BindMap_1<f>): Bind_1<f>['apply'];
+  <f extends Generic2>({ bind, map }: BindMap_2<f>): Bind_2<f>['apply'];
+} = <f extends Generic1>({ bind, map }: Anon<BindMap_1<f>>) =>
+  flip(<a, b>(fa: Type1<f, a>) => bind<(_: a) => b, b>(f => map(f)(fa)));
 
-export const composeK: Helper['composeK'] = (<f extends Generic1>({ bind }: Bind1<f>) => <b, c>(
-  f: (_: b) => Type1<f, c>
-) => <a>(g: (_: a) => Type1<f, b>) => (a: a): Type1<f, c> => bind(f)(g(a))) as any;
+export const composeK: Helper['composeK'] = <f extends Generic1>({
+  bind,
+}: Anon<Bind_1<f>, 'bind'>) => <b, c>(f: (_: b) => Type1<f, c>) => <a>(
+  g: (_: a) => Type1<f, b>
+) => (a: a): Type1<f, c> => bind(f)(g(a));
 
-export const pipeK: Helper['pipeK'] = (<f extends Generic1>({ bind }: Bind1<f>) => <a, b>(
+export const pipeK: Helper['pipeK'] = <f extends Generic1>({ bind }: Anon<Bind_1<f>, 'bind'>) => <
+  a,
+  b
+>(
   f: (_: a) => Type1<f, b>
-) => <c>(g: (_: b) => Type1<f, c>) => (a: a): Type1<f, c> => bind(g)(f(a))) as any;
+) => <c>(g: (_: b) => Type1<f, c>) => (a: a): Type1<f, c> => bind(g)(f(a));
 
-export interface WrappedBind1<t extends Generic1, a> {
+export interface WrappedBind_1<t extends Generic1, a> {
   pipeK(): Type1<t, a>;
   pipeK<b>(f0: (_: a) => Type1<t, b>): Type1<t, b>;
   pipeK<b, c>(f0: (_: a) => Type1<t, b>, f1: (_: b) => Type1<t, c>): Type1<t, c>;
@@ -91,7 +86,7 @@ export interface WrappedBind1<t extends Generic1, a> {
   ): Type1<t, f>;
   pipeK(...fs: Array<(_: any) => Type1<t, any>>): Type1<t, any>;
 }
-export interface WrappedBind2<t extends Generic2, a, b> {
+export interface WrappedBind_2<t extends Generic2, a, b> {
   pipeK(): Type2<t, a, b>;
   pipeK<c>(f0: (_: b) => Type2<t, a, c>): Type2<t, a, c>;
   pipeK<c, d>(f0: (_: b) => Type2<t, a, c>, f1: (_: c) => Type2<t, a, d>): Type2<t, a, d>;
@@ -115,9 +110,9 @@ export interface WrappedBind2<t extends Generic2, a, b> {
   ): Type2<t, a, g>;
   pipeK(...fs: Array<(_: any) => Type2<t, a, any>>): Type2<t, a, any>;
 }
-export const wrapBind: Helper['wrapBind'] = (<f extends Generic1>({ bind }: Bind1<f>) => <a>(
+export const wrapBind: Helper['wrapBind'] = <f extends Generic1>({ bind }: Anon<Bind_1<f>>) => <a>(
   fa: Type1<f, a>
-): WrappedBind1<f, a> => ({
+): WrappedBind_1<f, a> => ({
   pipeK: (...fs: Array<(_: any) => Type1<f, any>>) => {
     const len = fs.length;
     let result = fa;
@@ -126,4 +121,4 @@ export const wrapBind: Helper['wrapBind'] = (<f extends Generic1>({ bind }: Bind
     }
     return result;
   },
-})) as any;
+});

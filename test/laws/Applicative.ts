@@ -1,7 +1,7 @@
 import * as jsc from 'jsverify';
 import { eqNumber, eqString, flip, identity, thrush } from '../../src';
 import { Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
-import { Applicative, Applicative1, Applicative2 } from '../../src/typeclasses/Applicative';
+import { Applicative, Applicative_1, Applicative_2 } from '../../src/typeclasses/Applicative';
 import { Eq } from '../../src/typeclasses/Eq';
 import { homomorphism, leftIdentity } from './helpers';
 
@@ -13,7 +13,7 @@ const laws = <f extends Generic1, a>(
   ff: jsc.Arbitrary<Type1<f, (_: a) => a>>,
   eq: Eq<Type1<f, a>>['eq']
 ) => {
-  const { apply, pure } = applicative as Applicative1<f>;
+  const { apply, pure } = applicative as Applicative_1<f>;
   return {
     identity: (): void => jsc.assertForall(fa, leftIdentity(eq)(apply)(pure(identity))),
     homomorphism: (): void =>
@@ -23,7 +23,7 @@ const laws = <f extends Generic1, a>(
   };
 };
 
-export const makeApplicative1Laws = <f extends Generic1>(applicative: Applicative1<f>) => (
+export const makeApplicative1Laws = <f extends Generic1>(applicative: Applicative_1<f>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
 ) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
   laws(
@@ -35,7 +35,7 @@ export const makeApplicative1Laws = <f extends Generic1>(applicative: Applicativ
     makeEq(eqNumber).eq
   );
 
-export const makeApplicative2Laws = <f extends Generic2>(applicative: Applicative2<f>) => (
+export const makeApplicative2Laws = <f extends Generic2>(applicative: Applicative_2<f>) => (
   makeEq: <a, b>(eqA: Eq<a>, eqB: Eq<b>) => Eq<Type2<f, a, b>>
 ) => (
   makeArb: <a, b>(arbA: jsc.Arbitrary<a>, arbB: jsc.Arbitrary<b>) => jsc.Arbitrary<Type2<f, a, b>>

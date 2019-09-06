@@ -1,28 +1,28 @@
-import { Functor2 } from '../typeclasses/Functor';
+import { Functor_2 } from '../typeclasses/Functor';
 import { TConst, TConst0, TConst1 } from './internal';
-import { Apply2 } from '../typeclasses/Apply';
-import { Semigroup0, Semigroup1, Semigroup } from '../typeclasses/Semigroup';
+import { Apply_2 } from '../typeclasses/Apply';
+import { Semigroup_0, Semigroup_1, Semigroup } from '../typeclasses/Semigroup';
 import { Generic1 } from '../Generic';
-import { Monoid1, Monoid0, Monoid } from '../typeclasses/Monoid';
-import { Applicative2 } from '../typeclasses/Applicative';
+import { Monoid_1, Monoid_0, Monoid } from '../typeclasses/Monoid';
+import { Applicative_2 } from '../typeclasses/Applicative';
 
 const map = <a, b>(_: (_: a) => b) => <c>(c: c) => c;
 
-export const functorConst = { map } as Functor2<TConst>;
+export const functorConst = { map } as Functor_2<TConst>;
 export const makeApplyConst: {
-  <f extends Generic1>(semigroup: Semigroup1<f>): Apply2<TConst1<f>>;
-  <m>(semigroup: Semigroup0<m>): Apply2<TConst0<m>>;
+  <f extends Generic1>(semigroup: Semigroup_1<f>): Apply_2<TConst1<f>>;
+  <m>(semigroup: Semigroup_0<m>): Apply_2<TConst0<m>>;
 } = (semigroup: Semigroup) =>
   ({
     apply: semigroup.append,
     map,
-  } as Apply2<TConst0<unknown>>);
+  } as Apply_2<TConst0<unknown>>);
 export const makeApplicativeConst: {
-  <f extends Generic1>(monoid: Monoid1<f>): Applicative2<TConst1<f>>;
-  <m>(monoid: Monoid0<m>): Applicative2<TConst0<m>>;
+  <f extends Generic1>(monoid: Monoid_1<f>): Applicative_2<TConst1<f>>;
+  <m>(monoid: Monoid_0<m>): Applicative_2<TConst0<m>>;
 } = (monoid: Monoid) =>
   ({
     apply: monoid.append,
     map,
     pure: _ => monoid.mempty(),
-  } as Applicative2<TConst0<unknown>>);
+  } as Applicative_2<TConst0<unknown>>);
