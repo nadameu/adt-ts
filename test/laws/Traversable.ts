@@ -1,99 +1,58 @@
 import * as jsc from 'jsverify';
-import { eqNumber } from '../../src';
-import { Generic1, Type1 } from '../../src/Generic';
-import { Applicative1 } from '../../src/typeclasses/Applicative';
+import {
+  applicativeEither,
+  applicativeIdentity,
+  applicativeMaybe,
+  Either,
+  eqNumber,
+  eqString,
+  Just,
+  Left,
+  makeEqEither,
+  makeEqMaybe,
+  Maybe,
+  Nothing,
+  Right,
+} from '../../src';
+import { note } from '../../src/Either/functions';
+import { Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
+import { Applicative1, Applicative2 } from '../../src/typeclasses/Applicative';
 import { Eq } from '../../src/typeclasses/Eq';
 import { Traversable, Traversable1 } from '../../src/typeclasses/Traversable';
 
-declare const phantom: unique symbol;
-interface F<a> {
-  [phantom]: 'F';
-  <b>(Empty: () => b, Value: (value: a) => b): b;
-}
-const FEmpty = ((E, _) => E()) as F<unknown>;
-const FValue = <a>(value: a) => ((_, V) => V(value)) as F<a>;
-interface TF extends Generic1 {
-  type: F<this['a']>;
-}
-const applicativeF = {
-  apply: ff => fa => ff(() => FEmpty, f => fa(() => FEmpty, a => FValue(f(a)))),
-  map: f => fa => fa(() => FEmpty, a => FValue(f(a))),
-  pure: FValue,
-} as Applicative1<TF>;
-const makeArbF = <a>(arb: jsc.Arbitrary<a>) => {
-  const arbF: jsc.Arbitrary<F<a>> = jsc.oneof([
-    jsc.constant(FEmpty as F<a>),
-    arb.smap(FValue, fa =>
-      fa(
-        () => {
-          throw new Error('Unexpected empty F value.');
-        },
-        a => a
-      )
-    ),
-  ]);
-  arbF.show = fa => fa(() => `FEmpty`, a => `FValue(${(arb.show || String)(a)})`);
-  return arbF;
-};
-const makeEqF = <a>(eq: Eq<a>) =>
-  ({
-    eq: fx => fy => fx(() => fy(() => true, _ => false), x => fy(() => false, y => eq.eq(x)(y))),
-  } as Eq<F<a>>);
-
-type G<a> = { isEmpty: true } | { isEmpty: false; value: a };
-const GEmpty = { isEmpty: true } as G<unknown>;
-const GValue = <a>(value: a) => ({ isEmpty: false, value } as G<a>);
-interface TG extends Generic1 {
-  type: G<this['a']>;
-}
-const applicativeG = {
-  apply: ff => fa => (ff.isEmpty || fa.isEmpty ? GEmpty : GValue(ff.value(fa.value))),
-  map: f => fa => (fa.isEmpty ? GEmpty : GValue(f(fa.value))),
-  pure: GValue,
-} as Applicative1<TG>;
-const makeArbG = <a>(arb: jsc.Arbitrary<a>) => {
-  const arbG: jsc.Arbitrary<G<a>> = jsc.oneof([
-    jsc.constant(GEmpty as G<a>),
-    arb.smap(GValue, ga => (ga as any).value),
-  ]);
-  arbG.show = ga => (ga.isEmpty ? `GEmpty` : `GValue(${(arb.show || String)(ga.value)})`);
-  return arbG;
+const makeArbMaybe = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> => {
+  const arbMaybe = jsc.oneof([jsc.constant(Nothing), arb.smap(Just, ({ value }) => value)]);
+  arbMaybe.show = x => (x.isNothing ? 'Nothing' : `Just(${arb.show!(x.value)})`);
+  return arbMaybe;
 };
 
-const makeEqG = <a>(eq: Eq<a>) =>
-  ({
-    eq: gx => gy => (gx.isEmpty ? gy.isEmpty : !gy.isEmpty && eq.eq(gx.value)(gy.value)),
-  } as Eq<G<a>>);
+const makeArbEither = <a, b>(
+  arbA: jsc.Arbitrary<a>,
+  arbB: jsc.Arbitrary<b>
+): jsc.Arbitrary<Either<a, b>> => {
+  const arbEither = jsc.oneof([
+    arbA.smap(Left, ({ leftValue }) => leftValue),
+    arbB.smap(Right, ({ rightValue }) => rightValue),
+  ]);
+  arbEither.show = x =>
+    x.isLeft ? `Left(${arbA.show!(x.leftValue)})` : `Right(${arbB.show!(x.rightValue)})`;
+  return arbEither;
+};
 
-const t = <a>(fa: F<a>): G<a> => fa(() => GEmpty as G<a>, GValue);
+type Compose<f extends Generic2, g extends Generic1, a, b> = Type2<f, a, Type1<g, b>>;
 
-const Identity = <a>(x: a): a => x;
-interface TIdentity extends Generic1 {
-  type: this['a'];
+interface TCompose<f extends Generic2, g extends Generic1> extends Generic2 {
+  type: Compose<f, g, this['a'], this['b']>;
 }
-const applicativeIdentity = {
-  apply: f => x => f(x),
-  map: f => x => f(x),
-  pure: x => x,
-} as Applicative1<TIdentity>;
-
-type Compose<f extends Generic1, g extends Generic1, a> = Type1<f, Type1<g, a>>;
-
-const Compose = <f extends Generic1, g extends Generic1, a>(
-  fga: Type1<f, Type1<g, a>>
-): Compose<f, g, a> => fga;
-interface TCompose<f extends Generic1, g extends Generic1> extends Generic1 {
-  type: Compose<f, g, this['a']>;
-}
-const makeApplicativeCompose = <f extends Generic1, g extends Generic1>(
-  aF: Applicative1<f>,
+const makeApplicativeCompose = <f extends Generic2, g extends Generic1>(
+  aF: Applicative2<f>,
   aG: Applicative1<g>
 ) =>
   ({
-    apply: f => x => Compose(aF.apply(aF.map(aG.apply)(f))(x)),
-    map: f => x => Compose(aF.map(aG.map(f))(x)),
-    pure: a => Compose(aF.pure(aG.pure(a))),
-  } as Applicative1<TCompose<f, g>>);
+    apply: f => x => aF.apply(aF.map(aG.apply as any)(f))(x),
+    map: f => x => aF.map(aG.map(f))(x),
+    pure: a => aF.pure(aG.pure(a)),
+  } as Applicative2<TCompose<f, g>>);
 
 const laws = <t extends Generic1, a>(
   traversable: Traversable,
@@ -101,27 +60,34 @@ const laws = <t extends Generic1, a>(
   a: jsc.Arbitrary<a>,
   eq: Eq<Type1<t, a>>['eq']
 ) => {
-  const { foldMap, foldl, foldr, map, sequence, traverse } = traversable as Traversable1<t>;
+  const { sequence, traverse } = traversable as Traversable1<t>;
   return {
     naturality: (): void => {
-      const eqG = makeEqG({ eq } as Eq<Type1<t, a>>).eq;
-      return jsc.assertForall(jsc.fn(makeArbF(a)), ta, (f, ta) => {
-        const a = t(traverse(applicativeF)(f)(ta));
-        const b = traverse(applicativeG)(x => t(f(x)))(ta);
-        return eqG(a)(b);
+      const eqEither = makeEqEither(eqString, { eq } as Eq<Type1<t, a>>).eq;
+      return jsc.assertForall(jsc.string, jsc.fn(makeArbMaybe(a)), ta, (reason, f, ta) => {
+        const a = note(reason)(traverse(applicativeMaybe)(f)(ta));
+        const b = traverse(applicativeEither)(x => note(reason)(f(x)))(ta);
+        return eqEither(a)(b);
       });
     },
     identity: (): void => {
-      jsc.assertForall(ta, ta => eq(traverse(applicativeIdentity)(Identity)(ta))(Identity(ta)));
+      jsc.assertForall(ta, ta => eq(sequence(applicativeIdentity)(ta))(ta));
     },
     composition: (): void => {
-      const applicativeCompose = makeApplicativeCompose(applicativeF, applicativeG);
-      const eqCompose = makeEqF(makeEqG({ eq } as Eq<Type1<t, a>>)).eq;
-      return jsc.assertForall(jsc.fn(makeArbF(a)), jsc.fn(makeArbG(a)), ta, (f, g, ta) => {
-        const a = traverse(applicativeCompose)((x: a) => applicativeF.map(g)(f(x)))(ta);
-        const b = applicativeF.map(traverse(applicativeG)(g))(traverse(applicativeF)(f)(ta));
-        return eqCompose(a)(b);
-      });
+      const applicativeCompose = makeApplicativeCompose(applicativeEither, applicativeMaybe);
+      const eqCompose = makeEqEither(eqString, makeEqMaybe({ eq } as Eq<Type1<t, a>>)).eq;
+      return jsc.assertForall(
+        jsc.fn(makeArbEither(jsc.string, a)),
+        jsc.fn(makeArbMaybe(a)),
+        ta,
+        (f, g, ta) => {
+          const a = traverse(applicativeCompose)((x: a) => applicativeEither.map(g)(f(x)))(ta);
+          const b = applicativeEither.map(traverse(applicativeMaybe)(g))(
+            traverse(applicativeEither)(f)(ta)
+          );
+          return eqCompose(a)(b);
+        }
+      );
     },
   };
 };
