@@ -1,8 +1,8 @@
 import { Generic1, Type1 } from '../Generic';
 import { list } from '../List';
-import { ConsList, isCons, isSnoc, NEConsList, SnocList } from '../List/definitions';
+import { ConsList, isCons, isSnoc, SnocList } from '../List/definitions';
 import { Applicative1 } from '../typeclasses/Applicative';
-import { lift2, Apply1 } from '../typeclasses/Apply';
+import { Apply1, lift2 } from '../typeclasses/Apply';
 import { Bind1 } from '../typeclasses/Bind';
 import { Foldable1, foldMapDefaultL } from '../typeclasses/Foldable';
 import { Functor1 } from '../typeclasses/Functor';
@@ -67,27 +67,42 @@ export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterabl
 
 export const foldMap = foldMapDefaultL({ foldl } as Foldable1<TIterable>);
 
-export const traverse: Traversable1<TIterable>['traverse'] = (<m extends Generic1>(
-  applicative: Applicative1<m>
-) => <a, b>(f: (_: a) => Type1<m, b>) => (xs: Iterable<a>): Type1<m, Iterable<b>> => {
-  const cons: <a>(
-    fHead: Type1<m, a>
-  ) => (fTail: Type1<m, ConsList<a>>) => Type1<m, NEConsList<a>> = lift2(applicative)(list.cons);
-  const fys = foldr<a, Type1<m, ConsList<b>>>(a => cons(f(a)))(applicative.pure(list.nil))(xs);
-  return applicative.map<ConsList<b>, Iterable<b>>(list => {
-    return {
+export const traverse: Traversable1<TIterable>['traverse'] = (<m extends Generic1>({
+  apply,
+  map,
+  pure,
+}: Applicative1<m>) => <a, b>(f: (_: a) => Type1<m, b>) => (
+  as: Iterable<a>
+): Type1<m, Iterable<b>> => {
+  const liftedCons: <a>(
+    fx: Type1<m, a>
+  ) => (fxs: Type1<m, ConsList<a>>) => Type1<m, ConsList<a>> = lift2({
+    apply,
+    map,
+  } as Apply1<m>)(list.cons);
+  const liftedNil = pure(list.nil);
+  const ms = foldl<a, SnocList<Type1<m, b>>>(ys => x => list.snoc(ys)(f(x)))(list.nil)(as);
+  const mbs = list.foldr<Type1<m, b>, Type1<m, ConsList<b>>>(liftedCons)(liftedNil)(ms);
+  return map(
+    (bs: ConsList<b>): Iterable<b> => ({
       *[Symbol.iterator]() {
-        let current = list;
-        while (isCons(current)) {
-          yield current.head;
-          current = current.tail;
-        }
+        for (let b = bs; isCons(b); b = b.tail) yield b.head;
       },
-    };
-  })(fys);
+    })
+  )(mbs);
 }) as any;
 
 export const sequence = sequenceDefault({ traverse } as Traversable1<TIterable>);
+
+export const range = (start: number) => (end: number): Iterable<number> => {
+  if (!Number.isInteger(start) || !Number.isInteger(end))
+    throw new TypeError('Start and end must be integers.');
+  return {
+    *[Symbol.iterator]() {
+      for (let i = start; i <= end; i++) yield i;
+    },
+  };
+};
 
 export const fromArray = <a>(xs: ArrayLike<a>): Iterable<a> => ({
   *[Symbol.iterator]() {

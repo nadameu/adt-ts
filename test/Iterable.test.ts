@@ -14,6 +14,7 @@ import {
   monoidIterable,
   foldableIterable,
   traversableIterable,
+  applicativeIdentity,
 } from '../src';
 import { TIterable } from '../src/Iterable/internal';
 import { makeApplicative1Laws } from './laws/Applicative';
@@ -113,4 +114,12 @@ describe('Traversable', () => {
   test('Traversable - naturality', traversableLaws.naturality);
   test('Traversable - identity', traversableLaws.identity);
   test('Traversable - composition', traversableLaws.composition);
+});
+
+test('Stack safety', () => {
+  const iter = iterable.range(0)(1e6);
+  const trav = () => iterable.sequence(applicativeIdentity)(iter);
+  expect(() => {
+    for (const _ of trav());
+  }).not.toThrow();
 });
