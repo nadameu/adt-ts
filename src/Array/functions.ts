@@ -1,4 +1,5 @@
 import { Either } from '../Either/definitions';
+import { flip } from '../Fn/functions';
 import { Generic1, Type1 } from '../Generic';
 import { Maybe } from '../Maybe/definitions';
 import { Applicative, Applicative1 } from '../typeclasses/Applicative';
@@ -11,9 +12,8 @@ import { Functor1 } from '../typeclasses/Functor';
 import { Monoid1 } from '../typeclasses/Monoid';
 import { Semigroup1 } from '../typeclasses/Semigroup';
 import { sequenceDefault, Traversable1 } from '../typeclasses/Traversable';
-import { wiltDefault, Witherable1, witherDefault } from '../typeclasses/Witherable';
+import { Witherable1 } from '../typeclasses/Witherable';
 import { TArray } from './internal';
-import { flip } from '../Fn/functions';
 
 export const forEach = <a>(f: (_: a) => void) => (xs: ArrayLike<a>) => {
   const len = xs.length;
@@ -196,3 +196,14 @@ export const wilt: Witherable1<TArray>['wilt'] = (<m extends Generic1>(
   const g = flip((a: a) => lifted(f(a)));
   return foldl(g)(applicative.pure({ left: [], right: [] }))(as);
 }) as any;
+
+export const range = (start: number) => (end: number): number[] => {
+  if (!Number.isInteger(start) || !Number.isInteger(end))
+    throw new TypeError('Start and end must be integers.');
+  const xs = new Array(end - start + 1);
+  const past = end + 1;
+  for (let i = 0, x = start; x < past; i++, x++) {
+    xs[i] = x;
+  }
+  return xs;
+};
