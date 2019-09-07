@@ -1,18 +1,25 @@
+import { lift2 } from '../derivations';
 import { Either } from '../Either/definitions';
 import { flip } from '../Fn/functions';
 import { Anon, Generic1, Type1 } from '../Generic';
 import { Maybe } from '../Maybe/definitions';
-import { Applicative_1 } from '../typeclasses/Applicative';
-import { Apply_1, lift2 } from '../typeclasses/Apply';
-import { Bind_1 } from '../typeclasses/Bind';
-import { Compactable_1 } from '../typeclasses/Compactable';
-import { Filterable_1, filterDefault, partitionDefault } from '../typeclasses/Filterable';
-import { Foldable_1, foldMapDefaultR } from '../typeclasses/Foldable';
-import { Functor_1 } from '../typeclasses/Functor';
-import { Monoid_1 } from '../typeclasses/Monoid';
-import { Semigroup_1 } from '../typeclasses/Semigroup';
-import { sequenceDefault, Traversable_1 } from '../typeclasses/Traversable';
-import { Witherable_1 } from '../typeclasses/Witherable';
+import {
+  Applicative_1,
+  Apply_1,
+  Bind_1,
+  Compactable_1,
+  Filterable_1,
+  filterDefault,
+  Foldable_1,
+  foldMapDefaultR,
+  Functor_1,
+  Monoid_1,
+  partitionDefault,
+  Semigroup_1,
+  sequenceDefault,
+  Traversable_1,
+  Witherable_1,
+} from '../typeclasses';
 import { TArray } from './internal';
 
 export const forEach = <a>(f: (_: a) => void) => (xs: ArrayLike<a>) => {

@@ -1,6 +1,4 @@
-import { Group_0 } from '../typeclasses/Group';
-import { Monoid_0 } from '../typeclasses/Monoid';
-import { Semigroup_0 } from '../typeclasses/Semigroup';
+import { Group_0, Monoid_0, Semigroup_0 } from '../typeclasses';
 
 const append: Semigroup_0<number>['append'] = x => y => x + y;
 export const semigroupAdditive = { append } as Semigroup_0<number>;

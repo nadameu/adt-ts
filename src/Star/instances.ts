@@ -1,8 +1,14 @@
 import { Anon, Generic1, Generic2, GenericFn2, GenericFn3, Type1 } from '../Generic';
-import { Bind_1, Bind_2 } from '../typeclasses/Bind';
-import { Category_2, Category_3 } from '../typeclasses/Category';
-import { Monad_1, Monad_2 } from '../typeclasses/Monad';
-import { Semigroupoid_2, Semigroupoid_3 } from '../typeclasses/Semigroupoid';
+import {
+  Bind_1,
+  Bind_2,
+  Category_2,
+  Category_3,
+  Monad_1,
+  Monad_2,
+  Semigroupoid_2,
+  Semigroupoid_3,
+} from '../typeclasses';
 import { TStar1, TStar2 } from './internal';
 
 const makeCompose: {

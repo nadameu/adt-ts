@@ -13,6 +13,3 @@ export interface Right<b> {
   rightValue: b;
 }
 export const Right = <b>(rightValue: b): Right<b> => ({ isLeft: false, isRight: true, rightValue });
-
-export const either = <a, c>(f: (_: a) => c) => <b>(g: (_: b) => c) => (fab: Either<a, b>): c =>
-  fab.isLeft ? f(fab.leftValue) : g(fab.rightValue);

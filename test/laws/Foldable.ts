@@ -9,8 +9,7 @@ import {
   monoidEndo,
 } from '../../src';
 import { Anon, Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
-import { Eq } from '../../src/typeclasses/Eq';
-import { Foldable_1, Foldable_2 } from '../../src/typeclasses/Foldable';
+import { Eq, Foldable_1, Foldable_2 } from '../../src/typeclasses';
 
 const laws = <f extends Generic1, a>(
   foldable: Anon<Foldable_1<f>>,

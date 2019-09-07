@@ -1,14 +1,19 @@
+import { lift2 } from '../derivations';
 import { Anon, Generic1, Type1 } from '../Generic';
-import { list } from '../List';
 import { ConsList, isCons, isSnoc, SnocList } from '../List/definitions';
-import { Applicative_1 } from '../typeclasses/Applicative';
-import { Apply_1, lift2 } from '../typeclasses/Apply';
-import { Bind_1 } from '../typeclasses/Bind';
-import { Foldable_1, foldMapDefaultL } from '../typeclasses/Foldable';
-import { Functor_1 } from '../typeclasses/Functor';
-import { Monoid_1 } from '../typeclasses/Monoid';
-import { Semigroup_1 } from '../typeclasses/Semigroup';
-import { sequenceDefault, Traversable_1 } from '../typeclasses/Traversable';
+import * as list from '../List/functions';
+import {
+  Applicative_1,
+  Apply_1,
+  Bind_1,
+  Foldable_1,
+  foldMapDefaultL,
+  Functor_1,
+  Monoid_1,
+  Semigroup_1,
+  sequenceDefault,
+  Traversable_1,
+} from '../typeclasses';
 import { TIterable } from './internal';
 
 export const map: Functor_1<TIterable>['map'] = f => fa => ({

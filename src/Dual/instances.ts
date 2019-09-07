@@ -1,6 +1,12 @@
 import { Anon, Generic1, Generic2 } from '../Generic';
-import { Monoid_0, Monoid_1, Monoid_2 } from '../typeclasses/Monoid';
-import { Semigroup_0, Semigroup_1, Semigroup_2 } from '../typeclasses/Semigroup';
+import {
+  Monoid_0,
+  Monoid_1,
+  Monoid_2,
+  Semigroup_0,
+  Semigroup_1,
+  Semigroup_2,
+} from '../typeclasses';
 
 const makeAppend = <a>({ append }: Anon<Semigroup_0<a>>) => (x: a) => (y: a): a => append(y)(x);
 

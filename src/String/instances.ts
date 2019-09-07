@@ -1,5 +1,4 @@
-import { Eq } from '../typeclasses/Eq';
-import { Monoid_0 } from '../typeclasses/Monoid';
+import { Eq, Monoid_0 } from '../typeclasses';
 import { append, eq, mempty } from './functions';
 
 export const eqString = { eq } as Eq<string>;

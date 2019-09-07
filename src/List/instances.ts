@@ -1,17 +1,19 @@
-import { Alt_1 } from '../typeclasses/Alt';
-import { Alternative_1 } from '../typeclasses/Alternative';
-import { Applicative_1 } from '../typeclasses/Applicative';
-import { Apply_1 } from '../typeclasses/Apply';
-import { Bind_1 } from '../typeclasses/Bind';
-import { Eq } from '../typeclasses/Eq';
-import { Foldable_1 } from '../typeclasses/Foldable';
-import { Foldable1_1 } from '../typeclasses/Foldable1';
-import { Functor_1 } from '../typeclasses/Functor';
-import { Monad_1 } from '../typeclasses/Monad';
-import { Monoid_1 } from '../typeclasses/Monoid';
-import { Plus_1 } from '../typeclasses/Plus';
-import { Semigroup_1 } from '../typeclasses/Semigroup';
-import { Traversable_1 } from '../typeclasses/Traversable';
+import {
+  Alternative_1,
+  Alt_1,
+  Applicative_1,
+  Apply_1,
+  Bind_1,
+  Eq,
+  Foldable1_1,
+  Foldable_1,
+  Functor_1,
+  Monad_1,
+  Monoid_1,
+  Plus_1,
+  Semigroup_1,
+  Traversable_1,
+} from '../typeclasses';
 import { List, ListTag, NEList } from './definitions';
 import {
   alt,

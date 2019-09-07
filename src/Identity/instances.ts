@@ -1,9 +1,5 @@
-import { Functor_1 } from '../typeclasses/Functor';
+import { Applicative_1, Apply_1, Bind_1, Functor_1, Monad_1 } from '../typeclasses';
 import { TIdentity } from './internal';
-import { Apply_1 } from '../typeclasses/Apply';
-import { Applicative_1 } from '../typeclasses/Applicative';
-import { Bind_1 } from '../typeclasses/Bind';
-import { Monad_1 } from '../typeclasses/Monad';
 
 const map = <a, b>(f: (_: a) => b) => (a: a) => f(a);
 const pure = <a>(a: a) => a;

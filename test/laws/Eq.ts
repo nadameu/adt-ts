@@ -1,7 +1,7 @@
 import * as jsc from 'jsverify';
 import { eqNumber, eqString } from '../../src';
 import { Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
-import { Eq } from '../../src/typeclasses/Eq';
+import { Eq } from '../../src/typeclasses';
 
 const laws = <a>(eq0: Eq<a>, a: jsc.Arbitrary<a>) => {
   const { eq } = eq0 as Eq<a>;

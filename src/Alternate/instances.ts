@@ -1,8 +1,14 @@
 import { Anon, Generic1, Generic2 } from '../Generic';
-import { Alt_1, Alt_2 } from '../typeclasses/Alt';
-import { Monoid_1, Monoid_2 } from '../typeclasses/Monoid';
-import { Plus_1, Plus_2 } from '../typeclasses/Plus';
-import { Semigroup_1, Semigroup_2 } from '../typeclasses/Semigroup';
+import {
+  Alt_1,
+  Alt_2,
+  Monoid_1,
+  Monoid_2,
+  Plus_1,
+  Plus_2,
+  Semigroup_1,
+  Semigroup_2,
+} from '../typeclasses';
 
 export const makeSemigroupAlternate: {
   <f extends Generic1>(alt: Alt_1<f>): Semigroup_1<f>;

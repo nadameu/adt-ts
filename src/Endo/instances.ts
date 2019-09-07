@@ -1,6 +1,5 @@
 import { compose } from '../Fn/functions';
-import { Monoid_1 } from '../typeclasses/Monoid';
-import { Semigroup_1 } from '../typeclasses/Semigroup';
+import { Monoid_1, Semigroup_1 } from '../typeclasses';
 import { TEndo } from './internal';
 
 export const semigroupEndo = { append: compose } as Semigroup_1<TEndo>;

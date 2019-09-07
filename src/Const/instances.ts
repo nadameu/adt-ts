@@ -1,9 +1,13 @@
 import { Anon, Generic1 } from '../Generic';
-import { Applicative_2 } from '../typeclasses/Applicative';
-import { Apply_2 } from '../typeclasses/Apply';
-import { Functor_2 } from '../typeclasses/Functor';
-import { Monoid_0, Monoid_1 } from '../typeclasses/Monoid';
-import { Semigroup_0, Semigroup_1 } from '../typeclasses/Semigroup';
+import {
+  Applicative_2,
+  Apply_2,
+  Functor_2,
+  Monoid_0,
+  Monoid_1,
+  Semigroup_0,
+  Semigroup_1,
+} from '../typeclasses';
 import { TConst, TConst0, TConst1 } from './internal';
 
 const map = <a, b>(_: (_: a) => b) => <c>(c: c) => c;

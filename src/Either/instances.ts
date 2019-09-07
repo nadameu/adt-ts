@@ -1,14 +1,16 @@
-import { Alt_2 } from '../typeclasses/Alt';
-import { Applicative_2 } from '../typeclasses/Applicative';
-import { Apply_2 } from '../typeclasses/Apply';
-import { Bind_2 } from '../typeclasses/Bind';
-import { Eq } from '../typeclasses/Eq';
-import { Foldable_2 } from '../typeclasses/Foldable';
-import { Functor_2 } from '../typeclasses/Functor';
-import { Monad_2 } from '../typeclasses/Monad';
-import { MonadError_2 } from '../typeclasses/MonadError';
-import { MonadThrow_2 } from '../typeclasses/MonadThrow';
-import { Traversable_2 } from '../typeclasses/Traversable';
+import {
+  Alt_2,
+  Applicative_2,
+  Apply_2,
+  Bind_2,
+  Eq,
+  Foldable_2,
+  Functor_2,
+  MonadError_2,
+  MonadThrow_2,
+  Monad_2,
+  Traversable_2,
+} from '../typeclasses';
 import { Either } from './definitions';
 import {
   alt,
@@ -45,6 +47,11 @@ export const monadErrorEither = { apply, bind, catchError, map, pure, throwError
 >;
 export const foldableEither = { foldl, foldMap, foldr } as Foldable_2<TEither>;
 export const altEither = { map, alt } as Alt_2<TEither>;
-export const traversableEither = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable_2<
-  TEither
->;
+export const traversableEither = {
+  foldMap,
+  foldl,
+  foldr,
+  map,
+  sequence,
+  traverse,
+} as Traversable_2<TEither>;

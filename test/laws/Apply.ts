@@ -1,8 +1,7 @@
 import * as jsc from 'jsverify';
 import { compose, eqNumber, eqString } from '../../src';
 import { Anon, Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
-import { Apply_1, Apply_2 } from '../../src/typeclasses/Apply';
-import { Eq } from '../../src/typeclasses/Eq';
+import { Apply_1, Apply_2, Eq } from '../../src/typeclasses';
 
 const laws = <f extends Generic1, a>(
   apply0: Anon<Apply_1<f>>,

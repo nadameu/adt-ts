@@ -1,5 +1,5 @@
 import { Either } from '../Either/definitions';
-import { hush, note, swap } from '../Either/functions';
+import { hush, note, swap } from '../Either/functions/helpers';
 import { compose } from '../Fn/functions';
 import { Generic1, Identified1, Type1 } from '../Generic';
 import { Maybe } from '../Maybe/definitions';

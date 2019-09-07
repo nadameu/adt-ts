@@ -1,8 +1,7 @@
 import * as jsc from 'jsverify';
 import { eqNumber } from '../../src';
 import { Anon, Generic1, Type1 } from '../../src/Generic';
-import { Alternative_1 } from '../../src/typeclasses/Alternative';
-import { Eq } from '../../src/typeclasses/Eq';
+import { Alternative_1, Eq } from '../../src/typeclasses';
 import { rightDistributive } from './helpers';
 
 const laws = <f extends Generic1, a>(

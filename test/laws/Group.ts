@@ -1,6 +1,5 @@
 import * as jsc from 'jsverify';
-import { Eq } from '../../src/typeclasses/Eq';
-import { Group_0 } from '../../src/typeclasses/Group';
+import { Eq, Group_0 } from '../../src/typeclasses';
 
 const laws = <a>(group: Group_0<a>, a: jsc.Arbitrary<a>, eq: Eq<a>['eq']) => {
   const { append, ginverse, mempty } = group;

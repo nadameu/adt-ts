@@ -1,13 +1,20 @@
+import { lift2 } from '../derivations';
 import { flip } from '../Fn/functions';
 import { Anon, Generic1, Type1 } from '../Generic';
-import { Applicative_1 } from '../typeclasses/Applicative';
-import { lift2 } from '../typeclasses/Apply';
-import { applyDefault, BindMap_1, Bind_1 } from '../typeclasses/Bind';
-import { Foldable_1, foldMapDefaultL } from '../typeclasses/Foldable';
-import { Functor_1 } from '../typeclasses/Functor';
-import { Monoid_0, Monoid_1 } from '../typeclasses/Monoid';
-import { Semigroup_1 } from '../typeclasses/Semigroup';
-import { sequenceDefault, Traversable_1 } from '../typeclasses/Traversable';
+import {
+  Applicative_1,
+  applyDefault,
+  BindMap_1,
+  Bind_1,
+  Foldable_1,
+  foldMapDefaultL,
+  Functor_1,
+  Monoid_0,
+  Monoid_1,
+  Semigroup_1,
+  sequenceDefault,
+  Traversable_1,
+} from '../typeclasses';
 import { ConsResult, LazyCons, LazyList, LazyNil, NilResult } from './definitions';
 import { TLazyList } from './internal';
 

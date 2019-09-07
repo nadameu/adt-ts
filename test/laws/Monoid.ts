@@ -1,8 +1,7 @@
 import * as jsc from 'jsverify';
 import { eqNumber, eqString } from '../../src';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
-import { Eq } from '../../src/typeclasses/Eq';
-import { Monoid_0, Monoid_1, Monoid_2 } from '../../src/typeclasses/Monoid';
+import { Eq, Monoid_0, Monoid_1, Monoid_2 } from '../../src/typeclasses';
 import { leftIdentity, rightIdentity } from './helpers';
 
 const laws = <a>(monoid: Anon<Monoid_0<a>>, a: jsc.Arbitrary<a>, eq: Eq<a>['eq']) => {

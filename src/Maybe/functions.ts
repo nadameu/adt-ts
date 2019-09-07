@@ -1,21 +1,32 @@
-import { Either, either } from '../Either/definitions';
+import { Either } from '../Either/definitions';
+import { either } from '../Either/functions';
 import { Anon, Generic1, Type1 } from '../Generic';
-import { Alt_1 } from '../typeclasses/Alt';
-import { Applicative_1 } from '../typeclasses/Applicative';
-import { applyDefault, Bind_1 } from '../typeclasses/Bind';
-import { Compactable_1 } from '../typeclasses/Compactable';
-import { Filterable_1, filterDefault, partitionDefault } from '../typeclasses/Filterable';
-import { Foldable_1, foldlDefault, foldrDefault } from '../typeclasses/Foldable';
-import { liftM1, Monad_1 } from '../typeclasses/Monad';
-import { MonadError_1 } from '../typeclasses/MonadError';
-import { MonadThrow_1 } from '../typeclasses/MonadThrow';
-import { Monoid_0, Monoid_1 } from '../typeclasses/Monoid';
-import { Plus_1 } from '../typeclasses/Plus';
-import { Traversable_1 } from '../typeclasses/Traversable';
-import { Just, Maybe, maybe, Nothing } from './definitions';
+import {
+  Alt_1,
+  Applicative_1,
+  applyDefault,
+  Bind_1,
+  Compactable_1,
+  Filterable_1,
+  filterDefault,
+  Foldable_1,
+  foldlDefault,
+  foldrDefault,
+  liftM1,
+  MonadError_1,
+  MonadThrow_1,
+  Monad_1,
+  Monoid_0,
+  Monoid_1,
+  partitionDefault,
+  Plus_1,
+  Traversable_1,
+} from '../typeclasses';
+import { Just, Maybe, Nothing } from './definitions';
 import { TMaybe } from './internal';
 
-export { maybe };
+export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
+  fa.isNothing ? b : f(fa.value);
 
 export const bind: Bind_1<TMaybe>['bind'] = maybe<Maybe<any>>(Nothing);
 

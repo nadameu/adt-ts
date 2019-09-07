@@ -4,6 +4,7 @@ import {
   applicativeIdentity,
   applicativeMaybe,
   Either,
+  either,
   eqNumber,
   eqString,
   Just,
@@ -14,11 +15,8 @@ import {
   Nothing,
   Right,
 } from '../../src';
-import { note } from '../../src/Either/functions';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
-import { Applicative_1, Applicative_2 } from '../../src/typeclasses/Applicative';
-import { Eq } from '../../src/typeclasses/Eq';
-import { Traversable_1 } from '../../src/typeclasses/Traversable';
+import { Applicative_1, Applicative_2, Eq, Traversable_1 } from '../../src/typeclasses';
 
 const makeArbMaybe = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> => {
   const arbMaybe = jsc.oneof([jsc.constant(Nothing), arb.smap(Just, ({ value }) => value)]);
@@ -65,8 +63,8 @@ const laws = <t extends Generic1, a>(
     naturality: (): void => {
       const eqEither = makeEqEither(eqString, { eq } as Eq<Type1<t, a>>).eq;
       return jsc.assertForall(jsc.string, jsc.fn(makeArbMaybe(a)), ta, (reason, f, ta) => {
-        const a = note(reason)(traverse(applicativeMaybe)(f)(ta));
-        const b = traverse(applicativeEither)(x => note(reason)(f(x)))(ta);
+        const a = either.note(reason)(traverse(applicativeMaybe)(f)(ta));
+        const b = traverse(applicativeEither)(x => either.note(reason)(f(x)))(ta);
         return eqEither(a)(b);
       });
     },

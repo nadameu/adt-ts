@@ -1,13 +1,21 @@
+import { lift2 } from '../../derivations';
 import { Either, Left, Right } from '../../Either/definitions';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../../Generic';
-import { Applicative_1 } from '../../typeclasses/Applicative';
-import { Apply_1, Apply_2, lift2 } from '../../typeclasses/Apply';
-import { Foldable_1 } from '../../typeclasses/Foldable';
-import { fold1Default, Foldable1_1 } from '../../typeclasses/Foldable1';
-import { ap, Monad_1 } from '../../typeclasses/Monad';
-import { Monoid_0 } from '../../typeclasses/Monoid';
-import { Semigroup_0, Semigroup_1 } from '../../typeclasses/Semigroup';
-import { sequenceDefault, Traversable_1 } from '../../typeclasses/Traversable';
+import {
+  ap,
+  Applicative_1,
+  Apply_1,
+  Apply_2,
+  fold1Default,
+  Foldable1_1,
+  Foldable_1,
+  Monad_1,
+  Monoid_0,
+  Semigroup_0,
+  Semigroup_1,
+  sequenceDefault,
+  Traversable_1,
+} from '../../typeclasses';
 import {
   Append,
   Cons,

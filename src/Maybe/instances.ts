@@ -1,21 +1,25 @@
 import { Anon, Generic1 } from '../Generic';
-import { Alt_1 } from '../typeclasses/Alt';
-import { Alternative_1 } from '../typeclasses/Alternative';
-import { Applicative_1 } from '../typeclasses/Applicative';
-import { Apply_1 } from '../typeclasses/Apply';
-import { Bind_1 } from '../typeclasses/Bind';
-import { Compactable_1 } from '../typeclasses/Compactable';
-import { Eq } from '../typeclasses/Eq';
-import { Filterable_1 } from '../typeclasses/Filterable';
-import { Foldable_1 } from '../typeclasses/Foldable';
-import { Functor_1 } from '../typeclasses/Functor';
-import { Monad_1 } from '../typeclasses/Monad';
-import { MonadError_1 } from '../typeclasses/MonadError';
-import { MonadThrow_1 } from '../typeclasses/MonadThrow';
-import { Monoid_0, Monoid_1 } from '../typeclasses/Monoid';
-import { Plus_1 } from '../typeclasses/Plus';
-import { Semigroup_0, Semigroup_1 } from '../typeclasses/Semigroup';
-import { Traversable_1 } from '../typeclasses/Traversable';
+import {
+  Alternative_1,
+  Alt_1,
+  Applicative_1,
+  Apply_1,
+  Bind_1,
+  Compactable_1,
+  Eq,
+  Filterable_1,
+  Foldable_1,
+  Functor_1,
+  MonadError_1,
+  MonadThrow_1,
+  Monad_1,
+  Monoid_0,
+  Monoid_1,
+  Plus_1,
+  Semigroup_0,
+  Semigroup_1,
+  Traversable_1,
+} from '../typeclasses';
 import { Just, Maybe } from './definitions';
 import {
   alt,

@@ -1,5 +1,4 @@
-import { Category_2 } from '../typeclasses/Category';
-import { Semigroupoid_2 } from '../typeclasses/Semigroupoid';
+import { Category_2, Semigroupoid_2 } from '../typeclasses';
 import { compose, identity } from './functions';
 import { TFn } from './internal';
 
