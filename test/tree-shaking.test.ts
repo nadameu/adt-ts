@@ -20,9 +20,9 @@ test('Simple', async () => {
     const Just = (value) => ({ isJust: true, isNothing: false, value });
     const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
 
-    const applyDefault = (({ bind, map }) => flip((fa) => bind(f => map(f)(fa))));
+    const applyDefault = ({ bind, map }) => flip((fa) => bind(f => map(f)(fa)));
 
-    const liftM1 = (({ bind, pure, }) => (f) => bind(compose(pure)(f)));
+    const liftM1 = ({ bind, pure, }) => (f) => bind(compose(pure)(f));
 
     const bind = maybe(Nothing);
     const pure = Just;
