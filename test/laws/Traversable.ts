@@ -15,10 +15,10 @@ import {
   Right,
 } from '../../src';
 import { note } from '../../src/Either/functions';
-import { Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
+import { Anon, Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
 import { Applicative_1, Applicative_2 } from '../../src/typeclasses/Applicative';
 import { Eq } from '../../src/typeclasses/Eq';
-import { Traversable, Traversable_1 } from '../../src/typeclasses/Traversable';
+import { Traversable_1 } from '../../src/typeclasses/Traversable';
 
 const makeArbMaybe = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> => {
   const arbMaybe = jsc.oneof([jsc.constant(Nothing), arb.smap(Just, ({ value }) => value)]);
@@ -55,12 +55,12 @@ const makeApplicativeCompose = <f extends Generic2, g extends Generic1>(
   } as Applicative_2<TCompose<f, g>>);
 
 const laws = <t extends Generic1, a>(
-  traversable: Traversable,
+  traversable: Anon<Traversable_1<t>>,
   ta: jsc.Arbitrary<Type1<t, a>>,
   a: jsc.Arbitrary<a>,
   eq: Eq<Type1<t, a>>['eq']
 ) => {
-  const { sequence, traverse } = traversable as Traversable_1<t>;
+  const { sequence, traverse } = traversable;
   return {
     naturality: (): void => {
       const eqEither = makeEqEither(eqString, { eq } as Eq<Type1<t, a>>).eq;
@@ -95,4 +95,4 @@ const laws = <t extends Generic1, a>(
 export const makeTraversableLaws = <t extends Generic1>(traversable: Traversable_1<t>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<t, a>>
 ) => (makeArb: <a>(_: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<t, a>>) =>
-  laws<t, number>(traversable as Traversable, makeArb(jsc.number), jsc.number, makeEq(eqNumber).eq);
+  laws<t, number>(traversable, makeArb(jsc.number), jsc.number, makeEq(eqNumber).eq);

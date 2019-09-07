@@ -1,5 +1,5 @@
 import { makeApplicativeConst } from '../Const/instances';
-import { composeN, identity } from '../Fn/functions';
+import { compose, identity } from '../Fn/functions';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
 import { Alternative_1, Alternative_2 } from './Alternative';
@@ -130,7 +130,7 @@ export const traverseDefaultFoldableMonoidApplicative: {
   foldMap({
     append: lift2({ apply, map } as Apply_1<g>)(append),
     mempty: () => applicPure(mempty()),
-  } as Monoid_0<Type1<g, Type1<f, b>>>)(composeN(map(pure), f));
+  } as Monoid_0<Type1<g, Type1<f, b>>>)(compose<Type1<g, b>, Type1<g, Type1<f, b>>>(map(pure))(f));
 
 export type FoldableAlternative_1<f extends Generic1> = Pick<
   Foldable_1<f> & Alternative_1<f>,
