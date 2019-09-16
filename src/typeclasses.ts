@@ -110,6 +110,7 @@ export {
   wiltDefault,
   WiltOnly_1,
   Witherable_1,
+  witherByWilt,
   witherDefault,
   WitherOnly_1,
 } from './typeclasses/Witherable';

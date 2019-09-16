@@ -1,4 +1,5 @@
 import { Either } from '../Either/definitions';
+import { note } from '../Either/functions';
 import { identity } from '../Fn/functions';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
@@ -67,6 +68,15 @@ export const witherDefault = <t extends Generic1>({
   applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, Maybe<b>>) => (ta: Type1<t, a>) =>
   applicative.map(compact)(traverse(applicative as Applicative_1<m>)(f)(ta));
+
+export const witherByWilt = <t extends Generic1>({
+  wilt,
+}: WiltOnly_1<t>): Witherable_1<t>['wither'] => <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
+) => <a, b>(f: (_: a) => Type1<m, Maybe<b>>) => (ta: Type1<t, a>) =>
+  applicative.map<{ left: Maybe<void>; right: Maybe<b> }, Maybe<b>>(x => x.right)(
+    wilt(applicative as Applicative_1<m>)((a: a) => applicative.map(note(undefined))(f(a)))(ta)
+  );
 
 export const partitionMapByWilt = <t extends Generic1>({
   wilt,
