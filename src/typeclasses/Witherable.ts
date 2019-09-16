@@ -1,5 +1,5 @@
 import { Either } from '../Either/definitions';
-import { note } from '../Either/functions';
+import { note } from '../Either/functions/helpers';
 import { identity } from '../Fn/functions';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
