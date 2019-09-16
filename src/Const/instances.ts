@@ -1,3 +1,4 @@
+import { constant, identity } from '../Fn/functions';
 import { Anon, Generic1 } from '../Generic';
 import {
   Applicative_2,
@@ -10,23 +11,23 @@ import {
 } from '../typeclasses';
 import { TConst, TConst0, TConst1 } from './internal';
 
-const map = <a, b>(_: (_: a) => b) => <c>(c: c) => c;
+const map = constant(identity);
 
 export const functorConst = { map } as Functor_2<TConst>;
 export const makeApplyConst: {
   <f extends Generic1>(semigroup: Semigroup_1<f>): Apply_2<TConst1<f>>;
   <m>(semigroup: Semigroup_0<m>): Apply_2<TConst0<m>>;
-} = <m>(semigroup: Anon<Semigroup_0<m>>) =>
+} = <m>({ append }: Anon<Semigroup_0<m>>) =>
   ({
-    apply: semigroup.append,
+    apply: append,
     map,
   } as Apply_2<TConst0<unknown>>);
 export const makeApplicativeConst: {
   <f extends Generic1>(monoid: Monoid_1<f>): Applicative_2<TConst1<f>>;
   <m>(monoid: Monoid_0<m>): Applicative_2<TConst0<m>>;
-} = <m>(monoid: Anon<Monoid_0<m>>) =>
+} = <m>({ append, mempty }: Anon<Monoid_0<m>>) =>
   ({
-    apply: monoid.append,
+    apply: append,
     map,
-    pure: _ => monoid.mempty(),
+    pure: _ => mempty(),
   } as Applicative_2<TConst0<unknown>>);
