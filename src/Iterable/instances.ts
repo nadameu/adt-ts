@@ -4,7 +4,9 @@ import {
   Applicative_1,
   Apply_1,
   Bind_1,
+  Compactable_1,
   Eq,
+  Filterable_1,
   Foldable_1,
   Functor_1,
   Monad_1,
@@ -12,22 +14,31 @@ import {
   Plus_1,
   Semigroup_1,
   Traversable_1,
+  Witherable_1,
 } from '../typeclasses';
 import {
   alt,
   append,
   apply,
   bind,
+  compact,
   empty,
+  filter,
+  filterMap,
   foldl,
   foldMap,
   foldr,
   map,
   mempty,
+  partition,
+  partitionMap,
   pure,
+  separate,
   sequence,
   traverse,
-} from './functions';
+  wilt,
+  wither,
+} from './functions/original';
 import { TIterable } from './internal';
 
 export const makeEqIterable = <a>(eq: Eq<a>) =>
@@ -67,3 +78,29 @@ export const traversableIterable = {
   sequence,
   traverse,
 } as Traversable_1<TIterable>;
+
+export const compactableIterable = { compact, separate } as Compactable_1<TIterable>;
+export const filterableIterable = {
+  compact,
+  filter,
+  filterMap,
+  map,
+  partition,
+  partitionMap,
+} as Filterable_1<TIterable>;
+export const witherableIterable = {
+  compact,
+  filter,
+  filterMap,
+  foldMap,
+  foldl,
+  foldr,
+  map,
+  partition,
+  partitionMap,
+  separate,
+  sequence,
+  traverse,
+  wilt,
+  wither,
+} as Witherable_1<TIterable>;
