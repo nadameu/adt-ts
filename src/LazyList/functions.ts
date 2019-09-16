@@ -4,7 +4,6 @@ import { Anon, Generic1, Type1 } from '../Generic';
 import {
   Applicative_1,
   applyDefault,
-  BindMap_1,
   Bind_1,
   Foldable_1,
   foldMapDefaultL,
@@ -15,6 +14,7 @@ import {
   sequenceDefault,
   Traversable_1,
 } from '../typeclasses';
+import { BindOnly_1 } from '../typeclasses/Bind';
 import { ConsResult, LazyCons, LazyList, LazyNil, NilResult } from './definitions';
 import { TLazyList } from './internal';
 
@@ -90,7 +90,7 @@ export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b) =>
       );
   })(0);
 
-export const apply = applyDefault({ bind, map } as BindMap_1<TLazyList>);
+export const apply = applyDefault({ bind, map } as Functor_1<TLazyList> & BindOnly_1<TLazyList>);
 
 export const singleton = <a>(a: a) => cons(a)(nil);
 
