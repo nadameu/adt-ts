@@ -4,13 +4,20 @@ import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
 import { Just, Maybe } from '../Maybe/definitions';
 import { Applicative_1, Applicative_2 } from './Applicative';
+import { CompactOnly_1, SeparateOnly_1 } from './Compactable';
 import { Filterable_1 } from './Filterable';
-import { Traversable_1 } from './Traversable';
+import { Traversable_1, TraverseOnly_1 } from './Traversable';
 
 export interface Witherable_1<t extends Generic1> extends Filterable_1<t>, Traversable_1<t> {
   wilt: Helpers1<t>['wilt'];
   wither: Helpers1<t>['wither'];
 }
+
+export interface WiltOnly_1<t extends Generic1>
+  extends Pick<Witherable_1<t>, 'Generic1Type' | 'wilt'> {}
+
+export interface WitherOnly_1<t extends Generic1>
+  extends Pick<Witherable_1<t>, 'Generic1Type' | 'wither'> {}
 
 interface Helpers1<t extends Generic1> {
   wilt: Helper1Applicative<t>['wilt'];
@@ -48,9 +55,7 @@ type Helper1Applicative<t extends Generic1> = {
 export const wiltDefault = <t extends Generic1>({
   separate,
   traverse,
-}: Pick<Witherable_1<t>, 'Generic1Type' | 'separate' | 'traverse'>): Witherable_1<t>['wilt'] => <
-  m extends Generic1
->(
+}: SeparateOnly_1<t> & TraverseOnly_1<t>): Witherable_1<t>['wilt'] => <m extends Generic1>(
   applicative: Anon<Applicative_1<m>>
 ) => <a, b, c>(f: (_: a) => Type1<m, Either<b, c>>) => (ta: Type1<t, a>) =>
   applicative.map(separate)(traverse(applicative as Applicative_1<m>)(f)(ta));
@@ -58,38 +63,34 @@ export const wiltDefault = <t extends Generic1>({
 export const witherDefault = <t extends Generic1>({
   compact,
   traverse,
-}: Pick<Witherable_1<t>, 'Generic1Type' | 'compact' | 'traverse'>): Witherable_1<t>['wither'] => <
-  m extends Generic1
->(
+}: CompactOnly_1<t> & TraverseOnly_1<t>): Witherable_1<t>['wither'] => <m extends Generic1>(
   applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, Maybe<b>>) => (ta: Type1<t, a>) =>
   applicative.map(compact)(traverse(applicative as Applicative_1<m>)(f)(ta));
 
 export const partitionMapByWilt = <t extends Generic1>({
   wilt,
-}: Pick<Witherable_1<t>, 'Generic1Type' | 'wilt'>): Witherable_1<t>['partitionMap'] =>
-  wilt(applicativeIdentity);
+}: WiltOnly_1<t>): Witherable_1<t>['partitionMap'] => wilt(applicativeIdentity);
 
 export const filterMapByWither = <t extends Generic1>({
   wither,
-}: Pick<Witherable_1<t>, 'Generic1Type' | 'wither'>): Witherable_1<t>['filterMap'] =>
-  wither(applicativeIdentity);
+}: WitherOnly_1<t>): Witherable_1<t>['filterMap'] => wither(applicativeIdentity);
 
 export const traverseByWither = <t extends Generic1>({
   wither,
-}: Pick<Witherable_1<t>, 'Generic1Type' | 'wither'>): Witherable_1<t>['traverse'] => <
-  m extends Generic1
->(
+}: WitherOnly_1<t>): Witherable_1<t>['traverse'] => <m extends Generic1>(
   applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, b>) =>
   wither(applicative as Applicative_1<m>)<a, b>(x => applicative.map(Just)(f(x)));
 
-export const wilted = <t extends Generic1>(
-  witherable: Witherable_1<t>
-): Helper1Applicative<t>['wilted'] => <m extends Generic1>(applicative: Anon<Applicative_1<m>>) =>
-  witherable.wilt(applicative as Applicative_1<m>)<Type1<m, Either<any, any>>, any, any>(identity);
+export const wilted = <t extends Generic1>({
+  wilt,
+}: WiltOnly_1<t>): Helper1Applicative<t>['wilted'] => <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
+) => wilt(applicative as Applicative_1<m>)<Type1<m, Either<any, any>>, any, any>(identity);
 
-export const withered = <t extends Generic1>(
-  witherable: Witherable_1<t>
-): Helper1Applicative<t>['withered'] => <m extends Generic1>(applicative: Anon<Applicative_1<m>>) =>
-  witherable.wither(applicative as Applicative_1<m>)<Type1<m, Maybe<any>>, any>(identity);
+export const withered = <t extends Generic1>({
+  wither,
+}: WitherOnly_1<t>): Helper1Applicative<t>['withered'] => <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
+) => wither(applicative as Applicative_1<m>)<Type1<m, Maybe<any>>, any>(identity);

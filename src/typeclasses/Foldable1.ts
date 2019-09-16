@@ -1,5 +1,5 @@
 import { identity } from '../Fn/functions';
-import { Generic1, Generic2, Type1, Type2, Anon } from '../Generic';
+import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { Foldable_1, Foldable_2 } from './Foldable';
 import { Functor_1, Functor_2 } from './Functor';
 import { Semigroup_0, Semigroup_1 } from './Semigroup';
@@ -13,6 +13,18 @@ export interface Foldable1_2<f extends Generic2> extends Foldable_2<f> {
   foldMap1: Helpers2<f>['foldMap1'];
   fold1: Helpers2<f>['fold1'];
 }
+
+export interface FoldMap1Only_1<f extends Generic1>
+  extends Pick<Foldable1_1<f>, 'Generic1Type' | 'foldMap1'> {}
+
+export interface FoldMap1Only_2<f extends Generic2>
+  extends Pick<Foldable1_2<f>, 'Generic2Type' | 'foldMap1'> {}
+
+export interface Fold1Only_1<f extends Generic1>
+  extends Pick<Foldable1_1<f>, 'Generic1Type' | 'fold1'> {}
+
+export interface Fold1Only_2<f extends Generic2>
+  extends Pick<Foldable1_2<f>, 'Generic2Type' | 'fold1'> {}
 
 interface Helpers1<f extends Generic1> {
   foldMap1: Helper1Semigroup<f>['foldMap1'];
@@ -69,15 +81,6 @@ type HelperSemigroup = {
   };
 };
 
-type Foldable1Functor_1<f extends Generic1> = Pick<
-  Foldable1_1<f> & Functor_1<f>,
-  'Generic1Type' | 'fold1' | 'map'
->;
-type Foldable1Functor_2<f extends Generic2> = Pick<
-  Foldable1_2<f> & Functor_2<f>,
-  'Generic2Type' | 'fold1' | 'map'
->;
-
 export const fold1Default: PartialHelper<'foldMap1'>['fold1'] = <f extends Generic1>({
   foldMap1,
 }: Anon<Foldable1_1<f>, 'foldMap1'>) => <m>(
@@ -85,8 +88,10 @@ export const fold1Default: PartialHelper<'foldMap1'>['fold1'] = <f extends Gener
 ): ((fm: Type1<f, m>) => m) => foldMap1(semigroup as Semigroup_0<m>)(identity);
 
 export const foldMap1Default: {
-  <f extends Generic1>({ fold1, map }: Foldable1Functor_1<f>): Foldable1_1<f>['foldMap1'];
-  <f extends Generic2>({ fold1, map }: Foldable1Functor_2<f>): Foldable1_2<f>['foldMap1'];
-} = <f extends Generic1>({ fold1, map }: Anon<Foldable1Functor_1<f>, 'fold1' | 'map'>) => <m>(
+  <f extends Generic1>({ fold1, map }: Fold1Only_1<f> & Functor_1<f>): Foldable1_1<f>['foldMap1'];
+  <f extends Generic2>({ fold1, map }: Fold1Only_2<f> & Functor_2<f>): Foldable1_2<f>['foldMap1'];
+} = <f extends Generic1>({ fold1, map }: Anon<Fold1Only_1<f> & Functor_1<f>, 'fold1' | 'map'>) => <
+  m
+>(
   semigroup: Anon<Semigroup_0<m>>
 ) => <a>(f: (_: a) => m) => (fa: Type1<f, a>): m => fold1(semigroup as Semigroup_0<m>)(map(f)(fa));

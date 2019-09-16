@@ -12,3 +12,9 @@ export interface Category_3<c extends GenericFn3> extends Semigroupoid_3<c> {
     _: TypeFn3<c, a, b, b> extends (_: infer b) => any ? b : never
   ) => TypeFn3<c, a, b, b> extends (_: any) => infer b ? b : never;
 }
+
+export interface IdentityOnly_2<c extends GenericFn2>
+  extends Pick<Category_2<c>, 'GenericFn2Type' | 'identity'> {}
+
+export interface IdentityOnly_3<c extends GenericFn3>
+  extends Pick<Category_3<c>, 'GenericFn3Type' | 'identity'> {}

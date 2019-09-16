@@ -3,11 +3,13 @@ import { compose, identity } from '../Fn/functions';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
 import { Alternative_1, Alternative_2 } from './Alternative';
-import { Applicative_1, Applicative_2 } from './Applicative';
+import { Applicative_1, Applicative_2, PureOnly_1, PureOnly_2 } from './Applicative';
 import { Apply_1, lift2 } from './Apply';
-import { Foldable_1, Foldable_2 } from './Foldable';
+import { Foldable_1, Foldable_2, FoldMapOnly_1, FoldMapOnly_2 } from './Foldable';
 import { Functor_1, Functor_2 } from './Functor';
 import { Monoid_0, Monoid_1, Monoid_2 } from './Monoid';
+import { AltOnly_1, AltOnly_2 } from './Alt';
+import { EmptyOnly_1, EmptyOnly_2 } from './Plus';
 
 export interface Traversable_1<t extends Generic1> extends Functor_1<t>, Foldable_1<t> {
   traverse: Helpers1<t>['traverse'];
@@ -18,6 +20,18 @@ export interface Traversable_2<t extends Generic2> extends Functor_2<t>, Foldabl
   traverse: Helpers2<t>['traverse'];
   sequence: Helpers2<t>['sequence'];
 }
+
+export interface TraverseOnly_1<t extends Generic1>
+  extends Pick<Traversable_1<t>, 'Generic1Type' | 'traverse'> {}
+
+export interface TraverseOnly_2<t extends Generic2>
+  extends Pick<Traversable_2<t>, 'Generic2Type' | 'traverse'> {}
+
+export interface SequenceOnly_1<t extends Generic1>
+  extends Pick<Traversable_1<t>, 'Generic1Type' | 'sequence'> {}
+
+export interface SequenceOnly_2<t extends Generic2>
+  extends Pick<Traversable_2<t>, 'Generic2Type' | 'sequence'> {}
 
 interface Helpers1<t extends Generic1> {
   foldMap: Traversable_1<t>['foldMap'];
@@ -105,14 +119,12 @@ export const mapDefaultByTraverse: PartialHelper<'traverse'>['map'] = <f extends
   traverse,
 }: Anon<Traversable_1<f>, 'traverse'>) => traverse(applicativeIdentity);
 
-type FoldableMonoidApplicative_1<f extends Generic1> = Pick<
-  Foldable_1<f> & Monoid_1<f> & Applicative_1<f>,
-  'Generic1Type' | 'append' | 'foldMap' | 'mempty' | 'pure'
->;
-type FoldableMonoidApplicative_2<f extends Generic2> = Pick<
-  Foldable_2<f> & Monoid_2<f> & Applicative_2<f>,
-  'Generic2Type' | 'append' | 'foldMap' | 'mempty' | 'pure'
->;
+type FoldableMonoidApplicative_1<f extends Generic1> = FoldMapOnly_1<f> &
+  Monoid_1<f> &
+  PureOnly_1<f>;
+type FoldableMonoidApplicative_2<f extends Generic2> = FoldMapOnly_2<f> &
+  Monoid_2<f> &
+  Applicative_2<f>;
 
 export const traverseDefaultFoldableMonoidApplicative: {
   <t extends Generic1>(_: FoldableMonoidApplicative_1<t>): Traversable_1<t>['traverse'];
@@ -132,14 +144,14 @@ export const traverseDefaultFoldableMonoidApplicative: {
     mempty: () => applicPure(mempty()),
   } as Monoid_0<Type1<g, Type1<f, b>>>)(compose<Type1<g, b>, Type1<g, Type1<f, b>>>(map(pure))(f));
 
-export type FoldableAlternative_1<f extends Generic1> = Pick<
-  Foldable_1<f> & Alternative_1<f>,
-  'Generic1Type' | 'alt' | 'empty' | 'foldMap' | 'pure'
->;
-export type FoldableAlternative_2<f extends Generic2> = Pick<
-  Foldable_2<f> & Alternative_2<f>,
-  'Generic2Type' | 'alt' | 'empty' | 'foldMap' | 'pure'
->;
+export type FoldableAlternative_1<f extends Generic1> = AltOnly_1<f> &
+  EmptyOnly_1<f> &
+  FoldMapOnly_1<f> &
+  PureOnly_1<f>;
+export type FoldableAlternative_2<f extends Generic2> = AltOnly_2<f> &
+  EmptyOnly_2<f> &
+  FoldMapOnly_2<f> &
+  PureOnly_2<f>;
 
 export const traverseDefaultFoldableAlternative: {
   <t extends Generic1>(_: FoldableAlternative_1<t>): Traversable_1<t>['traverse'];

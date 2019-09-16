@@ -10,6 +10,10 @@ export interface Apply_2<f extends Generic2> extends Functor_2<f> {
   apply: Helpers2<f>['apply'];
 }
 
+export interface ApplyOnly_1<f extends Generic1> extends Pick<Apply_1<f>, 'Generic1Type' | 'apply'> {}
+
+export interface ApplyOnly_2<f extends Generic2> extends Pick<Apply_2<f>, 'Generic2Type' | 'apply'> {}
+
 interface Helpers1<f extends Generic1> {
   apply: <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>) => Type1<f, b>;
   lift2: <a, b, c>(f: (_: a) => (_: b) => c) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => Type1<f, c>;
@@ -26,8 +30,8 @@ interface Helpers2<f extends Generic2> {
 }
 type Helper = {
   [k in keyof Helpers1<never>]: {
-    <f extends Generic1>(apply: Apply_1<f>): Helpers1<f>[k];
-    <f extends Generic2>(apply: Apply_2<f>): Helpers2<f>[k];
+    <f extends Generic1>({ apply, map }: Apply_1<f>): Helpers1<f>[k];
+    <f extends Generic2>({ apply, map }: Apply_2<f>): Helpers2<f>[k];
   };
 };
 
