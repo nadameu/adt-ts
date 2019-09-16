@@ -3,11 +3,14 @@ import { either } from '../../Either/functions';
 import { Anon, Generic1, Type1 } from '../../Generic';
 import {
   Alt_1,
+  ap,
   Applicative_1,
-  applyDefault,
   Bind_1,
+  compactByFilterMap,
+  CompactOnly_1,
   Filterable_1,
   filterDefault,
+  FilterMapOnly_1,
   Foldable_1,
   foldlDefault,
   foldrDefault,
@@ -18,18 +21,15 @@ import {
   Monoid_0,
   Monoid_1,
   partitionDefault,
-  Plus_1,
-  Traversable_1,
-} from '../../typeclasses';
-import { SeparateOnly_1, CompactOnly_1 } from '../../typeclasses/Compactable';
-import {
-  compactByFilterMap,
-  FilterMapOnly_1,
   PartitionMapOnly_1,
+  Plus_1,
   separateByPartitionMap,
-} from '../../typeclasses/Filterable';
-import { TraverseOnly_1 } from '../../typeclasses/Traversable';
-import { wiltDefault, witherDefault } from '../../typeclasses/Witherable';
+  SeparateOnly_1,
+  Traversable_1,
+  TraverseOnly_1,
+  wiltDefault,
+  witherDefault,
+} from '../../typeclasses';
 import { Just, Maybe, Nothing } from '../definitions';
 import { TMaybe } from '../internal';
 
@@ -42,7 +42,7 @@ export const pure: Applicative_1<TMaybe>['pure'] = Just;
 
 export const map = liftM1({ bind, pure } as Monad_1<TMaybe>);
 
-export const apply = applyDefault({ bind, map } as Bind_1<TMaybe>);
+export const apply = ap({ bind, pure } as Monad_1<TMaybe>);
 
 export const maybeL = <b>(f: () => b) => <a>(g: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? f() : g(fa.value);
