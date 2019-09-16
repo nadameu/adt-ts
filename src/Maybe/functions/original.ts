@@ -1,5 +1,4 @@
 import { Either } from '../../Either/definitions';
-import { either } from '../../Either/functions';
 import { Anon, Generic1, Type1 } from '../../Generic';
 import {
   Alt_1,
@@ -7,9 +6,8 @@ import {
   Applicative_1,
   Bind_1,
   compactByFilterMap,
-  CompactOnly_1,
-  Filterable_1,
   filterDefault,
+  filterMapByWither,
   FilterMapOnly_1,
   Foldable_1,
   foldlDefault,
@@ -21,14 +19,17 @@ import {
   Monoid_0,
   Monoid_1,
   partitionDefault,
+  partitionMapByWilt,
   PartitionMapOnly_1,
   Plus_1,
   separateByPartitionMap,
-  SeparateOnly_1,
-  Traversable_1,
+  sequenceDefault,
+  traverseByWither,
   TraverseOnly_1,
-  wiltDefault,
-  witherDefault,
+  WiltOnly_1,
+  Witherable_1,
+  witherByWilt,
+  WitherOnly_1,
 } from '../../typeclasses';
 import { Just, Maybe, Nothing } from '../definitions';
 import { TMaybe } from '../internal';
@@ -67,42 +68,39 @@ export const foldl = foldlDefault({ foldMap } as Foldable_1<TMaybe>);
 
 export const foldr = foldrDefault({ foldMap } as Foldable_1<TMaybe>);
 
-export const traverse: Traversable_1<TMaybe>['traverse'] = <f extends Generic1>({
+export const wilt: Witherable_1<TMaybe>['wilt'] = <m extends Generic1>({
   map,
   pure,
-}: Anon<Applicative_1<f>, 'map' | 'pure'>) => <a, b>(
-  f: (_: a) => Type1<f, b>
-): ((ta: Maybe<a>) => Type1<f, Maybe<b>>) => maybe(pure(Nothing))(x => map(Just)(f(x)));
-
-export const sequence: Traversable_1<TMaybe>['sequence'] = <f extends Generic1>({
-  map,
-  pure,
-}: Anon<Applicative_1<f>, 'map' | 'pure'>) => maybe(pure(Nothing))(map(Just));
-
-export const partitionMap: Filterable_1<TMaybe>['partitionMap'] = <a, b, c>(
-  f: (_: a) => Either<b, c>
-) => {
-  type Result = { left: Maybe<b>; right: Maybe<c> };
-  return maybe<Result>({ left: Nothing, right: Nothing })<a>(x =>
-    either<b, Result>(b => ({ left: Just(b), right: Nothing }))<c>(c => ({
-      left: Nothing,
-      right: Just(c),
-    }))(f(x))
-  );
+}: Anon<Applicative_1<m>>) => <a, b, c>(f: (_: a) => Type1<m, Either<b, c>>) => (
+  ta: Maybe<a>
+): Type1<
+  m,
+  {
+    left: Maybe<b>;
+    right: Maybe<c>;
+  }
+> => {
+  if (ta.isNothing) return pure({ left: Nothing, right: Nothing });
+  return map<Either<b, c>, { left: Maybe<b>; right: Maybe<c> }>(result => {
+    if (result.isLeft) return { left: Just(result.leftValue), right: Nothing };
+    return { left: Nothing, right: Just(result.rightValue) };
+  })(f(ta.value));
 };
+
+export const partitionMap = partitionMapByWilt({ wilt } as WiltOnly_1<TMaybe>);
 
 export const partition = partitionDefault({ partitionMap } as PartitionMapOnly_1<TMaybe>);
 
-export const filterMap: Filterable_1<TMaybe>['filterMap'] = bind;
+export const separate = separateByPartitionMap({ partitionMap } as PartitionMapOnly_1<TMaybe>);
+
+export const wither = witherByWilt({ wilt } as WiltOnly_1<TMaybe>);
+
+export const filterMap = filterMapByWither({ wither } as WitherOnly_1<TMaybe>);
 
 export const filter = filterDefault({ filterMap } as FilterMapOnly_1<TMaybe>);
 
-export const separate = separateByPartitionMap({ partitionMap } as PartitionMapOnly_1<TMaybe>);
-
 export const compact = compactByFilterMap({ filterMap } as FilterMapOnly_1<TMaybe>);
 
-export const wilt = wiltDefault({ separate, traverse } as SeparateOnly_1<TMaybe> &
-  TraverseOnly_1<TMaybe>);
+export const traverse = traverseByWither({ wither } as WitherOnly_1<TMaybe>);
 
-export const wither = witherDefault({ compact, traverse } as CompactOnly_1<TMaybe> &
-  TraverseOnly_1<TMaybe>);
+export const sequence = sequenceDefault({ traverse } as TraverseOnly_1<TMaybe>);
