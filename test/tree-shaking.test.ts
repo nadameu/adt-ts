@@ -16,18 +16,17 @@ test('Simple', async () => {
 
     const lift2 = ({ apply, map }) => (f) => compose(apply)(map(f));
 
-    const applyDefault = ({ bind, map }) => flip((fa) => bind(f => map(f)(fa)));
-
     const Nothing = { isJust: false, isNothing: true };
     const Just = (value) => ({ isJust: true, isNothing: false, value });
 
     const liftM1 = ({ bind, pure, }) => (f) => bind(compose(pure)(f));
+    const ap = ({ bind, pure, }) => flip((fa) => bind(f => liftM1({ bind, pure })(f)(fa)));
 
     const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
     const bind = maybe(Nothing);
     const pure = Just;
     const map = liftM1({ bind, pure });
-    const apply = applyDefault({ bind, map });
+    const apply = ap({ bind, pure });
 
     const lift2$1 = lift2({ apply, map });
 
