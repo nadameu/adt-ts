@@ -19,6 +19,7 @@ import {
   Semigroup_0,
   Semigroup_1,
   Traversable_1,
+  Witherable_1,
 } from '../typeclasses';
 import { Just, Maybe } from './definitions';
 import {
@@ -41,6 +42,8 @@ import {
   sequence,
   throwError,
   traverse,
+  wilt,
+  wither,
 } from './functions/original';
 import { TMaybe, TMaybeF } from './internal';
 
@@ -76,6 +79,22 @@ export const filterableMaybe = {
   partitionMap,
   separate,
 } as Filterable_1<TMaybe>;
+export const witherableMaybe = {
+  compact,
+  filter,
+  filterMap,
+  foldMap,
+  foldl,
+  foldr,
+  map,
+  partition,
+  partitionMap,
+  separate,
+  sequence,
+  traverse,
+  wilt,
+  wither,
+} as Witherable_1<TMaybe>;
 
 const makeAppend: {
   <m extends Generic1>(semigroup: Semigroup_1<m>): Semigroup_1<TMaybeF<m>>['append'];
