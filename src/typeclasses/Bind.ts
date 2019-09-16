@@ -43,7 +43,7 @@ type Helper = {
 };
 
 export const join: Helper['join'] = <f extends Generic1>({ bind }: Anon<BindOnly_1<f>, 'bind'>) =>
-  bind<Type1<f, unknown>, Type1<f, unknown>>(x => x);
+  /*#__PURE__*/ bind<Type1<f, unknown>, Type1<f, unknown>>(x => x);
 
 export const applyDefault: {
   <f extends Generic1>({ bind, map }: Functor_1<f> & BindOnly_1<f>): Bind_1<f>['apply'];

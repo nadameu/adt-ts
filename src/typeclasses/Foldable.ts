@@ -268,32 +268,34 @@ export const surround: HelperSemigroup['surround'] = <f extends Generic1>(
 export const all: PartialHelper<'foldMap'>['allAny'] = <f extends Generic1>({
   foldMap,
 }: Anon<Foldable_1<f>, 'foldMap'>): (<a>(p: (_: a) => boolean) => (fa: Type1<f, a>) => boolean) =>
-  foldMap(monoidConj);
+  /*#__PURE__*/ foldMap(monoidConj);
 
 export const and: PartialHelper<'foldMap'>['andOr'] = <f extends Generic1>(
   foldable: Anon<Foldable_1<f>, 'foldMap'>
-): ((fa: Type1<f, boolean>) => boolean) => all(foldable as Foldable_1<f>)<boolean>(identity);
+): ((fa: Type1<f, boolean>) => boolean) =>
+  /*#__PURE__*/ all(foldable as Foldable_1<f>)<boolean>(identity);
 
 export const any: PartialHelper<'foldMap'>['allAny'] = <f extends Generic1>({
   foldMap,
 }: Anon<Foldable_1<f>, 'foldMap'>): (<a>(p: (_: a) => boolean) => (fa: Type1<f, a>) => boolean) =>
-  foldMap(monoidDisj);
+  /*#__PURE__*/ foldMap(monoidDisj);
 
 export const or: PartialHelper<'foldMap'>['andOr'] = <f extends Generic1>(
   foldable: Anon<Foldable_1<f>, 'foldMap'>
-): ((fa: Type1<f, boolean>) => boolean) => any(foldable as Foldable_1<f>)<boolean>(identity);
+): ((fa: Type1<f, boolean>) => boolean) =>
+  /*#__PURE__*/ any(foldable as Foldable_1<f>)<boolean>(identity);
 
 export const length: PartialHelper<'foldMap'>['length'] = <f extends Generic1>({
   foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => foldMap(monoidAdditive)(constant(1));
+}: Anon<Foldable_1<f>, 'foldMap'>) => /*#__PURE__*/ foldMap(monoidAdditive)(constant(1));
 
 export const sum: PartialHelper<'foldMap'>['sumProduct'] = <f extends Generic1>({
   foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => foldMap(monoidAdditive)<number>(identity);
+}: Anon<Foldable_1<f>, 'foldMap'>) => /*#__PURE__*/ foldMap(monoidAdditive)<number>(identity);
 
 export const product: PartialHelper<'foldMap'>['sumProduct'] = <f extends Generic1>({
   foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => foldMap(monoidMultiplicative)<number>(identity);
+}: Anon<Foldable_1<f>, 'foldMap'>) => /*#__PURE__*/ foldMap(monoidMultiplicative)<number>(identity);
 
 export const maximumBy: PartialHelper<'foldl'>['maxMin'] = <f extends Generic1>({
   foldl,

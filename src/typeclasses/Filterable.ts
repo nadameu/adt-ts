@@ -1,8 +1,8 @@
 import { Either, Left, Right } from '../Either/definitions';
-import { compose, constant } from '../Fn/functions';
+import { compose, constant, identity } from '../Fn/functions';
 import { Generic1, Type1 } from '../Generic';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
-import { Compactable_1, SeparateOnly_1, CompactOnly_1 } from './Compactable';
+import { Compactable_1, CompactOnly_1, SeparateOnly_1 } from './Compactable';
 import { Functor_1 } from './Functor';
 
 export interface Filterable_1<f extends Generic1> extends Compactable_1<f>, Functor_1<f> {
@@ -85,4 +85,13 @@ export const filterDefaultPartitionMap = <f extends Generic1>({
 
 export const cleared = <f extends Generic1>({
   filterMap,
-}: FilterMapOnly_1<f>): (<a, b>(fa: Type1<f, a>) => Type1<f, b>) => filterMap(constant(Nothing));
+}: FilterMapOnly_1<f>): (<a, b>(fa: Type1<f, a>) => Type1<f, b>) =>
+  /*#__PURE__*/ filterMap(constant(Nothing));
+
+export const compactByFilterMap = <f extends Generic1>({
+  filterMap,
+}: FilterMapOnly_1<f>): Filterable_1<f>['compact'] => /*#__PURE__*/ filterMap(identity);
+
+export const separateByPartitionMap = <f extends Generic1>({
+  partitionMap,
+}: PartitionMapOnly_1<f>): Filterable_1<f>['separate'] => /*#__PURE__*/ partitionMap(identity);
