@@ -27,6 +27,7 @@ export {
 } from './typeclasses/Compactable';
 export { Eq } from './typeclasses/Eq';
 export {
+  compactByFilterMap,
   Filterable_1,
   filterDefault,
   filterDefaultPartition,
@@ -40,6 +41,7 @@ export {
   partitionMapDefault,
   PartitionMapOnly_1,
   PartitionOnly_1,
+  separateByPartitionMap,
 } from './typeclasses/Filterable';
 export {
   Foldable_1,
