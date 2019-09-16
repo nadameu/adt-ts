@@ -41,7 +41,7 @@ import {
   sequence,
   throwError,
   traverse,
-} from './functions';
+} from './functions/original';
 import { TMaybe, TMaybeF } from './internal';
 
 export const makeEqMaybe = <a>(eq: Eq<a>) =>
@@ -54,9 +54,10 @@ export const applyMaybe = { apply, map } as Apply_1<TMaybe>;
 export const bindMaybe = { apply, bind, map } as Bind_1<TMaybe>;
 export const applicativeMaybe = { apply, map, pure } as Applicative_1<TMaybe>;
 export const monadMaybe = { apply, bind, map, pure } as Monad_1<TMaybe>;
-export const monadThrowMaybe = { apply, bind, map, pure, throwError } as MonadThrow_1<TMaybe>;
+export const monadThrowMaybe = { apply, bind, map, pure, throwError } as MonadThrow_1<TMaybe, void>;
 export const monadErrorMaybe = { apply, bind, catchError, map, pure, throwError } as MonadError_1<
-  TMaybe
+  TMaybe,
+  void
 >;
 export const foldableMaybe = { foldl, foldMap, foldr } as Foldable_1<TMaybe>;
 export const altMaybe = { map, alt } as Alt_1<TMaybe>;
