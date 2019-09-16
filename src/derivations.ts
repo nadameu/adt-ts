@@ -18,5 +18,5 @@ export {
   surround,
   surroundMap,
 } from './typeclasses/Foldable';
-export { flap, mapTo } from './typeclasses/Functor';
+export { $$void, flap, voidLeft, voidRight } from './typeclasses/Functor';
 export { composeFlipped } from './typeclasses/Semigroupoid';
