@@ -47,9 +47,15 @@ export {
   Foldable_1,
   Foldable_2,
   foldlDefault,
+  FoldLOnly_1,
+  FoldLOnly_2,
   foldMapDefaultL,
   foldMapDefaultR,
+  FoldMapOnly_1,
+  FoldMapOnly_2,
   foldrDefault,
+  FoldROnly_1,
+  FoldROnly_2,
 } from './typeclasses/Foldable';
 export {
   fold1Default,
