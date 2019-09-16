@@ -70,11 +70,11 @@ export const witherDefault = <t extends Generic1>({
 
 export const partitionMapByWilt = <t extends Generic1>({
   wilt,
-}: WiltOnly_1<t>): Witherable_1<t>['partitionMap'] => wilt(applicativeIdentity);
+}: WiltOnly_1<t>): Witherable_1<t>['partitionMap'] => /*#__PURE__*/ wilt(applicativeIdentity);
 
 export const filterMapByWither = <t extends Generic1>({
   wither,
-}: WitherOnly_1<t>): Witherable_1<t>['filterMap'] => wither(applicativeIdentity);
+}: WitherOnly_1<t>): Witherable_1<t>['filterMap'] => /*#__PURE__*/ wither(applicativeIdentity);
 
 export const traverseByWither = <t extends Generic1>({
   wither,
