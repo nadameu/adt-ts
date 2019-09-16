@@ -6,8 +6,9 @@ import {
   Applicative_1,
   Bind_1,
   compactByFilterMap,
+  CompactOnly_1,
+  Filterable_1,
   filterDefault,
-  filterMapByWither,
   FilterMapOnly_1,
   Foldable_1,
   foldlDefault,
@@ -19,17 +20,15 @@ import {
   Monoid_0,
   Monoid_1,
   partitionDefault,
-  partitionMapByWilt,
   PartitionMapOnly_1,
   Plus_1,
   separateByPartitionMap,
+  SeparateOnly_1,
   sequenceDefault,
-  traverseByWither,
+  Traversable_1,
   TraverseOnly_1,
-  WiltOnly_1,
-  Witherable_1,
-  witherByWilt,
-  WitherOnly_1,
+  wiltDefault,
+  witherDefault,
 } from '../../typeclasses';
 import { Just, Maybe, Nothing } from '../definitions';
 import { TMaybe } from '../internal';
@@ -68,39 +67,43 @@ export const foldl = foldlDefault({ foldMap } as Foldable_1<TMaybe>);
 
 export const foldr = foldrDefault({ foldMap } as Foldable_1<TMaybe>);
 
-export const wilt: Witherable_1<TMaybe>['wilt'] = <m extends Generic1>({
-  map,
-  pure,
-}: Anon<Applicative_1<m>>) => <a, b, c>(f: (_: a) => Type1<m, Either<b, c>>) => (
-  ta: Maybe<a>
-): Type1<
-  m,
-  {
-    left: Maybe<b>;
-    right: Maybe<c>;
-  }
-> => {
-  if (ta.isNothing) return pure({ left: Nothing, right: Nothing });
-  return map<Either<b, c>, { left: Maybe<b>; right: Maybe<c> }>(result => {
-    if (result.isLeft) return { left: Just(result.leftValue), right: Nothing };
-    return { left: Nothing, right: Just(result.rightValue) };
-  })(f(ta.value));
-};
-
-export const partitionMap = partitionMapByWilt({ wilt } as WiltOnly_1<TMaybe>);
-
-export const partition = partitionDefault({ partitionMap } as PartitionMapOnly_1<TMaybe>);
-
-export const separate = separateByPartitionMap({ partitionMap } as PartitionMapOnly_1<TMaybe>);
-
-export const wither = witherByWilt({ wilt } as WiltOnly_1<TMaybe>);
-
-export const filterMap = filterMapByWither({ wither } as WitherOnly_1<TMaybe>);
+export const filterMap = bind;
 
 export const filter = filterDefault({ filterMap } as FilterMapOnly_1<TMaybe>);
 
 export const compact = compactByFilterMap({ filterMap } as FilterMapOnly_1<TMaybe>);
 
-export const traverse = traverseByWither({ wither } as WitherOnly_1<TMaybe>);
+export const traverse: Traversable_1<TMaybe>['traverse'] = <m extends Generic1>({
+  map,
+  pure,
+}: Anon<Applicative_1<m>>) => <a, b>(
+  f: (_: a) => Type1<m, b>
+): ((ta: Maybe<a>) => Type1<m, Maybe<b>>) =>
+  maybe<Type1<m, Maybe<b>>>(pure(Nothing))<a>(a => map(Just)(f(a)));
 
 export const sequence = sequenceDefault({ traverse } as TraverseOnly_1<TMaybe>);
+
+export const wither = witherDefault({ compact, traverse } as CompactOnly_1<TMaybe> &
+  TraverseOnly_1<TMaybe>);
+
+export const partitionMap: Filterable_1<TMaybe>['partitionMap'] = <a, b, c>(
+  p: (_: a) => Either<b, c>
+) => (
+  fa: Maybe<a>
+): {
+  left: Maybe<b>;
+  right: Maybe<c>;
+} =>
+  fa.isNothing
+    ? { left: Nothing, right: Nothing }
+    : (result =>
+        result.isLeft
+          ? { left: Just(result.leftValue), right: Nothing }
+          : { left: Nothing, right: Just(result.rightValue) })(p(fa.value));
+
+export const partition = partitionDefault({ partitionMap } as PartitionMapOnly_1<TMaybe>);
+
+export const separate = separateByPartitionMap({ partitionMap } as PartitionMapOnly_1<TMaybe>);
+
+export const wilt = wiltDefault({ separate, traverse } as SeparateOnly_1<TMaybe> &
+  TraverseOnly_1<TMaybe>);
