@@ -29,9 +29,9 @@ test('Simple', async () => {
     const map = liftM1({ bind, pure });
     const apply = applyDefault({ bind, map });
 
-    const applyMaybe = { apply, map };
+    const lift2$1 = lift2({ apply, map });
 
-    console.log(lift2(applyMaybe)(x => y => x > y)(Nothing)(Just(40)));
+    console.log(lift2$1(x => y => x > y)(Nothing)(Just(40)));
     "
   `);
 });

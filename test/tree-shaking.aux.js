@@ -1,3 +1,3 @@
-import { applyMaybe, Just, derivations, Nothing } from '../dist/esm/index';
+import { Just, maybe, Nothing } from '../dist/esm/index';
 
-console.log(derivations.lift2(applyMaybe)(x => y => x > y)(Nothing)(Just(40)));
+console.log(maybe.lift2(x => y => x > y)(Nothing)(Just(40)));
