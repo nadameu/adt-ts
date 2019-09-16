@@ -38,7 +38,7 @@ import {
   traverse,
   wilt,
   wither,
-} from './functions';
+} from './functions/original';
 import { TArray } from './internal';
 
 export const makeEqArray = <a>(eq: Eq<a>) =>
