@@ -9,26 +9,25 @@ import {
   Bind_1,
   Compactable_1,
   CompactOnly_1,
+  filterDefault,
+  filterMapDefault,
+  FilterMapOnly_1,
   FilterOnly_1,
   Foldable_1,
   foldMapDefaultL,
   Functor_1,
   Monoid_1,
   partitionDefaultFilter,
+  partitionMapDefault,
   Semigroup_1,
   separateDefault,
+  SeparateOnly_1,
   sequenceDefault,
   Traversable_1,
+  TraverseOnly_1,
+  wiltDefault,
+  witherDefault,
 } from '../../typeclasses';
-import { SeparateOnly_1 } from '../../typeclasses/Compactable';
-import {
-  filterDefault,
-  filterMapDefault,
-  FilterMapOnly_1,
-  partitionMapDefault,
-} from '../../typeclasses/Filterable';
-import { TraverseOnly_1 } from '../../typeclasses/Traversable';
-import { wiltDefault, witherDefault } from '../../typeclasses/Witherable';
 import { TIterable } from '../internal';
 
 export const map: Functor_1<TIterable>['map'] = f => fa => ({

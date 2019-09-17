@@ -4,6 +4,7 @@ import { Anon, Generic1, Type1 } from '../Generic';
 import {
   Applicative_1,
   applyDefault,
+  BindOnly_1,
   Bind_1,
   Foldable_1,
   foldMapDefaultL,
@@ -14,7 +15,6 @@ import {
   sequenceDefault,
   Traversable_1,
 } from '../typeclasses';
-import { BindOnly_1 } from '../typeclasses/Bind';
 import { ConsResult, LazyCons, LazyList, LazyNil, NilResult } from './definitions';
 import { TLazyList } from './internal';
 

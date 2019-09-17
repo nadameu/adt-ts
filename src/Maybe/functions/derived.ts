@@ -1,10 +1,14 @@
 import * as d from '../../derivations';
-import { Apply_1 } from '../../typeclasses';
-import { BindOnly_1 } from '../../typeclasses/Bind';
-import { FilterMapOnly_1 } from '../../typeclasses/Filterable';
-import { FoldLOnly_1, FoldMapOnly_1 } from '../../typeclasses/Foldable';
-import { Functor_1 } from '../../typeclasses/Functor';
-import { WiltOnly_1, WitherOnly_1 } from '../../typeclasses/Witherable';
+import {
+  Apply_1,
+  BindOnly_1,
+  FilterMapOnly_1,
+  FoldLOnly_1,
+  FoldMapOnly_1,
+  Functor_1,
+  WiltOnly_1,
+  WitherOnly_1,
+} from '../../typeclasses';
 import { TMaybe } from '../internal';
 import { apply, bind, filterMap, foldl, foldMap, map, wilt, wither } from './original';
 

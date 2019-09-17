@@ -4,13 +4,13 @@ import {
   AltOnly_2,
   Alt_1,
   EmptyOnly_1,
+  EmptyOnly_2,
   Monoid_1,
   Monoid_2,
   Plus_1,
   Semigroup_1,
   Semigroup_2,
 } from '../typeclasses';
-import { EmptyOnly_2 } from '../typeclasses/Plus';
 
 export const makeSemigroupAlternate: {
   <f extends Generic1>({ alt }: AltOnly_1<f>): Semigroup_1<f>;
