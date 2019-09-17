@@ -1,3 +1,5 @@
+import { foldl } from '../Array/functions';
+
 interface Pipe {
   <a, b>(ab: (_: a) => b): (_: a) => b;
   <a, b, c>(ab: (_: a) => b, bc: (_: b) => c): (_: a) => c;
@@ -26,11 +28,7 @@ interface Pipe {
   <a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z>(ab: (_: a) => b, bc: (_: b) => c, cd: (_: c) => d, de: (_: d) => e, ef: (_: e) => f, fg: (_: f) => g, gh: (_: g) => h, hi: (_: h) => i, ij: (_: i) => j, jk: (_: j) => k, kl: (_: k) => l, lm: (_: l) => m, mn: (_: m) => n, no: (_: n) => o, op: (_: o) => p, pq: (_: p) => q, qr: (_: q) => r, rs: (_: r) => s, st: (_: s) => t, tu: (_: t) => u, uv: (_: u) => v, vw: (_: v) => w, wx: (_: w) => x, xy: (_: x) => y, yz: (_: y) => z): (_: a) => z;
 }
 
-export const pipe: Pipe = (...fs: Array<(_: any) => any>) => (a: any): any => {
-  const len = fs.length;
-  let result = a;
-  for (let i = 0; i < len; i++) {
-    result = fs[i](result);
-  }
-  return result;
+export const pipe: Pipe = function() {
+  const fs = arguments;
+  return (a: any) => foldl<any, any>(x => f => f(x))(a)(fs);
 };
