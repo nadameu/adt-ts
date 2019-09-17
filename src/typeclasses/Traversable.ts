@@ -138,12 +138,12 @@ export const traverseDefaultFoldableAlternative: {
   pure,
 }: Anon<Applicative_1<m>>) => <a, b>(
   f: (_: a) => Type1<m, b>
-): ((ta: Type1<f, a>) => Compose<m, f, b>) => {
+): ((ta: Type1<f, a>) => Compose_1_1<m, f, b>) => {
   const lift = lift2({ apply, map } as Apply_1<m>);
   const monoid = {
     append: lift(t.alt),
     mempty: () => pure(t.empty()),
-  } as Monoid_0<Compose<m, f, b>>;
+  } as Monoid_0<Compose_1_1<m, f, b>>;
   return t.foldMap(monoid)(a => map(t.pure)(f(a)));
 };
 
