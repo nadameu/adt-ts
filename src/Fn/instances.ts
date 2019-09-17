@@ -1,4 +1,3 @@
-import { compose, identity } from '../helpers';
 import {
   Applicative_2,
   Apply_2,
@@ -8,7 +7,7 @@ import {
   Monad_2,
   Semigroupoid_2,
 } from '../typeclasses';
-import { apply, bind, map, pure } from './functions';
+import { apply, bind, compose, identity, map, pure } from './functions/original';
 import { TFn, TFn_ } from './internal';
 
 export const semigroupoidFn = { compose } as Semigroupoid_2<TFn>;
