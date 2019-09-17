@@ -1,5 +1,6 @@
 import { Either } from '../../Either/definitions';
 import { Anon, Generic1, Type1 } from '../../Generic';
+import { method } from '../../helpers';
 import {
   Alt_1,
   ap,
@@ -117,3 +118,22 @@ export const liftNullable = <a, b>(f: (_: a) => b | null | undefined): ((_: a) =
 export const mapNullable = <a, b>(
   f: (_: a) => b | null | undefined
 ): ((fa: Maybe<a>) => Maybe<b>) => bind(liftNullable(f));
+
+export const safeProp = <
+  obj,
+  key extends keyof obj,
+  out = obj[key] extends infer out | null | undefined ? out : unknown
+>(
+  key: key
+) => (obj: obj): Maybe<out> => fromNullable<out>((obj[key] as unknown) as out | null | undefined);
+
+export const safeMethod = <
+  obj extends { [k in key]: (...args: args) => out },
+  key extends keyof obj,
+  args extends unknown[],
+  out = obj[key] extends (...args: args) => infer out | null | undefined ? out : unknown
+>(
+  key: key,
+  ...args: args
+) => (obj: obj): Maybe<out> =>
+  fromNullable(method<obj, key, args, out | null | undefined>(key, ...args)(obj));
