@@ -1,20 +1,21 @@
 import { lift2 } from '../../derivations';
-import { Either, Left, Right } from '../../Either/definitions';
 import { Anon, Generic1, Generic2, Type1, Type2 } from '../../Generic';
 import {
   ap,
-  Applicative_1,
   Apply_1,
   Apply_2,
   fold1Default,
   Foldable1_1,
   Foldable_1,
+  FoldROnly_1,
+  GenericCons_1,
   Monad_1,
   Monoid_0,
   Semigroup_0,
   Semigroup_1,
   sequenceDefault,
   Traversable_1,
+  traverseDefaultCons,
 } from '../../typeclasses';
 import {
   Append,
@@ -215,31 +216,10 @@ export const foldMap1: {
 
 export const fold1 = fold1Default({ foldMap1 } as Foldable1_1<TNEList>);
 
-export const traverse: Traversable_1<TList>['traverse'] = <f extends Generic1>({
-  apply,
-  map,
-  pure,
-}: Pick<Applicative_1<f>, 'apply' | 'map' | 'pure'>) => <a, b>(f: (_: a) => Type1<f, b>) => (
-  ta: List<a>
-): Type1<f, List<b>> => {
-  type c = Either<b, List<b>>;
-  return map<Either<b, List<b>>, List<b>>(x => (x.isLeft ? singleton(x.leftValue) : x.rightValue))(
-    foldMap({
-      append: lift2({ apply, map } as Apply_1<f>)<c, c, Right<List<b>>>(x => y =>
-        Right(
-          x.isLeft
-            ? y.isLeft
-              ? cons(x.leftValue)(singleton(y.leftValue))
-              : cons(x.leftValue)(y.rightValue)
-            : y.isLeft
-            ? snoc(x.rightValue)(y.leftValue)
-            : append(x.rightValue)(y.rightValue)
-        )
-      ),
-      mempty: () => pure(Right(mempty())),
-    } as Monoid_0<Type1<f, c>>)<a>(a => map(Left)(f(a)))(ta)
-  );
-};
+export const traverse = traverseDefaultCons<TList>({ cons, foldr, nil: () => nil } as GenericCons_1<
+  TList
+> &
+  FoldROnly_1<TList>);
 
 export const traverse1: {
   <m extends Generic1>(apply: Apply_1<m>): <a, b>(
