@@ -1,4 +1,3 @@
-import { lift2 } from '../derivations';
 import { flip } from '../Fn/functions';
 import { Anon, Generic1, Type1 } from '../Generic';
 import {
@@ -8,12 +7,15 @@ import {
   Bind_1,
   Foldable_1,
   foldMapDefaultL,
+  FoldROnly_1,
   Functor_1,
+  GenericCons_1,
   Monoid_0,
   Monoid_1,
   Semigroup_1,
   sequenceDefault,
   Traversable_1,
+  traverseDefaultCons,
 } from '../typeclasses';
 import { ConsResult, LazyCons, LazyList, LazyNil, NilResult } from './definitions';
 import { TLazyList } from './internal';
@@ -124,13 +126,11 @@ export const range = (start: number) => (end: number): LazyList<number> => {
   return descending(start);
 };
 
-export const traverse: Traversable_1<TLazyList>['traverse'] = <m extends Generic1>(
-  applicative: Anon<Applicative_1<m>>
-) => <a, b>(f: (_: a) => Type1<m, b>): ((as: LazyList<a>) => Type1<m, LazyList<b>>) =>
-  (liftedCons =>
-    foldr<a, Type1<m, LazyList<b>>>(a => mbs => liftedCons(f(a))(mbs))(applicative.pure(nil)))(
-    lift2(applicative as Applicative_1<m>)(cons)
-  );
+export const traverse = traverseDefaultCons<TLazyList>({
+  cons,
+  foldr,
+  nil: mempty,
+} as GenericCons_1<TLazyList> & FoldROnly_1<TLazyList>);
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TLazyList>);
 
 export const alt = append;
