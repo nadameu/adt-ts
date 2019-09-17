@@ -216,10 +216,15 @@ export const wilt: Witherable_1<TArray>['wilt'] = <m extends Generic1>(
 export const range = (start: number) => (end: number): number[] => {
   if (!Number.isInteger(start) || !Number.isInteger(end))
     throw new TypeError('Start and end must be integers.');
-  const xs = new Array(end - start + 1);
-  const past = end + 1;
-  for (let i = 0, x = start; x < past; i++, x++) {
-    xs[i] = x;
+  const diff = end - start;
+  if (diff < 0) {
+    const xs = new Array(1 - diff);
+    const past = end - 1;
+    for (let i = 0, x = start; x > past; i++, x--) xs[i] = x;
+    return xs;
   }
+  const xs = new Array(diff + 1);
+  const past = end + 1;
+  for (let i = 0, x = start; x < past; i++, x++) xs[i] = x;
   return xs;
 };
