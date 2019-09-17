@@ -6,6 +6,10 @@
     {
       "files": "src/typeclasses/Apply.ts",
       "options": { "printWidth": 300 }
+    },
+    {
+      "files": ["src/helpers/pipe.ts", "src/helpers/pipeValue.ts"],
+      "options": { "printWidth": 10000 }
     }
   ]
 }
