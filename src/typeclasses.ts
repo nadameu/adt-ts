@@ -94,9 +94,11 @@ export { EmptyOnly_1, EmptyOnly_2, Plus_1, Plus_2 } from './typeclasses/Plus';
 export { Semigroup_0, Semigroup_1, Semigroup_2 } from './typeclasses/Semigroup';
 export { Semigroupoid_2, Semigroupoid_3 } from './typeclasses/Semigroupoid';
 export {
-  FoldableAlternative_1,
-  FoldableAlternative_2,
   foldMapDefaultByTraverse,
+  GenericCons_1,
+  GenericCons_2,
+  GenericSnoc_1,
+  GenericSnoc_2,
   mapDefaultByTraverse,
   sequenceDefault,
   SequenceOnly_1,
@@ -104,8 +106,9 @@ export {
   Traversable_1,
   Traversable_2,
   traverseDefault,
+  traverseDefaultCons,
   traverseDefaultFoldableAlternative,
-  traverseDefaultFoldableMonoidApplicative,
+  traverseDefaultSnoc,
   TraverseOnly_1,
   TraverseOnly_2,
 } from './typeclasses/Traversable';

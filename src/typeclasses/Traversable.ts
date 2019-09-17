@@ -1,14 +1,23 @@
+import { Compose_1_1 } from '../Compose/definitions';
 import { makeApplicativeConst } from '../Const/instances';
+import { flip, identity } from '../Fn/functions';
 import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
 import { Alternative_1, Alternative_2 } from './Alternative';
-import { Applicative_1, Applicative_2, PureOnly_1, PureOnly_2 } from './Applicative';
+import { Applicative_1, Applicative_2 } from './Applicative';
 import { Apply_1, lift2 } from './Apply';
-import { Foldable_1, Foldable_2, FoldMapOnly_1, FoldMapOnly_2 } from './Foldable';
+import {
+  Foldable_1,
+  Foldable_2,
+  FoldLOnly_1,
+  FoldLOnly_2,
+  FoldMapOnly_1,
+  FoldMapOnly_2,
+  FoldROnly_1,
+  FoldROnly_2,
+} from './Foldable';
 import { Functor_1, Functor_2 } from './Functor';
-import { Monoid_0, Monoid_1, Monoid_2 } from './Monoid';
-import { AltOnly_1, AltOnly_2 } from './Alt';
-import { EmptyOnly_1, EmptyOnly_2 } from './Plus';
+import { Monoid_0 } from './Monoid';
 
 export interface Traversable_1<t extends Generic1> extends Functor_1<t>, Foldable_1<t> {
   traverse: Helpers1<t>['traverse'];
@@ -118,47 +127,84 @@ export const mapDefaultByTraverse: PartialHelper<'traverse'>['map'] = <f extends
   traverse,
 }: Anon<Traversable_1<f>, 'traverse'>) => traverse(applicativeIdentity);
 
-type FoldableMonoidApplicative_1<f extends Generic1> = FoldMapOnly_1<f> &
-  Monoid_1<f> &
-  PureOnly_1<f>;
-type FoldableMonoidApplicative_2<f extends Generic2> = FoldMapOnly_2<f> &
-  Monoid_2<f> &
-  Applicative_2<f>;
-
-export const traverseDefaultFoldableMonoidApplicative: {
-  <t extends Generic1>(_: FoldableMonoidApplicative_1<t>): Traversable_1<t>['traverse'];
-  <t extends Generic2>(_: FoldableMonoidApplicative_2<t>): Traversable_2<t>['traverse'];
-} = <f extends Generic1>({
-  append,
-  mempty,
-  foldMap,
-  pure,
-}: Anon<FoldableMonoidApplicative_1<f>>) => <g extends Generic1>({
+export const traverseDefaultFoldableAlternative: {
+  <f extends Generic1>(t: FoldMapOnly_1<f> & Alternative_1<f>): Traversable_1<f>['traverse'];
+  <f extends Generic2>(t: FoldMapOnly_2<f> & Alternative_2<f>): Traversable_2<f>['traverse'];
+} = <f extends Generic1>(
+  t: Anon<FoldMapOnly_1<f> & Alternative_1<f>>
+): Traversable_1<f>['traverse'] => <m extends Generic1>({
   apply,
   map,
-  pure: applicPure,
-}: Anon<Applicative_1<g>>) => <a, b>(f: (_: a) => Type1<g, b>) =>
-  foldMap({
-    append: lift2({ apply, map } as Apply_1<g>)(append),
-    mempty: () => applicPure(mempty()),
-  } as Monoid_0<Type1<g, Type1<f, b>>>)(compose<Type1<g, b>, Type1<g, Type1<f, b>>>(map(pure))(f));
+  pure,
+}: Anon<Applicative_1<m>>) => <a, b>(
+  f: (_: a) => Type1<m, b>
+): ((ta: Type1<f, a>) => Compose<m, f, b>) => {
+  const lift = lift2({ apply, map } as Apply_1<m>);
+  const monoid = {
+    append: lift(t.alt),
+    mempty: () => pure(t.empty()),
+  } as Monoid_0<Compose<m, f, b>>;
+  return t.foldMap(monoid)(a => map(t.pure)(f(a)));
+};
 
-export type FoldableAlternative_1<f extends Generic1> = AltOnly_1<f> &
-  EmptyOnly_1<f> &
-  FoldMapOnly_1<f> &
-  PureOnly_1<f>;
-export type FoldableAlternative_2<f extends Generic2> = AltOnly_2<f> &
-  EmptyOnly_2<f> &
-  FoldMapOnly_2<f> &
-  PureOnly_2<f>;
+export interface GenericCons_1<f extends Generic1> {
+  cons: <a>(head: a) => (tail: Type1<f, a>) => Type1<f, a>;
+  nil: <a = never>() => Type1<f, a>;
+}
+export interface GenericCons_2<f extends Generic2> {
+  cons: <b>(head: b) => <a>(tail: Type2<f, a, b>) => Type2<f, a, b>;
+  nil: <a = never, b = never>() => Type2<f, a, b>;
+}
 
-export const traverseDefaultFoldableAlternative: {
-  <t extends Generic1>(_: FoldableAlternative_1<t>): Traversable_1<t>['traverse'];
-  <t extends Generic2>(_: FoldableAlternative_2<t>): Traversable_2<t>['traverse'];
-} = <f extends Generic1>({ alt, empty, foldMap, pure }: Anon<FoldableAlternative_1<f>>) =>
-  traverseDefaultFoldableMonoidApplicative({
-    append: alt,
-    foldMap,
-    mempty: empty,
-    pure,
-  } as FoldableMonoidApplicative_1<f>);
+export const traverseDefaultCons: {
+  <f extends Generic1>({ cons, foldr, nil }: GenericCons_1<f> & FoldROnly_1<f>): Traversable_1<
+    f
+  >['traverse'];
+  <f extends Generic2>({ cons, foldr, nil }: GenericCons_2<f> & FoldROnly_2<f>): Traversable_2<
+    f
+  >['traverse'];
+} = <f extends Generic1>({ cons, foldr, nil }: Anon<GenericCons_1<f> & FoldROnly_1<f>>) => <
+  m extends Generic1
+>({
+  apply,
+  map,
+  pure,
+}: Anon<Applicative_1<m>>) => <a, b>(
+  f: (_: a) => Type1<m, b>
+): ((ta: Type1<f, a>) => Type1<m, Type1<f, b>>) => {
+  const lift = lift2({ apply, map } as Apply_1<m>);
+  const lifted = lift(cons);
+  const g = (a: a) => lifted(f(a));
+  return foldr(g)(pure(nil()));
+};
+
+export interface GenericSnoc_1<f extends Generic1> {
+  snoc: <a>(init: Type1<f, a>) => (last: a) => Type1<f, a>;
+  nil: <a = never>() => Type1<f, a>;
+}
+export interface GenericSnoc_2<f extends Generic2> {
+  snoc: <a, b>(init: Type2<f, a, b>) => (last: b) => Type2<f, a, b>;
+  nil: <a = never, b = never>() => Type2<f, a, b>;
+}
+
+export const traverseDefaultSnoc: {
+  <f extends Generic1>({ foldl, nil, snoc }: GenericSnoc_1<f> & FoldLOnly_1<f>): Traversable_1<
+    f
+  >['traverse'];
+  <f extends Generic2>({ foldl, nil, snoc }: GenericSnoc_2<f> & FoldLOnly_2<f>): Traversable_2<
+    f
+  >['traverse'];
+} = <f extends Generic1>({ foldl, nil, snoc }: Anon<GenericSnoc_1<f> & FoldLOnly_1<f>>) => <
+  m extends Generic1
+>({
+  apply,
+  map,
+  pure,
+}: Anon<Applicative_1<m>>) => <a, b>(
+  f: (_: a) => Type1<m, b>
+): ((ta: Type1<f, a>) => Compose_1_1<m, f, b>) => {
+  const lift = lift2({ apply, map } as Apply_1<m>);
+  const lifted = lift(flip(snoc));
+  const g = flip((a: a) => lifted(f(a)));
+  return foldl(g)(pure(nil()));
+};
