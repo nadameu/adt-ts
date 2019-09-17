@@ -4,7 +4,6 @@ import { monoidConj } from '../Conj/instances';
 import { monoidDisj } from '../Disj/instances';
 import { makeMonoidDual } from '../Dual/instances';
 import { monoidEndo } from '../Endo/instances';
-import { compose, constant, flip, identity } from '../Fn/functions';
 import {
   Anon,
   Generic1,
@@ -16,6 +15,7 @@ import {
   Type1,
   Type2,
 } from '../Generic';
+import { compose, constant, flip, identity } from '../helpers';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { monoidMultiplicative } from '../Multiplicative/instances';
 import { Ordering } from '../Ordering/definitions';

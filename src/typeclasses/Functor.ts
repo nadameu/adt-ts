@@ -1,5 +1,5 @@
-import { constant, flip, thrush } from '../Fn/functions';
 import { Anon, Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
+import { constant, flip, thrush } from '../helpers';
 
 export interface Functor_1<f extends Generic1> extends Identified1<f> {
   map: Helpers1<f>['map'];

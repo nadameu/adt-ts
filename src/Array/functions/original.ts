@@ -1,7 +1,7 @@
 import { lift2 } from '../../derivations';
 import { Either } from '../../Either/definitions';
-import { flip } from '../../Fn/functions';
 import { Anon, Generic1, Type1 } from '../../Generic';
+import { flip } from '../../helpers';
 import { Maybe } from '../../Maybe/definitions';
 import {
   Applicative_1,

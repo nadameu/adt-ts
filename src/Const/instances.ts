@@ -1,5 +1,5 @@
-import { constant, identity } from '../Fn/functions';
 import { Anon, Generic1 } from '../Generic';
+import { constant, identity } from '../helpers';
 import {
   Applicative_2,
   Apply_2,

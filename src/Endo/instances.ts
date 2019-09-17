@@ -1,4 +1,4 @@
-import { compose } from '../Fn/functions';
+import { compose } from '../helpers';
 import { Monoid_1, Semigroup_1 } from '../typeclasses';
 import { TEndo } from './internal';
 

@@ -1,5 +1,5 @@
-import { flip } from '../Fn/functions';
 import { Anon, Generic1, Type1 } from '../Generic';
+import { flip } from '../helpers';
 import {
   Applicative_1,
   applyDefault,

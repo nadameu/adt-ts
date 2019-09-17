@@ -1,7 +1,7 @@
-import { compose, flip } from '../Fn/functions';
 import { Anon, Generic1, Generic2, Type1 } from '../Generic';
+import { compose, flip } from '../helpers';
 import { Applicative_1, Applicative_2, PureOnly_1, PureOnly_2 } from './Applicative';
-import { Bind_1, Bind_2, BindOnly_1, BindOnly_2 } from './Bind';
+import { BindOnly_1, BindOnly_2, Bind_1, Bind_2 } from './Bind';
 
 export interface Monad_1<f extends Generic1> extends Applicative_1<f>, Bind_1<f> {}
 

@@ -1,4 +1,4 @@
-import { constant } from '../Fn/functions';
+import { constant } from '../helpers';
 import { Semigroup_1 } from '../typeclasses';
 import { TFirst } from './internal';
 

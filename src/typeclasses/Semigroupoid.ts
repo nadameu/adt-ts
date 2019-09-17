@@ -1,4 +1,3 @@
-import { flip } from '../Fn/functions';
 import {
   Anon,
   GenericFn2,
@@ -8,6 +7,7 @@ import {
   TypeFn,
   TypeFn3,
 } from '../Generic';
+import { flip } from '../helpers';
 
 export interface Semigroupoid_2<f extends GenericFn2> extends IdentifiedFn<f> {
   compose: Helpers2<f>['compose'];

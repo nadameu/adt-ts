@@ -1,5 +1,5 @@
-import { identity } from '../Fn/functions';
 import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
+import { identity } from '../helpers';
 import { Foldable_1, Foldable_2 } from './Foldable';
 import { Functor_1, Functor_2 } from './Functor';
 import { Semigroup_0, Semigroup_1 } from './Semigroup';
