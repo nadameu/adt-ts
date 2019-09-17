@@ -19,13 +19,15 @@ const laws = <f extends Generic2, e, a>(
   };
 };
 
-export const makeMonadError1Laws = <f extends Generic1>(monadError: MonadError_1<f>) => (
+export const makeMonadError1Laws = <f extends Generic1, e>(monadError: MonadError_1<f, e>) => (
   makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>
-) => (makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>) =>
-  laws<Generic1as2<f>, undefined, number>(
+) => (arbError: jsc.Arbitrary<e>) => (
+  makeArb: <a>(arb: jsc.Arbitrary<a>) => jsc.Arbitrary<Type1<f, a>>
+) =>
+  laws<Generic1as2<f>, e, number>(
     (monadError as unknown) as MonadError_2<Generic1as2<f>>,
     makeArb(jsc.number),
-    jsc.constant(undefined),
+    arbError,
     jsc.number,
     makeEq(eqNumber).eq
   );

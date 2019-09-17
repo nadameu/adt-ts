@@ -97,12 +97,16 @@ describe('Monad', () => {
 });
 
 describe('MonadThrow', () => {
-  const monadThrowLaws = makeMonadThrow1Laws(monadThrowMaybe)(makeEqMaybe)(makeArb);
+  const monadThrowLaws = makeMonadThrow1Laws(monadThrowMaybe)(makeEqMaybe)(
+    jsc.constant(undefined as void)
+  )(makeArb);
   test('MonadThrow - left zero', monadThrowLaws.leftZero);
 });
 
 describe('MonadError', () => {
-  const monadErrorLaws = makeMonadError1Laws(monadErrorMaybe)(makeEqMaybe)(makeArb);
+  const monadErrorLaws = makeMonadError1Laws(monadErrorMaybe)(makeEqMaybe)(
+    jsc.constant(undefined as void)
+  )(makeArb);
   test('MonadError - catch', monadErrorLaws.catch);
   test('MonadError - pure', monadErrorLaws.pure);
 });
