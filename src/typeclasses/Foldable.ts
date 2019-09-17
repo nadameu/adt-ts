@@ -5,7 +5,17 @@ import { monoidDisj } from '../Disj/instances';
 import { makeMonoidDual } from '../Dual/instances';
 import { monoidEndo } from '../Endo/instances';
 import { compose, constant, flip, identity } from '../Fn/functions';
-import { Anon, Generic1, Generic2, Identified1, Identified2, Type1, Type2 } from '../Generic';
+import {
+  Anon,
+  Generic1,
+  Generic1Type,
+  Generic2,
+  Generic2Type,
+  Identified1,
+  Identified2,
+  Type1,
+  Type2,
+} from '../Generic';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { monoidMultiplicative } from '../Multiplicative/instances';
 import { Ordering } from '../Ordering/definitions';
@@ -26,22 +36,22 @@ export interface Foldable_2<f extends Generic2> extends Identified2<f> {
 }
 
 export interface FoldLOnly_1<f extends Generic1>
-  extends Pick<Foldable_1<f>, 'Generic1Type' | 'foldl'> {}
+  extends Pick<Foldable_1<f>, Generic1Type | 'foldl'> {}
 
 export interface FoldLOnly_2<f extends Generic2>
-  extends Pick<Foldable_2<f>, 'Generic2Type' | 'foldl'> {}
+  extends Pick<Foldable_2<f>, Generic2Type | 'foldl'> {}
 
 export interface FoldROnly_1<f extends Generic1>
-  extends Pick<Foldable_1<f>, 'Generic1Type' | 'foldr'> {}
+  extends Pick<Foldable_1<f>, Generic1Type | 'foldr'> {}
 
 export interface FoldROnly_2<f extends Generic2>
-  extends Pick<Foldable_2<f>, 'Generic2Type' | 'foldr'> {}
+  extends Pick<Foldable_2<f>, Generic2Type | 'foldr'> {}
 
 export interface FoldMapOnly_1<f extends Generic1>
-  extends Pick<Foldable_1<f>, 'Generic1Type' | 'foldMap'> {}
+  extends Pick<Foldable_1<f>, Generic1Type | 'foldMap'> {}
 
 export interface FoldMapOnly_2<f extends Generic2>
-  extends Pick<Foldable_2<f>, 'Generic2Type' | 'foldMap'> {}
+  extends Pick<Foldable_2<f>, Generic2Type | 'foldMap'> {}
 
 interface Helpers1<f extends Generic1> {
   foldl: <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (fa: Type1<f, a>) => b;
@@ -71,8 +81,8 @@ type Helper = {
 };
 type PartialHelper<keys extends keyof Foldable_1<never> & keyof Foldable_2<never>> = {
   [k in keyof Helpers1<never>]: {
-    <f extends Generic1>(_: Pick<Foldable_1<f>, 'Generic1Type' | keys>): Helpers1<f>[k];
-    <f extends Generic2>(_: Pick<Foldable_2<f>, 'Generic2Type' | keys>): Helpers2<f>[k];
+    <f extends Generic1>(_: Pick<Foldable_1<f>, Generic1Type | keys>): Helpers1<f>[k];
+    <f extends Generic2>(_: Pick<Foldable_2<f>, Generic2Type | keys>): Helpers2<f>[k];
   };
 };
 interface Helpers1Monoid0<f extends Generic1, m> {

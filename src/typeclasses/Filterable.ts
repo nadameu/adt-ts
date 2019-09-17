@@ -1,6 +1,6 @@
 import { Either, Left, Right } from '../Either/definitions';
 import { compose, constant, identity } from '../Fn/functions';
-import { Generic1, Type1 } from '../Generic';
+import { Generic1, Generic1Type, Type1 } from '../Generic';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { Compactable_1, CompactOnly_1, SeparateOnly_1 } from './Compactable';
 import { Functor_1 } from './Functor';
@@ -17,13 +17,13 @@ export interface Filterable_1<f extends Generic1> extends Compactable_1<f>, Func
 }
 
 export interface PartitionMapOnly_1<f extends Generic1>
-  extends Pick<Filterable_1<f>, 'Generic1Type' | 'partitionMap'> {}
+  extends Pick<Filterable_1<f>, Generic1Type | 'partitionMap'> {}
 export interface PartitionOnly_1<f extends Generic1>
-  extends Pick<Filterable_1<f>, 'Generic1Type' | 'partition'> {}
+  extends Pick<Filterable_1<f>, Generic1Type | 'partition'> {}
 export interface FilterMapOnly_1<f extends Generic1>
-  extends Pick<Filterable_1<f>, 'Generic1Type' | 'filterMap'> {}
+  extends Pick<Filterable_1<f>, Generic1Type | 'filterMap'> {}
 export interface FilterOnly_1<f extends Generic1>
-  extends Pick<Filterable_1<f>, 'Generic1Type' | 'filter'> {}
+  extends Pick<Filterable_1<f>, Generic1Type | 'filter'> {}
 
 export const eitherBool: {
   <a, b extends a>(r: (x: a) => x is b): (_: a) => Either<a, b>;

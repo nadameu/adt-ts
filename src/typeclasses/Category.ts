@@ -1,4 +1,11 @@
-import { GenericFn2, GenericFn3, TypeFn, TypeFn3 } from '../Generic';
+import {
+  GenericFn2,
+  GenericFn2Type,
+  GenericFn3,
+  GenericFn3Type,
+  TypeFn,
+  TypeFn3,
+} from '../Generic';
 import { Semigroupoid_2, Semigroupoid_3 } from './Semigroupoid';
 
 export interface Category_2<c extends GenericFn2> extends Semigroupoid_2<c> {
@@ -14,7 +21,7 @@ export interface Category_3<c extends GenericFn3> extends Semigroupoid_3<c> {
 }
 
 export interface IdentityOnly_2<c extends GenericFn2>
-  extends Pick<Category_2<c>, 'GenericFn2Type' | 'identity'> {}
+  extends Pick<Category_2<c>, GenericFn2Type | 'identity'> {}
 
 export interface IdentityOnly_3<c extends GenericFn3>
-  extends Pick<Category_3<c>, 'GenericFn3Type' | 'identity'> {}
+  extends Pick<Category_3<c>, GenericFn3Type | 'identity'> {}

@@ -1,4 +1,5 @@
 declare const GenericSymbol: unique symbol;
+type GenericSymbol = typeof GenericSymbol;
 
 export interface Generic1 {
   [GenericSymbol]: 'Generic1';
@@ -28,24 +29,34 @@ export interface GenericFn3 {
   type: (_: any) => unknown;
 }
 
+export declare const NotGenericType: unique symbol;
+export type NotGenericType = typeof NotGenericType;
 export interface Identified0<a> {
-  NotGenericType: a;
+  [NotGenericType]: a;
 }
 
+export declare const Generic1Type: unique symbol;
+export type Generic1Type = typeof Generic1Type;
 export interface Identified1<f extends Generic1> {
-  Generic1Type: f;
+  [Generic1Type]: f;
 }
 
+export declare const Generic2Type: unique symbol;
+export type Generic2Type = typeof Generic2Type;
 export interface Identified2<f extends Generic2> {
-  Generic2Type: f;
+  [Generic2Type]: f;
 }
 
+export declare const GenericFn2Type: unique symbol;
+export type GenericFn2Type = typeof GenericFn2Type;
 export interface IdentifiedFn<f extends GenericFn2> {
-  GenericFn2Type: f;
+  [GenericFn2Type]: f;
 }
 
+export declare const GenericFn3Type: unique symbol;
+export type GenericFn3Type = typeof GenericFn3Type;
 export interface IdentifiedFn3<f extends GenericFn3> {
-  GenericFn3Type: f;
+  [GenericFn3Type]: f;
 }
 
 export type Anon<
@@ -57,10 +68,10 @@ export type Anon<
     | IdentifiedFn3<any>,
   keys extends Exclude<
     keyof obj,
-    'NotGenericType' | 'Generic1Type' | 'Generic2Type' | 'GenericFn2Type' | 'GenericFn3Type'
+    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type
   > = Exclude<
     keyof obj,
-    'NotGenericType' | 'Generic1Type' | 'Generic2Type' | 'GenericFn2Type' | 'GenericFn3Type'
+    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type
   >
 > = Pick<obj, keys>;
 

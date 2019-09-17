@@ -1,5 +1,5 @@
 import { compose } from '../Fn/functions';
-import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
 import { Functor_1, Functor_2 } from './Functor';
 
 export interface Apply_1<f extends Generic1> extends Functor_1<f> {
@@ -10,9 +10,9 @@ export interface Apply_2<f extends Generic2> extends Functor_2<f> {
   apply: Helpers2<f>['apply'];
 }
 
-export interface ApplyOnly_1<f extends Generic1> extends Pick<Apply_1<f>, 'Generic1Type' | 'apply'> {}
+export interface ApplyOnly_1<f extends Generic1> extends Pick<Apply_1<f>, Generic1Type | 'apply'> {}
 
-export interface ApplyOnly_2<f extends Generic2> extends Pick<Apply_2<f>, 'Generic2Type' | 'apply'> {}
+export interface ApplyOnly_2<f extends Generic2> extends Pick<Apply_2<f>, Generic2Type | 'apply'> {}
 
 interface Helpers1<f extends Generic1> {
   apply: <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>) => Type1<f, b>;

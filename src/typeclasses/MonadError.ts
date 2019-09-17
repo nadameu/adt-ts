@@ -1,4 +1,4 @@
-import { Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
 import { MonadThrow_1, MonadThrow_2 } from './MonadThrow';
 
 export interface MonadError_1<f extends Generic1, e> extends MonadThrow_1<f, e> {
@@ -10,7 +10,7 @@ export interface MonadError_2<f extends Generic2> extends MonadThrow_2<f> {
 }
 
 export interface CatchErrorOnly_1<f extends Generic1, e>
-  extends Pick<MonadError_1<f, e>, 'Generic1Type' | 'catchError'> {}
+  extends Pick<MonadError_1<f, e>, Generic1Type | 'catchError'> {}
 
 export interface CatchErrorOnly_2<f extends Generic2>
-  extends Pick<MonadError_2<f>, 'Generic2Type' | 'catchError'> {}
+  extends Pick<MonadError_2<f>, Generic2Type | 'catchError'> {}

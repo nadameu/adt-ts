@@ -1,7 +1,7 @@
 import { Either } from '../Either/definitions';
 import { hush, note, swap } from '../Either/functions/helpers';
 import { compose } from '../Fn/functions';
-import { Generic1, Identified1, Type1 } from '../Generic';
+import { Generic1, Generic1Type, Identified1, Type1 } from '../Generic';
 import { Maybe } from '../Maybe/definitions';
 import { Functor_1 } from './Functor';
 
@@ -11,10 +11,10 @@ export interface Compactable_1<f extends Generic1> extends Identified1<f> {
 }
 
 export interface CompactOnly_1<f extends Generic1>
-  extends Pick<Compactable_1<f>, 'Generic1Type' | 'compact'> {}
+  extends Pick<Compactable_1<f>, Generic1Type | 'compact'> {}
 
 export interface SeparateOnly_1<f extends Generic1>
-  extends Pick<Compactable_1<f>, 'Generic1Type' | 'separate'> {}
+  extends Pick<Compactable_1<f>, Generic1Type | 'separate'> {}
 
 export const compactDefault = <f extends Generic1>({
   map,

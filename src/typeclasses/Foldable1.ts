@@ -1,5 +1,5 @@
 import { identity } from '../Fn/functions';
-import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
 import { Foldable_1, Foldable_2 } from './Foldable';
 import { Functor_1, Functor_2 } from './Functor';
 import { Semigroup_0, Semigroup_1 } from './Semigroup';
@@ -15,16 +15,16 @@ export interface Foldable1_2<f extends Generic2> extends Foldable_2<f> {
 }
 
 export interface FoldMap1Only_1<f extends Generic1>
-  extends Pick<Foldable1_1<f>, 'Generic1Type' | 'foldMap1'> {}
+  extends Pick<Foldable1_1<f>, Generic1Type | 'foldMap1'> {}
 
 export interface FoldMap1Only_2<f extends Generic2>
-  extends Pick<Foldable1_2<f>, 'Generic2Type' | 'foldMap1'> {}
+  extends Pick<Foldable1_2<f>, Generic2Type | 'foldMap1'> {}
 
 export interface Fold1Only_1<f extends Generic1>
-  extends Pick<Foldable1_1<f>, 'Generic1Type' | 'fold1'> {}
+  extends Pick<Foldable1_1<f>, Generic1Type | 'fold1'> {}
 
 export interface Fold1Only_2<f extends Generic2>
-  extends Pick<Foldable1_2<f>, 'Generic2Type' | 'fold1'> {}
+  extends Pick<Foldable1_2<f>, Generic2Type | 'fold1'> {}
 
 interface Helpers1<f extends Generic1> {
   foldMap1: Helper1Semigroup<f>['foldMap1'];
@@ -42,8 +42,8 @@ type Helper = {
 };
 type PartialHelper<keys extends keyof Foldable1_1<never> & keyof Foldable1_2<never>> = {
   [k in keyof Helpers1<never>]: {
-    <f extends Generic1>(_: Pick<Foldable1_1<f>, 'Generic1Type' | keys>): Helpers1<f>[k];
-    <f extends Generic2>(_: Pick<Foldable1_2<f>, 'Generic2Type' | keys>): Helpers2<f>[k];
+    <f extends Generic1>(_: Pick<Foldable1_1<f>, Generic1Type | keys>): Helpers1<f>[k];
+    <f extends Generic2>(_: Pick<Foldable1_2<f>, Generic2Type | keys>): Helpers2<f>[k];
   };
 };
 interface Helpers1Semigroup0<f extends Generic1, m> {

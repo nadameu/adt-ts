@@ -1,7 +1,7 @@
 import { Either } from '../Either/definitions';
 import { note } from '../Either/functions/helpers';
 import { identity } from '../Fn/functions';
-import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Anon, Generic1, Generic1Type, Generic2, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
 import { Just, Maybe } from '../Maybe/definitions';
 import { Applicative_1, Applicative_2 } from './Applicative';
@@ -15,10 +15,10 @@ export interface Witherable_1<t extends Generic1> extends Filterable_1<t>, Trave
 }
 
 export interface WiltOnly_1<t extends Generic1>
-  extends Pick<Witherable_1<t>, 'Generic1Type' | 'wilt'> {}
+  extends Pick<Witherable_1<t>, Generic1Type | 'wilt'> {}
 
 export interface WitherOnly_1<t extends Generic1>
-  extends Pick<Witherable_1<t>, 'Generic1Type' | 'wither'> {}
+  extends Pick<Witherable_1<t>, Generic1Type | 'wither'> {}
 
 interface Helpers1<t extends Generic1> {
   wilt: Helper1Applicative<t>['wilt'];

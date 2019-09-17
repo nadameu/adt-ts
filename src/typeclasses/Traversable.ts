@@ -1,6 +1,5 @@
 import { makeApplicativeConst } from '../Const/instances';
-import { compose, identity } from '../Fn/functions';
-import { Anon, Generic1, Generic2, Type1, Type2 } from '../Generic';
+import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
 import { applicativeIdentity } from '../Identity/instances';
 import { Alternative_1, Alternative_2 } from './Alternative';
 import { Applicative_1, Applicative_2, PureOnly_1, PureOnly_2 } from './Applicative';
@@ -22,16 +21,16 @@ export interface Traversable_2<t extends Generic2> extends Functor_2<t>, Foldabl
 }
 
 export interface TraverseOnly_1<t extends Generic1>
-  extends Pick<Traversable_1<t>, 'Generic1Type' | 'traverse'> {}
+  extends Pick<Traversable_1<t>, Generic1Type | 'traverse'> {}
 
 export interface TraverseOnly_2<t extends Generic2>
-  extends Pick<Traversable_2<t>, 'Generic2Type' | 'traverse'> {}
+  extends Pick<Traversable_2<t>, Generic2Type | 'traverse'> {}
 
 export interface SequenceOnly_1<t extends Generic1>
-  extends Pick<Traversable_1<t>, 'Generic1Type' | 'sequence'> {}
+  extends Pick<Traversable_1<t>, Generic1Type | 'sequence'> {}
 
 export interface SequenceOnly_2<t extends Generic2>
-  extends Pick<Traversable_2<t>, 'Generic2Type' | 'sequence'> {}
+  extends Pick<Traversable_2<t>, Generic2Type | 'sequence'> {}
 
 interface Helpers1<t extends Generic1> {
   foldMap: Traversable_1<t>['foldMap'];
@@ -53,8 +52,8 @@ type Helper = {
 };
 type PartialHelper<keys extends keyof Traversable_1<never> & keyof Traversable_2<never>> = {
   [k in keyof Helpers1<never>]: {
-    <t extends Generic1>(_: Pick<Traversable_1<t>, 'Generic1Type' | keys>): Helpers1<t>[k];
-    <t extends Generic2>(_: Pick<Traversable_2<t>, 'Generic2Type' | keys>): Helpers2<t>[k];
+    <t extends Generic1>(_: Pick<Traversable_1<t>, Generic1Type | keys>): Helpers1<t>[k];
+    <t extends Generic2>(_: Pick<Traversable_2<t>, Generic2Type | keys>): Helpers2<t>[k];
   };
 };
 interface Helpers1Applicative1<t extends Generic1, m extends Generic1> {
