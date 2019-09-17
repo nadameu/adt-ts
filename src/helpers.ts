@@ -66,13 +66,14 @@ export const wrap = <a>(a: a): Wrapped<a> => ({
   pipe: (...fs: Array<(_: any) => any>) => pipeN(...fs)(a),
 });
 
-export const prop = <T, K extends keyof T>(key: K) => (obj: T): T[K] => obj[key];
+export const prop = <obj, key extends keyof obj>(key: key) => (obj: obj): obj[key] => obj[key];
 
 export const method = <
-  T extends { [k in K]: (...args: A) => unknown },
-  K extends keyof T,
-  A extends unknown[]
+  obj extends { [k in key]: (...args: args) => out },
+  key extends keyof obj,
+  args extends unknown[],
+  out = obj[key] extends (...args: args) => infer out ? out : unknown
 >(
-  key: K,
-  ...args: A
-) => (obj: T): T[K] extends (...args: A) => infer B ? B : never => obj[key](...args) as any;
+  key: key,
+  ...args: args
+) => (obj: obj) => obj[key](...args);
