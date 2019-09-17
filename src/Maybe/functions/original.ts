@@ -107,3 +107,13 @@ export const separate = separateByPartitionMap({ partitionMap } as PartitionMapO
 
 export const wilt = wiltDefault({ separate, traverse } as SeparateOnly_1<TMaybe> &
   TraverseOnly_1<TMaybe>);
+
+export const fromNullable = <a>(x: a | null | undefined): Maybe<a> =>
+  x == null ? Nothing : Just(x);
+
+export const liftNullable = <a, b>(f: (_: a) => b | null | undefined): ((_: a) => Maybe<b>) => a =>
+  fromNullable(f(a));
+
+export const mapNullable = <a, b>(
+  f: (_: a) => b | null | undefined
+): ((fa: Maybe<a>) => Maybe<b>) => bind(liftNullable(f));
