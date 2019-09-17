@@ -67,6 +67,16 @@ export const map: Functor_1<TArray>['map'] = <a, b>(f: (_: a) => b) => (
   return ys;
 };
 
+export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b) => (
+  xs: ArrayLike<a>
+): ArrayLike<b> => {
+  const ys: b[] = new Array(xs.length);
+  forEachWithIndex<a>(i => x => {
+    ys[i] = f(i)(x);
+  })(xs);
+  return ys;
+};
+
 export const apply: Apply_1<TArray>['apply'] = <a, b>(fs: ArrayLike<(_: a) => b>) => (
   xs: ArrayLike<a>
 ): ArrayLike<b> => {
