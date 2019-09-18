@@ -1,8 +1,7 @@
 import { lift2 } from '../../derivations';
 import { Either } from '../../Either/definitions';
 import { Anon, Generic1, Type1 } from '../../Generic';
-import { flip } from '../../helpers/flip';
-import { Maybe } from '../../Maybe/definitions';
+import { Just, Maybe, Nothing } from '../../Maybe/definitions';
 import {
   Applicative_1,
   Apply_1,
@@ -10,19 +9,17 @@ import {
   compactByFilterMap,
   Filterable_1,
   Foldable_1,
-  FoldLOnly_1,
   foldMapDefaultR,
   Functor_1,
-  GenericSnoc_1,
   Monoid_1,
   partitionDefault,
   Semigroup_1,
   separateByPartitionMap,
   sequenceDefault,
   Traversable_1,
-  traverseDefaultSnoc,
   Witherable_1,
 } from '../../typeclasses';
+import { wiltDefault, witherDefault } from '../../typeclasses/Witherable';
 import { TArray } from '../internal';
 
 const borrow = <
@@ -93,11 +90,22 @@ export const append: Semigroup_1<TArray>['append'] = <a>(
 
 export const mempty: Monoid_1<TArray>['mempty'] = () => [];
 
-export const traverse = traverseDefaultSnoc(({
-  foldl,
-  nil: mempty,
-  snoc: <a>(xs: a[]) => (x: a) => (xs.push(x), xs),
-} as unknown) as FoldLOnly_1<TArray> & GenericSnoc_1<TArray>);
+export const traverse: Traversable_1<TArray>['traverse'] = <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
+) => <a, b>(f: (_: a) => Type1<m, b>) => (ta: ArrayLike<a>): Type1<m, ArrayLike<b>> => {
+  interface Tuple<t> {
+    0: t;
+    1: List<t>;
+    length: 2;
+  }
+  type List<t> = Maybe<Tuple<t>>;
+  const liftedCons = lift2(applicative as Applicative_1<m>)<b, List<b>, List<b>>(head => tail =>
+    Just([head, tail])
+  );
+  return applicative.map(unfoldr<b, List<b>>(x => x as Maybe<[b, List<b>]>))(
+    foldr<a, Type1<m, List<b>>>((a: a) => liftedCons(f(a)))(applicative.pure(Nothing))(ta)
+  );
+};
 
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TArray>);
 
@@ -128,30 +136,9 @@ export const partitionMap: Filterable_1<TArray>['partitionMap'] = <a, b, c>(
 export const partition = partitionDefault({ partitionMap } as Filterable_1<TArray>);
 export const separate = separateByPartitionMap({ partitionMap } as Filterable_1<TArray>);
 
-export const wither: Witherable_1<TArray>['wither'] = <m extends Generic1>(
-  applicative: Anon<Applicative_1<m>>
-) => <a, b>(f: (_: a) => Type1<m, Maybe<b>>): ((as: ArrayLike<a>) => Type1<m, ArrayLike<b>>) => {
-  const lifted = lift2(applicative as Applicative_1<m>)<Maybe<b>, b[], b[]>(mb => bs => (
-    mb.isJust && bs.push(mb.value), bs
-  ));
-  return foldl(flip((a: a) => lifted(f(a))))(applicative.pure([]));
-};
+export const wither = witherDefault({ compact, traverse } as Witherable_1<TArray>);
 
-type WiltResult<a, b> = { left: a[]; right: b[] };
-export const wilt: Witherable_1<TArray>['wilt'] = <m extends Generic1>(
-  applicative: Anon<Applicative_1<m>>
-) => <a, b, c>(
-  f: (_: a) => Type1<m, Either<b, c>>
-): ((as: ArrayLike<a>) => Type1<m, WiltResult<b, c>>) => {
-  const lifted = lift2(applicative as Applicative_1<m>)<
-    Either<b, c>,
-    WiltResult<b, c>,
-    WiltResult<b, c>
-  >(ebc => ({ left, right }) => (
-    ebc.isLeft ? left.push(ebc.leftValue) : right.push(ebc.rightValue), { left, right }
-  ));
-  return foldl(flip((a: a) => lifted(f(a))))(applicative.pure({ left: [], right: [] }));
-};
+export const wilt = wiltDefault({ separate, traverse } as Witherable_1<TArray>);
 
 export const range = (start: number) => (end: number): number[] => {
   if (!Number.isInteger(start) || !Number.isInteger(end))
