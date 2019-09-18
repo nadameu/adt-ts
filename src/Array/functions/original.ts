@@ -162,3 +162,14 @@ export const range = (start: number) => (end: number): number[] => {
     ? Array.from({ length: 1 - diff }, _ => x--)
     : Array.from({ length: diff + 1 }, _ => x++);
 };
+
+export const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): a[] => {
+  let result: a[] = [];
+  let curent = f(b);
+  while (curent.isJust) {
+    const [value, next] = curent.value;
+    result.push(value);
+    curent = f(next);
+  }
+  return result;
+};
