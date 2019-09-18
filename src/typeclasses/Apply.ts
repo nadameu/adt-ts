@@ -1,5 +1,5 @@
 import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
-import { compose } from '../helpers';
+import { compose } from '../helpers/compose';
 import { Functor_1, Functor_2 } from './Functor';
 
 export interface Apply_1<f extends Generic1> extends Functor_1<f> {

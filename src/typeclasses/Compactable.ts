@@ -1,7 +1,7 @@
 import { Either } from '../Either/definitions';
 import { hush, note, swap } from '../Either/functions/helpers';
 import { Generic1, Generic1Type, Identified1, Type1 } from '../Generic';
-import { compose } from '../helpers';
+import { compose } from '../helpers/compose';
 import { Maybe } from '../Maybe/definitions';
 import { Functor_1 } from './Functor';
 

@@ -1,6 +1,8 @@
 import { Either, Left, Right } from '../Either/definitions';
 import { Generic1, Generic1Type, Type1 } from '../Generic';
-import { compose, constant, identity } from '../helpers';
+import { compose } from '../helpers/compose';
+import { constant } from '../helpers/constant';
+import { identity } from '../helpers/identity';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { Compactable_1, CompactOnly_1, SeparateOnly_1 } from './Compactable';
 import { Functor_1 } from './Functor';

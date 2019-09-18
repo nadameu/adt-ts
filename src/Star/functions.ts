@@ -1,5 +1,5 @@
 import { Generic1, Generic2, Type1, Type2 } from '../Generic';
-import { compose } from '../helpers';
+import { compose } from '../helpers/compose';
 
 export const hoistStar: {
   <f extends Generic1, g extends Generic1>(t: <a>(_: Type1<f, a>) => Type1<g, a>): <a, b>(

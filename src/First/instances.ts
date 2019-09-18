@@ -1,4 +1,4 @@
-import { constant } from '../helpers';
+import { constant } from '../helpers/constant';
 import { Semigroup_1 } from '../typeclasses';
 import { TFirst } from './internal';
 

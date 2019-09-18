@@ -1,5 +1,6 @@
 import { Anon, Generic1 } from '../Generic';
-import { constant, identity } from '../helpers';
+import { constant } from '../helpers/constant';
+import { identity } from '../helpers/identity';
 import {
   Applicative_2,
   Apply_2,

@@ -12,9 +12,10 @@ test('Simple', async () => {
   });
   expect(output.code).toMatchInlineSnapshot(`
     "const compose = (f) => (g) => (a) => f(g(a));
-    const flip = (f) => (b) => (a) => f(a)(b);
 
     const lift2 = ({ apply, map }) => (f) => compose(apply)(map(f));
+
+    const flip = (f) => (b) => (a) => f(a)(b);
 
     const Nothing = { isJust: false, isNothing: true };
     const Just = (value) => ({ isJust: true, isNothing: false, value });

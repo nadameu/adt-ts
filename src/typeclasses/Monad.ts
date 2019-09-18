@@ -1,5 +1,6 @@
 import { Anon, Generic1, Generic2, Type1 } from '../Generic';
-import { compose, flip } from '../helpers';
+import { compose } from '../helpers/compose';
+import { flip } from '../helpers/flip';
 import { Applicative_1, Applicative_2, PureOnly_1, PureOnly_2 } from './Applicative';
 import { BindOnly_1, BindOnly_2, Bind_1, Bind_2 } from './Bind';
 

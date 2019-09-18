@@ -1,7 +1,8 @@
 import { Compose_1_1 } from '../Compose/definitions';
 import { makeApplicativeConst } from '../Const/instances';
 import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
-import { flip, identity } from '../helpers';
+import { flip } from '../helpers/flip';
+import { identity } from '../helpers/identity';
 import { applicativeIdentity } from '../Identity/instances';
 import { Alternative_1, Alternative_2 } from './Alternative';
 import { Applicative_1, Applicative_2 } from './Applicative';

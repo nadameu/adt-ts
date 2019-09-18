@@ -15,7 +15,10 @@ import {
   Type1,
   Type2,
 } from '../Generic';
-import { compose, constant, flip, identity } from '../helpers';
+import { compose } from '../helpers/compose';
+import { constant } from '../helpers/constant';
+import { flip } from '../helpers/flip';
+import { identity } from '../helpers/identity';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { monoidMultiplicative } from '../Multiplicative/instances';
 import { Ordering } from '../Ordering/definitions';

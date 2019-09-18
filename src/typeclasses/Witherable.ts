@@ -1,7 +1,7 @@
 import { Either } from '../Either/definitions';
 import { note } from '../Either/functions/helpers';
 import { Anon, Generic1, Generic1Type, Generic2, Type1, Type2 } from '../Generic';
-import { identity } from '../helpers';
+import { identity } from '../helpers/identity';
 import { applicativeIdentity } from '../Identity/instances';
 import { Just, Maybe } from '../Maybe/definitions';
 import { Applicative_1, Applicative_2 } from './Applicative';
