@@ -52,9 +52,10 @@ export const partitionDefault = <f extends Generic1>({
 
 export const partitionDefaultFilter = <f extends Generic1>({
   filter,
-}: FilterOnly_1<f>): Filterable_1<f>['partition'] => <a>(p: (_: a) => boolean) => fa => {
-  return { no: filter<a>(x => !p(x))(fa), yes: filter(p)(fa) };
-};
+}: FilterOnly_1<f>): Filterable_1<f>['partition'] => <a>(p: (_: a) => boolean) => fa => ({
+  no: filter<a>(x => !p(x))(fa),
+  yes: filter(p)(fa),
+});
 
 export const filterMapDefault = <f extends Generic1>({
   map,
