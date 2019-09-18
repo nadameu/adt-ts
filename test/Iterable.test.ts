@@ -33,7 +33,11 @@ import { makeTraversableLaws } from './laws/Traversable';
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Iterable<a>> => {
   const base = jsc.array(arb);
-  return base.smap(iterable.fromArray, xs => Array.from(xs), xs => base.show!(Array.from(xs)));
+  return base.smap(
+    iterable.fromArray,
+    xs => Array.from(xs),
+    xs => (base.show || String)(Array.from(xs))
+  );
 };
 
 describe('Functor', () => {
@@ -120,6 +124,7 @@ test('Stack safety', () => {
   const iter = iterable.range(0)(1e6);
   const trav = () => iterable.sequence(applicativeIdentity)(iter);
   expect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const _ of trav());
   }).not.toThrow();
 });

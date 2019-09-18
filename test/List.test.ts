@@ -41,7 +41,7 @@ const arrayToList: <a>(array: a[]) => List<a> = array.foldr<unknown, List<any>>(
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<List<a>> => {
   const base = jsc.array(arb);
-  return base.smap(arrayToList, listToArray, xs => base.show!(listToArray(xs)));
+  return base.smap(arrayToList, listToArray, xs => (base.show || String)(listToArray(xs)));
 };
 
 describe('Functor', () => {

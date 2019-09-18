@@ -35,7 +35,9 @@ const nearrayToNEList: <a>(array: a[]) => NEList<a> = array.foldr<unknown, NELis
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<NEList<a>> => {
   const base = jsc.nearray(arb);
-  return base.smap(nearrayToNEList, nelistToNEArray, xs => base.show!(nelistToNEArray(xs)));
+  return base.smap(nearrayToNEList, nelistToNEArray, xs =>
+    (base.show || String)(nelistToNEArray(xs))
+  );
 };
 
 describe('Functor', () => {

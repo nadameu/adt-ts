@@ -36,11 +36,6 @@ import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<LazyList<a>> => {
-  const base = jsc.array(arb);
-  return base.smap(fromArray, xs => toArray(xs), xs => base.show!(toArray(xs)));
-};
-
 const fromArray = <a>(array: a[]): LazyList<a> => () => {
   const len = array.length;
   const go = (i = 0): ConsResult<a> | NilResult => {
@@ -61,6 +56,11 @@ const toIterable = <a>(list: LazyList<a>) => ({
 });
 
 const toArray = <a>(xs: LazyList<a>) => Array.from(toIterable(xs));
+
+const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<LazyList<a>> => {
+  const base = jsc.array(arb);
+  return base.smap(fromArray, xs => toArray(xs), xs => (base.show || String)(toArray(xs)));
+};
 
 test('Stack safety', () => {
   const aLotOfIntegers = lazyList.range(0)(1e6);

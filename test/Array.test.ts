@@ -1,9 +1,11 @@
 import * as jsc from 'jsverify';
+import { applicativeIdentity, constant } from '../src';
 import {
   altArray,
   alternativeArray,
   applicativeArray,
   applyArray,
+  array,
   bindArray,
   foldableArray,
   functorArray,
@@ -13,7 +15,6 @@ import {
   plusArray,
   semigroupArray,
   traversableArray,
-  array,
 } from '../src/Array';
 import { forEachWithIndex } from '../src/Array/functions';
 import { TArray } from '../src/Array/internal';
@@ -30,10 +31,10 @@ import { makeMonoid1Laws } from './laws/Monoid';
 import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
-import { applicativeIdentity, constant, Right, Just, applicativeMaybe, number } from '../src';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<ArrayLike<a>> =>
-  jsc.array(arb).smap(
+const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<ArrayLike<a>> => {
+  const base = jsc.array(arb);
+  return base.smap(
     xs => {
       const ys: { [index: number]: a; length: number } = { length: xs.length };
       forEachWithIndex<a>(i => x => {
@@ -42,8 +43,9 @@ const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<ArrayLike<a>> =>
       return ys;
     },
     xs => Array.from(xs),
-    xs => jsc.array(arb).show!(Array.from(xs))
+    xs => (base.show || String)(Array.from(xs))
   );
+};
 
 describe('Functor', () => {
   const functorLaws = makeFunctor1Laws(functorArray)(makeEqArray)(makeArb);

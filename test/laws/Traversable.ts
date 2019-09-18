@@ -20,7 +20,7 @@ import { Applicative_1, Applicative_2, Eq, Traversable_1 } from '../../src/typec
 
 const makeArbMaybe = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> => {
   const arbMaybe = jsc.oneof([jsc.constant(Nothing), arb.smap(Just, ({ value }) => value)]);
-  arbMaybe.show = x => (x.isNothing ? 'Nothing' : `Just(${arb.show!(x.value)})`);
+  arbMaybe.show = x => (x.isNothing ? 'Nothing' : `Just(${(arb.show || String)(x.value)})`);
   return arbMaybe;
 };
 
@@ -33,7 +33,9 @@ const makeArbEither = <a, b>(
     arbB.smap(Right, ({ rightValue }) => rightValue),
   ]);
   arbEither.show = x =>
-    x.isLeft ? `Left(${arbA.show!(x.leftValue)})` : `Right(${arbB.show!(x.rightValue)})`;
+    x.isLeft
+      ? `Left(${(arbA.show || String)(x.leftValue)})`
+      : `Right(${(arbB.show || String)(x.rightValue)})`;
   return arbEither;
 };
 
