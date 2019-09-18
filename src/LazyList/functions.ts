@@ -23,10 +23,6 @@ import { TLazyList } from './internal';
 export const cons: <a>(head: a) => (tail: LazyList<a>) => LazyList<a> = LazyCons;
 export const nil = LazyNil;
 
-export const foldr: Foldable_1<TLazyList>['foldr'] = <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (
-  fa: LazyList<a>
-): b => foldl(flip(f))(b)(reverse(fa));
-
 export const foldl: Foldable_1<TLazyList>['foldl'] = <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (
   fa: LazyList<a>
 ): b => {
@@ -39,6 +35,12 @@ export const foldl: Foldable_1<TLazyList>['foldl'] = <a, b>(f: (_: b) => (_: a) 
   return acc;
 };
 
+const reverse: <a>(fa: LazyList<a>) => LazyList<a> = foldl(flip(cons))(nil);
+
+export const foldr: Foldable_1<TLazyList>['foldr'] = <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (
+  fa: LazyList<a>
+): b => foldl(flip(f))(b)(reverse(fa));
+
 export const foldlWithIndex = <a, b>(f: (_: number) => (_: b) => (_: a) => b) => (b: b) => (
   xs: LazyList<a>
 ): b => {
@@ -50,6 +52,15 @@ export const foldlWithIndex = <a, b>(f: (_: number) => (_: b) => (_: a) => b) =>
   }
   return acc;
 };
+
+export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b) =>
+  (function go(i: number) {
+    return (xs: LazyList<a>): LazyList<b> => () =>
+      (result => (result.isNil ? result : ConsResult(f(i)(result.head))(go(i + 1)(result.tail))))(
+        xs()
+      );
+  })(0);
+
 export const foldrWithIndex = <a, b>(f: (_: number) => (_: a) => (_: b) => b) => (b: b) => (
   xs: LazyList<a>
 ): b =>
@@ -64,8 +75,6 @@ export const foldMapWithIndex: {
 } = <m>({ append, mempty }: Anon<Monoid_0<m>>) => <a>(
   f: (_: number) => (_: a) => m
 ): ((fa: LazyList<a>) => m) => foldlWithIndex<a, m>(i => m => a => append(m)(f(i)(a)))(mempty());
-
-const reverse: <a>(fa: LazyList<a>) => LazyList<a> = foldl(flip(cons))(nil);
 
 export const foldMap = foldMapDefaultL({ foldl } as Foldable_1<TLazyList>);
 
@@ -83,14 +92,6 @@ export const map: Functor_1<TLazyList>['map'] = <a, b>(f: (_: a) => b) => (
   xs: LazyList<a>
 ): LazyList<b> => () =>
   (result => (result.isNil ? result : ConsResult(f(result.head))(map(f)(result.tail))))(xs());
-
-export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b) =>
-  (function go(i: number) {
-    return (xs: LazyList<a>): LazyList<b> => () =>
-      (result => (result.isNil ? result : ConsResult(f(i)(result.head))(go(i + 1)(result.tail))))(
-        xs()
-      );
-  })(0);
 
 export const apply = applyDefault({ bind, map } as Functor_1<TLazyList> & BindOnly_1<TLazyList>);
 

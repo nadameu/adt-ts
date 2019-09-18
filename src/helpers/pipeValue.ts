@@ -30,6 +30,7 @@ export interface PipeValue<a> {
 
 export const pipeValue = <a>(a: a): PipeValue<a> => ({
   pipe() {
+    // eslint-disable-next-line prefer-rest-params
     return foldl<Function, any>(x => f => f(x))(a)(arguments);
   },
 });

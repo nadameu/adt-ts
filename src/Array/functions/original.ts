@@ -49,6 +49,10 @@ export const forEachWithIndex = <a>(
   f: (_: number) => (_: a) => void
 ): ((xs: ArrayLike<a>) => void) => borrow('forEach', (x, i) => f(i)(x));
 
+export const foldl: Foldable_1<TArray>['foldl'] = <a, b>(f: (_: b) => (_: a) => b) => (
+  b: b
+): ((xs: ArrayLike<a>) => b) => borrow('reduce', (acc: b, x: a) => f(acc)(x), b);
+
 export const bind: Bind_1<TArray>['bind'] = <a, b>(
   f: (_: a) => ArrayLike<b>
 ): ((xs: ArrayLike<a>) => ArrayLike<b>) =>
@@ -68,10 +72,6 @@ export const apply: Apply_1<TArray>['apply'] = <a, b>(fs: ArrayLike<(_: a) => b>
   foldl<(_: a) => b, b[]>(ys => f => foldl<a, b[]>(ys => x => snocArray(ys)(f(x)))(ys)(xs))([])(fs);
 
 export const pure: Applicative_1<TArray>['pure'] = x => [x];
-
-export const foldl: Foldable_1<TArray>['foldl'] = <a, b>(f: (_: b) => (_: a) => b) => (
-  b: b
-): ((xs: ArrayLike<a>) => b) => borrow('reduce', (acc: b, x: a) => f(acc)(x), b);
 
 export const foldlWithIndex = <a, b>(f: (_: b) => (_: number) => (_: a) => b) => (
   b: b

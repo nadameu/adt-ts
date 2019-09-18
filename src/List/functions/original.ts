@@ -59,6 +59,48 @@ export const alt = append;
 export const empty = mempty;
 export const singleton: <a>(value: a) => NEList<a> = Snoc(Nil);
 export const pure = singleton;
+export const unsnoc: {
+  <a>(list: NESnocList<a>): NESnocList<a>;
+  <a>(list: NEList<a>): Snoc<a>;
+  <a>(list: List<a>): Snoc<a> | Nil;
+} = (<a>(list: List<a>): Snoc<a> | Nil => {
+  let current = list;
+  let next: List<a> = nil;
+  for (;;) {
+    switch (current.tag) {
+      case ListTag.Cons: {
+        next = snoc(next)(current.head);
+        current = current.tail;
+        break;
+      }
+      case ListTag.Snoc: {
+        const { init, last } = current;
+        return Snoc(append(next)(init))(last);
+      }
+      case ListTag.Append: {
+        next = append(next)(current.left);
+        current = current.right;
+        break;
+      }
+      case ListTag.Nil: {
+        if (isNil(next)) return Nil;
+        current = next;
+        next = nil;
+        break;
+      }
+    }
+  }
+}) as any;
+export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: List<a>): b => {
+  let acc = b0;
+  let current = unsnoc(xs);
+  while (isSnoc(current)) {
+    const { init, last } = current;
+    acc = f(last)(acc);
+    current = unsnoc(init);
+  }
+  return acc;
+};
 export const map: {
   <a, b>(f: (_: a) => b): {
     (xs: NEList<a>): NEList<b>;
@@ -112,38 +154,6 @@ export const uncons: {
     }
   }
 }) as any;
-export const unsnoc: {
-  <a>(list: NESnocList<a>): NESnocList<a>;
-  <a>(list: NEList<a>): Snoc<a>;
-  <a>(list: List<a>): Snoc<a> | Nil;
-} = (<a>(list: List<a>): Snoc<a> | Nil => {
-  let current = list;
-  let next: List<a> = nil;
-  for (;;) {
-    switch (current.tag) {
-      case ListTag.Cons: {
-        next = snoc(next)(current.head);
-        current = current.tail;
-        break;
-      }
-      case ListTag.Snoc: {
-        const { init, last } = current;
-        return Snoc(append(next)(init))(last);
-      }
-      case ListTag.Append: {
-        next = append(next)(current.left);
-        current = current.right;
-        break;
-      }
-      case ListTag.Nil: {
-        if (isNil(next)) return Nil;
-        current = next;
-        next = nil;
-        break;
-      }
-    }
-  }
-}) as any;
 export const foldl = <a, b>(f: (_: b) => (_: a) => b) => (b0: b) => (xs: List<a>): b => {
   let acc = b0;
   let current = uncons(xs);
@@ -151,16 +161,6 @@ export const foldl = <a, b>(f: (_: b) => (_: a) => b) => (b0: b) => (xs: List<a>
     const { head, tail } = current;
     acc = f(acc)(head);
     current = uncons(tail);
-  }
-  return acc;
-};
-export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: List<a>): b => {
-  let acc = b0;
-  let current = unsnoc(xs);
-  while (isSnoc(current)) {
-    const { init, last } = current;
-    acc = f(last)(acc);
-    current = unsnoc(init);
   }
   return acc;
 };

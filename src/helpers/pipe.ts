@@ -29,6 +29,7 @@ interface Pipe {
 }
 
 export const pipe: Pipe = function() {
+  // eslint-disable-next-line prefer-rest-params
   const fs = arguments;
   return (a: any) => foldl<any, any>(x => f => f(x))(a)(fs);
 };
