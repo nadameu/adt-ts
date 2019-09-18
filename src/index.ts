@@ -18,6 +18,7 @@ export * from './LazyList';
 export * from './List';
 export * from './Maybe';
 export * from './Multiplicative';
+export * from './NEList';
 export * from './Number';
 export * from './Ordering';
 export * from './Star';

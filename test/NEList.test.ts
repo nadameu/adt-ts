@@ -7,14 +7,14 @@ import {
   bindNEList,
   foldableNEList,
   functorNEList,
-  list,
+  nelist,
   makeEqNEList,
   monadNEList,
   NEList,
   semigroupNEList,
   traversableNEList,
 } from '../src';
-import { TNEList } from '../src/List/internal';
+import { TNEList } from '../src/NEList/internal';
 import { makeAlt1Laws } from './laws/Alt';
 import { makeApplicative1Laws } from './laws/Applicative';
 import { makeApply1Laws } from './laws/Apply';
@@ -26,12 +26,12 @@ import { makeMonad1Laws } from './laws/Monad';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const nelistToNEArray: <a>(list: NEList<a>) => a[] = list.foldl<unknown, any[]>(xs => x => (
+const nelistToNEArray: <a>(list: NEList<a>) => a[] = nelist.foldl<unknown, any[]>(xs => x => (
   xs.push(x), xs
 ))([]);
-const nearrayToNEList: <a>(array: a[]) => NEList<a> = array.foldr<unknown, NEList<any>>(list.cons)(
-  list.nil as any
-);
+const nearrayToNEList: <a>(array: a[]) => NEList<a> = array.foldr<unknown, NEList<any>>(
+  nelist.cons
+)(nelist.nil as any);
 
 const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<NEList<a>> => {
   const base = jsc.nearray(arb);
