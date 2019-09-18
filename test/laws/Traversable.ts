@@ -1,58 +1,47 @@
 import * as jsc from 'jsverify';
 import {
-  applicativeEither,
+  applicativeArray,
   applicativeIdentity,
-  applicativeMaybe,
-  Either,
-  either,
+  applicativeIterable,
   eqNumber,
-  eqString,
-  Just,
-  Left,
-  makeEqEither,
-  makeEqMaybe,
-  Maybe,
-  Nothing,
-  Right,
+  makeEqArray,
+  makeEqIterable,
 } from '../../src';
-import { Anon, Generic1, Generic2, Type1, Type2 } from '../../src/Generic';
-import { Applicative_1, Applicative_2, Eq, Traversable_1 } from '../../src/typeclasses';
+import { Anon, Generic1, Type1 } from '../../src/Generic';
+import * as I from '../../src/Iterable/functions';
+import { Applicative_1, Eq, Traversable_1 } from '../../src/typeclasses';
 
-const makeArbMaybe = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> => {
-  const arbMaybe = jsc.oneof([jsc.constant(Nothing), arb.smap(Just, ({ value }) => value)]);
-  arbMaybe.show = x => (x.isNothing ? 'Nothing' : `Just(${(arb.show || String)(x.value)})`);
-  return arbMaybe;
+const makeArbIterable = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Iterable<a>> => {
+  const arbIterable = jsc.oneof([jsc.constant(I.mempty()), arb.smap(I.pure, xs => [...xs][0])]);
+  const origShow = jsc.array(arb).show || String;
+  arbIterable.show = xs => origShow(Array.from(xs));
+  return arbIterable;
 };
 
-const makeArbEither = <a, b>(
-  arbA: jsc.Arbitrary<a>,
-  arbB: jsc.Arbitrary<b>
-): jsc.Arbitrary<Either<a, b>> => {
-  const arbEither = jsc.oneof([
-    arbA.smap(Left, ({ leftValue }) => leftValue),
-    arbB.smap(Right, ({ rightValue }) => rightValue),
+const makeArbArray = <a>(arb: jsc.Arbitrary<a>) => {
+  const arbArray = jsc.oneof<ArrayLike<a>>([
+    jsc.constant({ length: 0 }),
+    arb.smap(x => ({ 0: x, length: 1 } as ArrayLike<a>), xs => xs[0]),
   ]);
-  arbEither.show = x =>
-    x.isLeft
-      ? `Left(${(arbA.show || String)(x.leftValue)})`
-      : `Right(${(arbB.show || String)(x.rightValue)})`;
-  return arbEither;
+  const origShow = jsc.array(arb).show || String;
+  arbArray.show = xs => origShow(Array.from(xs));
+  return arbArray;
 };
 
-type Compose<f extends Generic2, g extends Generic1, a, b> = Type2<f, a, Type1<g, b>>;
+type Compose<f extends Generic1, g extends Generic1, a> = Type1<f, Type1<g, a>>;
 
-interface TCompose<f extends Generic2, g extends Generic1> extends Generic2 {
-  type: Compose<f, g, this['a'], this['b']>;
+interface TCompose<f extends Generic1, g extends Generic1> extends Generic1 {
+  type: Compose<f, g, this['a']>;
 }
-const makeApplicativeCompose = <f extends Generic2, g extends Generic1>(
-  aF: Applicative_2<f>,
+const makeApplicativeCompose = <f extends Generic1, g extends Generic1>(
+  aF: Applicative_1<f>,
   aG: Applicative_1<g>
 ) =>
   ({
     apply: f => x => aF.apply(aF.map(aG.apply as any)(f))(x),
     map: f => x => aF.map(aG.map(f))(x),
     pure: a => aF.pure(aG.pure(a)),
-  } as Applicative_2<TCompose<f, g>>);
+  } as Applicative_1<TCompose<f, g>>);
 
 const laws = <t extends Generic1, a>(
   traversable: Anon<Traversable_1<t>>,
@@ -63,28 +52,30 @@ const laws = <t extends Generic1, a>(
   const { sequence, traverse } = traversable;
   return {
     naturality: (): void => {
-      const eqEither = makeEqEither(eqString, { eq } as Eq<Type1<t, a>>).eq;
-      return jsc.assertForall(jsc.string, jsc.fn(makeArbMaybe(a)), ta, (reason, f, ta) => {
-        const a = either.note(reason)(traverse(applicativeMaybe)(f)(ta));
-        const b = traverse(applicativeEither)(x => either.note(reason)(f(x)))(ta);
-        return eqEither(a)(b);
+      const eqArray = makeEqArray({ eq } as Eq<Type1<t, a>>).eq;
+      return jsc.assertForall(jsc.fn(makeArbIterable(a)), ta, (f, ta) => {
+        const a = Array.from(traverse(applicativeIterable)(f)(ta));
+        const b = traverse(applicativeArray)(x => Array.from(f(x)))(ta);
+        return eqArray(a)(b);
       });
     },
     identity: (): void => {
       jsc.assertForall(ta, ta => eq(sequence(applicativeIdentity)(ta))(ta));
     },
     composition: (): void => {
-      const applicativeCompose = makeApplicativeCompose(applicativeEither, applicativeMaybe);
-      const eqCompose = makeEqEither(eqString, makeEqMaybe({ eq } as Eq<Type1<t, a>>)).eq;
+      const applicativeCompose = makeApplicativeCompose(applicativeIterable, applicativeArray);
+      const eqCompose = makeEqIterable(makeEqArray({ eq } as Eq<Type1<t, a>>)).eq;
       return jsc.assertForall(
-        jsc.fn(makeArbEither(jsc.string, a)),
-        jsc.fn(makeArbMaybe(a)),
+        jsc.fn(makeArbIterable(a)),
+        jsc.fn(makeArbArray(a)),
         ta,
         (f, g, ta) => {
-          const a = traverse(applicativeCompose)((x: a) => applicativeEither.map(g)(f(x)))(ta);
-          const b = applicativeEither.map(traverse(applicativeMaybe)(g))(
-            traverse(applicativeEither)(f)(ta)
+          const a = traverse(applicativeCompose)((x: a) => applicativeIterable.map(g)(f(x)))(ta);
+          for (const _ of a); // Making sure the inner value is recalculated every time
+          const b = applicativeIterable.map(traverse(applicativeArray)(g))(
+            traverse(applicativeIterable)(f)(ta)
           );
+          for (const _ of b); // Making sure the inner value is recalculated every time
           return eqCompose(a)(b);
         }
       );
