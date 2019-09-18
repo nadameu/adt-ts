@@ -234,19 +234,19 @@ export const fold: HelperMonoid['fold'] = <f extends Generic1>({
 }: Anon<Foldable_1<f>, 'foldMap'>) => <a>(monoid: Anon<Monoid_0<a>>) =>
   foldMap(monoid as Monoid_0<a>)<a>(identity);
 
-export const oneOf: HelperPlus['oneOf'] = <f extends Generic1>(
-  foldable: Anon<Foldable_1<f>, 'foldMap'>
-) => <g extends Generic1>(
-  plus: Anon<Plus_1<g>>
-): (<a>(fga: Type1<f, Type1<g, a>>) => Type1<g, a>) =>
-  oneOfMap(foldable as Foldable_1<f>)(plus as Plus_1<g>)(identity);
-
 export const oneOfMap: HelperPlus['oneOfMap'] = <f extends Generic1>({
   foldMap,
 }: Anon<Foldable_1<f>, 'foldMap'>) => <g extends Generic1>(
   plus: Anon<Plus_1<g>>
 ): (<a, b>(f: (_: a) => Type1<g, b>) => (fa: Type1<f, a>) => Type1<g, b>) =>
   foldMap(makeMonoidAlternate(plus as Plus_1<g>));
+
+export const oneOf: HelperPlus['oneOf'] = <f extends Generic1>(
+  foldable: Anon<Foldable_1<f>, 'foldMap'>
+) => <g extends Generic1>(
+  plus: Anon<Plus_1<g>>
+): (<a>(fga: Type1<f, Type1<g, a>>) => Type1<g, a>) =>
+  oneOfMap(foldable as Foldable_1<f>)(plus as Plus_1<g>)(identity);
 
 export const intercalate: HelperMonoidL['intercalate'] = <f extends Generic1>({
   foldl,

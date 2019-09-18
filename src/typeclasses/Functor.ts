@@ -32,14 +32,14 @@ type Helper = {
   };
 };
 
-export const voidLeft: Helper['voidLeft'] = <f extends Generic1>({ map }: Anon<Functor_1<f>>) =>
-  flip(voidRight({ map } as Functor_1<f>));
-
 export const voidRight: Helper['voidRight'] = <f extends Generic1>({ map }: Anon<Functor_1<f>>) => <
   a
 >(
   a: a
 ) => map(constant(a));
+
+export const voidLeft: Helper['voidLeft'] = <f extends Generic1>({ map }: Anon<Functor_1<f>>) =>
+  flip(voidRight({ map } as Functor_1<f>));
 
 export const $$void: Helper['$$void'] = <f extends Generic1>({ map }: Anon<Functor_1<f>>) =>
   /*#__PURE__*/ voidRight({ map } as Functor_1<f>)(undefined);
