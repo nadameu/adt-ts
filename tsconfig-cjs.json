@@ -5,7 +5,8 @@
     "noEmit": false,
     "declaration": false,
     "rootDir": "src/",
-    "outDir": "dist/cjs/"
+    "outDir": "dist/cjs/",
+    "sourceMap": false
   },
   "include": ["src/"]
 }
