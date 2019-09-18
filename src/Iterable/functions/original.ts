@@ -1,6 +1,7 @@
-import { lift2 } from '../../derivations';
+import * as array from '../../Array/functions';
 import { Anon, Generic1, Type1 } from '../../Generic';
-import { ConsList, isCons, isSnoc, SnocList } from '../../List/definitions';
+import { flip } from '../../helpers/flip';
+import { List } from '../../List/definitions';
 import * as list from '../../List/functions';
 import { Maybe } from '../../Maybe/definitions';
 import {
@@ -75,50 +76,39 @@ export const foldl = <a, b>(f: (_: b) => (_: a) => b) => (b0: b) => (xs: Iterabl
 };
 
 export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterable<a>): b => {
-  let ys = foldl<a, SnocList<a>>(list.snoc)(list.nil)(xs);
-  let acc = b0;
-  while (isSnoc(ys)) {
-    acc = f(ys.last)(acc);
-    ys = ys.init;
-  }
-  return acc;
+  const reversed = foldl<a, List<a>>(flip(list.cons))(list.nil)(xs);
+  return list.foldl(flip(f))(b0)(reversed);
 };
+
+const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): Iterable<a> => ({
+  *[Symbol.iterator]() {
+    let current = f(b);
+    while (current.isJust) {
+      const [value, next] = current.value;
+      yield value;
+      current = f(next);
+    }
+  },
+});
 
 export const foldMap = foldMapDefaultL({ foldl } as Foldable_1<TIterable>);
 
-export const traverse: Traversable_1<TIterable>['traverse'] = <m extends Generic1>({
-  apply,
-  map,
-  pure,
-}: Anon<Applicative_1<m>>) => <a, b>(f: (_: a) => Type1<m, b>) => (
-  as: Iterable<a>
-): Type1<m, Iterable<b>> => {
-  const liftedCons: <a>(
-    fx: Type1<m, a>
-  ) => (fxs: Type1<m, ConsList<a>>) => Type1<m, ConsList<a>> = lift2({
-    apply,
-    map,
-  } as Apply_1<m>)(list.cons);
-  const liftedNil = pure(list.nil);
-  const ms = foldl<a, SnocList<Type1<m, b>>>(ys => x => list.snoc(ys)(f(x)))(list.nil)(as);
-  const mbs = list.foldr<Type1<m, b>, Type1<m, ConsList<b>>>(liftedCons)(liftedNil)(ms);
-  return map(
-    (bs: ConsList<b>): Iterable<b> => ({
-      *[Symbol.iterator]() {
-        for (let b = bs; isCons(b); b = b.tail) yield b.head;
-      },
-    })
-  )(mbs);
-};
+export const traverse: Traversable_1<TIterable>['traverse'] = <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
+) => <a, b>(f: (_: a) => Type1<m, b>) => (as: Iterable<a>): Type1<m, Iterable<b>> =>
+  array.traverse(applicative as Applicative_1<m>)(f)(
+    foldl<a, a[]>(xs => x => (xs.push(x), xs))([])(as)
+  );
 
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TIterable>);
 
 export const range = (start: number) => (end: number): Iterable<number> => {
   if (!Number.isInteger(start) || !Number.isInteger(end))
     throw new TypeError('Start and end must be integers.');
+  let step = start < end ? 1 : -1;
   return {
     *[Symbol.iterator]() {
-      for (let i = start; i <= end; i++) yield i;
+      for (let i = start; i !== end; i += step) yield i;
     },
   };
 };
