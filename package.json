@@ -30,6 +30,7 @@
   "devDependencies": {
     "@nadameu/pipe": "^2.0.0",
     "@types/jest": "^24.0.17",
+    "benchmark": "^2.1.4",
     "jest": "^24.8.0",
     "jsverify": "^0.8.4",
     "prettier": "^1.18.2",
