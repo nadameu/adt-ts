@@ -50,8 +50,7 @@ export const makeEqIterable = <a>(eq: Eq<a>) =>
         const x = ix.next();
         const y = iy.next();
         if (x.done) return y.done;
-        if (y.done) return false;
-        if (!eq.eq(x.value)(y.value)) return false;
+        if (y.done || !eq.eq(x.value)(y.value)) return false;
       }
     },
   } as Eq<Iterable<a>>);
