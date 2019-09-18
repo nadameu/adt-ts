@@ -14,39 +14,36 @@ import {
   Semigroup_1,
   Traversable_1,
 } from '../typeclasses';
-import { List, ListTag, NEList } from './definitions';
+import { List } from './definitions';
 import {
   alt,
   append,
   apply,
   bind,
   empty,
-  fold1,
   foldl,
   foldMap,
-  foldMap1,
   foldr,
   map,
   mempty,
   pure,
   sequence,
   traverse,
-  uncons,
 } from './functions/original';
-import { TList, TNEList } from './internal';
+import { TList } from './internal';
 
 /* LIST */
 export const makeEqList = <a>(eq: Eq<a>) =>
   ({
     eq: xs => ys => {
-      let ix = uncons(xs);
-      let iy = uncons(ys);
-      while (ix.tag === ListTag.Cons && iy.tag === ListTag.Cons) {
+      let ix = xs;
+      let iy = ys;
+      while (ix.isCons && iy.isCons) {
         if (!eq.eq(ix.head)(iy.head)) return false;
-        ix = uncons(ix.tail);
-        iy = uncons(iy.tail);
+        ix = ix.tail;
+        iy = iy.tail;
       }
-      return (ix.tag === ListTag.Nil) === (iy.tag === ListTag.Nil);
+      return ix.isNil === iy.isNil;
     },
   } as Eq<List<a>>);
 
@@ -67,21 +64,3 @@ export const foldableList = { foldMap, foldl, foldr } as Foldable_1<TList>;
 export const traversableList = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable_1<
   TList
 >;
-
-/* NELIST */
-export const makeEqNEList = makeEqList as <a>(eq: Eq<a>) => Eq<NEList<a>>;
-
-export const functorNEList = functorList as Functor_1<TNEList>;
-export const applyNEList = applyList as Apply_1<TNEList>;
-export const applicativeNEList = applicativeList as Applicative_1<TNEList>;
-export const bindNEList = bindList as Bind_1<TNEList>;
-export const monadNEList = monadList as Monad_1<TNEList>;
-
-export const semigroupNEList = { append } as Semigroup_1<TNEList>;
-
-export const altNEList = altList as Alt_1<TNEList>;
-
-export const foldableNEList = foldableList as Foldable_1<TNEList>;
-export const traversableNEList = traversableList as Traversable_1<TNEList>;
-
-export const foldable1NEList = { fold1, foldMap, foldMap1, foldl, foldr } as Foldable1_1<TNEList>;
