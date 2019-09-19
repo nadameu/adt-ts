@@ -79,7 +79,7 @@ test('mapWithIndex', () => {
 });
 
 test('foldlWithIndex', () => {
-  const foldF = foldlWithIndex<number, number>(acc => i => x => acc + i * x)(8);
+  const foldF = foldlWithIndex<number, number>(i => acc => x => acc + i * x)(8);
   const x = foldF(empty);
   expect(x).toBe(8);
   const y = foldF(populated);

@@ -73,9 +73,9 @@ export const apply: Apply_1<TArray>['apply'] = <a, b>(fs: ArrayLike<(_: a) => b>
 
 export const pure: Applicative_1<TArray>['pure'] = x => [x];
 
-export const foldlWithIndex = <a, b>(f: (_: b) => (_: number) => (_: a) => b) => (
+export const foldlWithIndex = <a, b>(f: (_: number) => (_: b) => (_: a) => b) => (
   b: b
-): ((xs: ArrayLike<a>) => b) => borrow('reduce', (acc: b, x: a, i) => f(acc)(i)(x), b);
+): ((xs: ArrayLike<a>) => b) => borrow('reduce', (acc: b, x: a, i) => f(i)(acc)(x), b);
 
 export const foldr: Foldable_1<TArray>['foldr'] = <a, b>(f: (_: a) => (_: b) => b) => (
   b: b
