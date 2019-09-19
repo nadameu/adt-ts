@@ -1,55 +1,19 @@
-import { array as A, pipe } from '../src';
-
-const generate = (options: {
-  firstLetter: string;
-  lastLetter: string;
-  type: (_: string) => string;
-  prefix: string;
-  args: number;
-}) => {
-  const ends = A.range(-1)(19);
-  const defs = ends.map(
-    pipe(
-      A.range(-1),
-      xs => xs.map(i => `x${i}`),
-      range => {
-        range[0] = options.firstLetter;
-        if (range.length > 1) range[range.length - 1] = options.lastLetter;
-        const letters = range.join(', ');
-        const pairs = Array.from(range)
-          .map((a, i, as) => [a, as[i + 1]] as [string, string | undefined])
-          .filter((x): x is [string, string] => x[1] !== undefined);
-        const fns = pairs.map(([a, b], i) => `f${i}: (_: ${a}) => ${options.type(b)}`);
-        const first = range[0];
-        const last = range[range.length - 1];
-        return fns.length === 0
-          ? `(): <${options.prefix}${letters}>(_: ${first}) => ${options.type(last)};`
-          : `<${options.prefix}${letters}>(${fns.join(', ')}): (_: ${first}) => ${options.type(
-              last
-            )};`;
-      }
-    )
-  );
-  const z = `export interface PipeKleisli_${options.args}<f extends Generic${
-    options.args
-  }> {\n${defs.map(x => `  ${x}`).join('\n')}\n}`;
-  return z;
-};
+import { generate } from './type-generator';
 
 test('Generate type description', () => {
   const o1 = generate({
+    name: 'PipeKleisli_1<f extends Generic1>',
     firstLetter: 'a',
     lastLetter: 'b',
     type: x => `Type1<f, ${x}>`,
     prefix: '',
-    args: 1,
   });
   const o2 = generate({
+    name: 'PipeKleisli_2<f extends Generic2>',
     firstLetter: 'b',
     lastLetter: 'c',
     type: x => `Type2<f, a, ${x}>`,
     prefix: 'a, ',
-    args: 2,
   });
   const z = [o1, o2].join('\n\n');
   expect(z).toMatchInlineSnapshot(`
