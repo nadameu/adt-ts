@@ -16,14 +16,16 @@ test('Generate type description', () => {
         const fns = pairs.map(([a, b], i) => `f${i}: (_: ${a}) => ${b}`);
         const first = range[0];
         const last = range[range.length - 1];
-        return `<${letters}>(${fns.join(', ')}): (_: ${first}) => ${last};`;
+        return fns.length === 0
+          ? `(): <${letters}>(_: ${first}) => ${last};`
+          : `<${letters}>(${fns.join(', ')}): (_: ${first}) => ${last};`;
       }
     )
   );
   const z = `export interface Pipe {\n${defs.map(x => `  ${x}`).join('\n')}\n}`;
   expect(z).toMatchInlineSnapshot(`
     "export interface Pipe {
-      <a>(): (_: a) => a;
+      (): <a>(_: a) => a;
       <a, b>(f0: (_: a) => b): (_: a) => b;
       <a, x0, b>(f0: (_: a) => x0, f1: (_: x0) => b): (_: a) => b;
       <a, x0, x1, b>(f0: (_: a) => x0, f1: (_: x0) => x1, f2: (_: x1) => b): (_: a) => b;

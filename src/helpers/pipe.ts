@@ -1,7 +1,7 @@
 import { foldl } from '../Array/functions';
 
 export interface Pipe {
-  <a>(): (_: a) => a;
+  (): <a>(_: a) => a;
   <a, b>(f0: (_: a) => b): (_: a) => b;
   <a, x0, b>(f0: (_: a) => x0, f1: (_: x0) => b): (_: a) => b;
   <a, x0, x1, b>(f0: (_: a) => x0, f1: (_: x0) => x1, f2: (_: x1) => b): (_: a) => b;
