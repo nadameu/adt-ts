@@ -70,6 +70,7 @@ export {
 export { Functor_1, Functor_2 } from './typeclasses/Functor';
 export { GInverseOnly_0, Group_0 } from './typeclasses/Group';
 export { ap, liftM1, Monad_1, Monad_2 } from './typeclasses/Monad';
+export { PipeKleisli_1, PipeKleisli_2 } from './typeclasses/Monad/pipeK';
 export {
   CatchErrorOnly_1,
   CatchErrorOnly_2,

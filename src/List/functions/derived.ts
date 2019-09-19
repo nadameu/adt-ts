@@ -1,17 +1,23 @@
 import * as d from '../../derivations';
-import { Apply_1, BindOnly_1, FoldLOnly_1, FoldMapOnly_1, Functor_1 } from '../../typeclasses';
+import {
+  Apply_1,
+  BindOnly_1,
+  FoldLOnly_1,
+  FoldMapOnly_1,
+  Functor_1,
+  PureOnly_1,
+} from '../../typeclasses';
 import { TList } from '../internal';
-import { apply, bind, foldl, foldMap, map } from './original';
+import { apply, bind, foldl, foldMap, map, pure } from './original';
 
 export const lift2 = d.lift2({ apply, map } as Apply_1<TList>);
 export const lift3 = d.lift3({ apply, map } as Apply_1<TList>);
 export const lift4 = d.lift4({ apply, map } as Apply_1<TList>);
 export const lift5 = d.lift5({ apply, map } as Apply_1<TList>);
 
+export const composeKleisli = d.composeKleisli({ bind } as BindOnly_1<TList>);
+export const composeKleisliFlipped = d.composeKleisliFlipped({ bind } as BindOnly_1<TList>);
 export const join = d.join({ bind } as BindOnly_1<TList>);
-export const pipeK = d.pipeK({ bind } as BindOnly_1<TList>);
-export const wrapBind = d.wrapBind({ bind } as BindOnly_1<TList>);
-export const composeK = d.composeK({ bind } as BindOnly_1<TList>);
 
 export const all = d.all({ foldMap } as FoldMapOnly_1<TList>);
 export const and = d.and({ foldMap } as FoldMapOnly_1<TList>);
@@ -33,3 +39,5 @@ export const flap = d.flap({ map } as Functor_1<TList>);
 export const voidLeft = d.voidLeft({ map } as Functor_1<TList>);
 export const voidRight = d.voidRight({ map } as Functor_1<TList>);
 export const $$void = d.$$void({ map } as Functor_1<TList>);
+
+export const pipeK = d.pipeK({ bind, pure } as BindOnly_1<TList> & PureOnly_1<TList>);
