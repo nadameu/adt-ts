@@ -23,8 +23,10 @@ import {
   makeEqIterable,
   Right,
   Left,
+  monoidString,
 } from '../src';
 import { Eq } from '../src/typeclasses';
+import { intercalate } from '../src/Array/functions';
 
 const empty: ArrayLike<number> = { length: 0 };
 const populated: ArrayLike<number> = { 0: 1, 1: 2, 2: 3, 3: 4, length: 4 };
@@ -154,4 +156,12 @@ test('range', () => {
   expect(range(1)(1)).toEqual([1]);
   expect(range(2)(5)).toEqual([2, 3, 4, 5]);
   expect(range(2)(-2)).toEqual([2, 1, 0, -1, -2]);
+});
+
+test('intercalate', () => {
+  const intComma = intercalate(monoidString)(', ');
+  expect(intComma([])).toEqual('');
+  expect(intComma(['a'])).toEqual('a');
+  expect(intComma(['a', 'b'])).toEqual('a, b');
+  expect(intComma(['a', 'b', 'c'])).toEqual('a, b, c');
 });
