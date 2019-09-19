@@ -11,7 +11,8 @@
       "files": [
         "src/helpers/pipe.ts",
         "src/helpers/pipeValue.ts",
-        "src/typeclasses/Monad/pipeK.ts"
+        "src/typeclasses/Monad/pipeK.ts",
+        "src/typeclasses/Monad/pipeKValue.ts"
       ],
       "options": { "printWidth": 10000 }
     }

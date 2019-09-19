@@ -41,3 +41,4 @@ export const voidRight = d.voidRight({ map } as Functor_2<TEither>);
 export const $$void = d.$$void({ map } as Functor_2<TEither>);
 
 export const pipeK = d.pipeK({ bind, pure } as BindOnly_2<TEither> & PureOnly_2<TEither>);
+export const pipeKValue = d.pipeKValue({ bind, pure } as BindOnly_2<TEither> & PureOnly_2<TEither>);

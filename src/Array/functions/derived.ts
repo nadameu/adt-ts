@@ -49,3 +49,4 @@ export const wilted = d.wilted({ wilt } as WiltOnly_1<TArray>);
 export const withered = d.withered({ wither } as WitherOnly_1<TArray>);
 
 export const pipeK = d.pipeK({ bind, pure } as BindOnly_1<TArray> & PureOnly_1<TArray>);
+export const pipeKValue = d.pipeKValue({ bind, pure } as BindOnly_1<TArray> & PureOnly_1<TArray>);

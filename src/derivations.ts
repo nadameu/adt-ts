@@ -20,5 +20,6 @@ export {
 } from './typeclasses/Foldable';
 export { $$void, flap, voidLeft, voidRight } from './typeclasses/Functor';
 export { pipeK } from './typeclasses/Monad/pipeK';
+export { pipeKValue } from './typeclasses/Monad/pipeKValue';
 export { composeFlipped } from './typeclasses/Semigroupoid';
 export { wilted, withered } from './typeclasses/Witherable';

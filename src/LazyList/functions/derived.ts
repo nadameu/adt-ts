@@ -41,3 +41,5 @@ export const voidRight = d.voidRight({ map } as Functor_1<TLazyList>);
 export const $$void = d.$$void({ map } as Functor_1<TLazyList>);
 
 export const pipeK = d.pipeK({ bind, pure } as BindOnly_1<TLazyList> & PureOnly_1<TLazyList>);
+export const pipeKValue = d.pipeKValue({ bind, pure } as BindOnly_1<TLazyList> &
+  PureOnly_1<TLazyList>);

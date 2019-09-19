@@ -49,3 +49,5 @@ export const wilted = d.wilted({ wilt } as WiltOnly_1<TIterable>);
 export const withered = d.withered({ wither } as WitherOnly_1<TIterable>);
 
 export const pipeK = d.pipeK({ bind, pure } as BindOnly_1<TIterable> & PureOnly_1<TIterable>);
+export const pipeKValue = d.pipeKValue({ bind, pure } as BindOnly_1<TIterable> &
+  PureOnly_1<TIterable>);

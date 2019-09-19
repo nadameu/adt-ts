@@ -49,3 +49,4 @@ export const wilted = d.wilted({ wilt } as WiltOnly_1<TMaybe>);
 export const withered = d.withered({ wither } as WitherOnly_1<TMaybe>);
 
 export const pipeK = d.pipeK({ bind, pure } as BindOnly_1<TMaybe> & PureOnly_1<TMaybe>);
+export const pipeKValue = d.pipeKValue({ bind, pure } as BindOnly_1<TMaybe> & PureOnly_1<TMaybe>);
