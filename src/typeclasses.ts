@@ -8,15 +8,7 @@ export {
   PureOnly_2,
 } from './typeclasses/Applicative';
 export { ApplyOnly_1, ApplyOnly_2, Apply_1, Apply_2 } from './typeclasses/Apply';
-export {
-  applyDefault,
-  BindOnly_1,
-  BindOnly_2,
-  Bind_1,
-  Bind_2,
-  WrappedBind_1,
-  WrappedBind_2,
-} from './typeclasses/Bind';
+export { applyDefault, BindOnly_1, BindOnly_2, Bind_1, Bind_2 } from './typeclasses/Bind';
 export { Category_2, Category_3, IdentityOnly_2, IdentityOnly_3 } from './typeclasses/Category';
 export {
   Compactable_1,
