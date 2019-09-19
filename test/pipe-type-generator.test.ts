@@ -1,29 +1,11 @@
-import { array as A, pipe } from '../src';
+import { generate } from './type-generator';
 
 test('Generate type description', () => {
-  const ends = A.range(-1)(19);
-  const defs = ends.map(
-    pipe(
-      A.range(-1),
-      xs => xs.map(i => `x${i}`),
-      range => {
-        range[0] = 'a';
-        if (range.length > 1) range[range.length - 1] = 'b';
-        const letters = range.join(', ');
-        const pairs = Array.from(range)
-          .map((a, i, as) => [a, as[i + 1]] as [string, string | undefined])
-          .filter((x): x is [string, string] => x[1] !== undefined);
-        const fns = pairs.map(([a, b], i) => `f${i}: (_: ${a}) => ${b}`);
-        const first = range[0];
-        const last = range[range.length - 1];
-        return fns.length === 0
-          ? `(): <${letters}>(_: ${first}) => ${last};`
-          : `<${letters}>(${fns.join(', ')}): (_: ${first}) => ${last};`;
-      }
-    )
-  );
-  const z = `export interface Pipe {\n${defs.map(x => `  ${x}`).join('\n')}\n}`;
-  expect(z).toMatchInlineSnapshot(`
+  expect(
+    generate({
+      name: 'Pipe',
+    })
+  ).toMatchInlineSnapshot(`
     "export interface Pipe {
       (): <a>(_: a) => a;
       <a, b>(f0: (_: a) => b): (_: a) => b;
