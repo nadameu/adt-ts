@@ -1,11 +1,8 @@
 {
-  "name": "pure-ts",
-  "version": "1.0.0",
+  "name": "adt-ts",
+  "version": "0.0.0",
   "description": "TypeScript library inspired by PureScript",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nadameu/pure-ts.git"
-  },
+  "repository": "github:nadameu/adt-ts",
   "license": "GPL-3.0",
   "files": [
     "dist"
