@@ -11,17 +11,17 @@ test('Simple', async () => {
     format: 'es',
   });
   expect(output.code).toMatchInlineSnapshot(`
-    "const compose = (f) => (g) => (a) => f(g(a));
-
-    const lift2 = ({ apply, map }) => (f) => compose(apply)(map(f));
-
-    const flip = (f) => (b) => (a) => f(a)(b);
+    "const flip = (f) => (b) => (a) => f(a)(b);
 
     const Nothing = { isJust: false, isNothing: true };
     const Just = (value) => ({ isJust: true, isNothing: false, value });
 
+    const compose = (f) => (g) => (a) => f(g(a));
+
     const liftM1 = ({ bind, pure, }) => (f) => bind(compose(pure)(f));
     const ap = ({ bind, pure, }) => flip((fa) => bind(f => liftM1({ bind, pure })(f)(fa)));
+
+    const lift2 = ({ apply, map }) => (f) => compose(apply)(map(f));
 
     const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);
     const bind = maybe(Nothing);
