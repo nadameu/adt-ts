@@ -3,17 +3,14 @@ import { generate } from './type-generator';
 test('Generate type description', () => {
   const o1 = generate({
     name: 'PipeKleisli_1<f extends Generic1>',
-    firstLetter: 'a',
-    lastLetter: 'b',
     type: x => `Type1<f, ${x}>`,
-    prefix: '',
   });
   const o2 = generate({
     name: 'PipeKleisli_2<f extends Generic2>',
     firstLetter: 'b',
     lastLetter: 'c',
     type: x => `Type2<f, a, ${x}>`,
-    prefix: 'a, ',
+    lettersPrefix: 'a, ',
   });
   const z = [o1, o2].join('\n\n');
   expect(z).toMatchInlineSnapshot(`

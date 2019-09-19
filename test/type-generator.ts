@@ -1,38 +1,51 @@
-import { array as A, pipe } from '../src';
+import { range } from '../src/Array/functions/original';
+
+const LENGTH = 20;
+
+const fnType = (a: string, b: string): string => {
+  return `(_: ${a}) => ${b}`;
+};
+
 export const generate = ({
   name,
   firstLetter = 'a',
   lastLetter = 'b',
   type = x => x,
-  prefix = '',
+  lettersPrefix = '',
+  functionPrefix = '',
+  outputIsFunction = true,
 }: {
   name: string;
   firstLetter?: string;
   lastLetter?: string;
   type?: (_: string) => string;
-  prefix?: string;
+  lettersPrefix?: string;
+  functionPrefix?: string;
+  outputIsFunction?: boolean;
 }) => {
-  const ends = A.range(-1)(19);
-  const defs = ends.map(
-    pipe(
-      A.range(-1),
-      xs => xs.map(i => `x${i}`),
-      range => {
-        range[0] = firstLetter;
-        if (range.length > 1) range[range.length - 1] = lastLetter;
-        const letters = range.join(', ');
-        const pairs = Array.from(range)
-          .map((a, i, as) => [a, as[i + 1]] as [string, string | undefined])
-          .filter((x): x is [string, string] => x[1] !== undefined);
-        const fns = pairs.map(([a, b], i) => `f${i}: (_: ${a}) => ${type(b)}`);
-        const first = range[0];
-        const last = range[range.length - 1];
-        return fns.length === 0
-          ? `(): <${prefix}${letters}>(_: ${first}) => ${type(last)};`
-          : `<${prefix}${letters}>(${fns.join(', ')}): (_: ${first}) => ${type(last)};`;
-      }
-    )
-  );
-  const z = `export interface ${name} {\n${defs.map(x => `  ${x}`).join('\n')}\n}`;
-  return z;
+  const START = -1;
+  const END = LENGTH - 1;
+  const ranges = range(START)(END).map(end => {
+    const r = range(START)(end).map(i => `x${i}`);
+    r[r.length - 1] = lastLetter;
+    r[0] = firstLetter;
+    return r;
+  });
+  const defs = ranges.map(range => {
+    const pairs = range.map((a, i) => [range[i - 1], a] as [string, string]).slice(1);
+    const fns = pairs.map(([a, b], i) => ({
+      name: `f${i}`,
+      type: fnType(a, type(b)),
+    }));
+    const first = range[0];
+    const last = range[range.length - 1];
+    const params =
+      first === last ? `` : `<${lettersPrefix}${range.slice(outputIsFunction ? 0 : 1).join(', ')}>`;
+    const outputPrefix = outputIsFunction && first === last ? `<${lettersPrefix}${first}>` : ``;
+    const output = outputIsFunction
+      ? `${outputPrefix}${fnType(first, type(last))}`
+      : `${type(last)}`;
+    return `${params}(${fns.map(({ name, type }) => `${name}: ${type}`).join(', ')}): ${output};`;
+  });
+  return `export interface ${name} {\n${defs.map(x => `  ${functionPrefix}${x}`).join('\n')}\n}`;
 };
