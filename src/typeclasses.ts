@@ -108,9 +108,12 @@ export {
   traverseDefault,
   traverseDefaultCons,
   traverseDefaultFoldableAlternative,
+  traverseDefaultFoldableUnfoldable,
   traverseDefaultSnoc,
   TraverseOnly_1,
   TraverseOnly_2,
+  UnfoldROnly_1,
+  UnfoldROnly_2,
 } from './typeclasses/Traversable';
 export {
   filterMapByWither,

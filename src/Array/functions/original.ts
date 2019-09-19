@@ -1,7 +1,6 @@
-import { lift2 } from '../../derivations';
 import { Either } from '../../Either/definitions';
-import { Anon, Generic1, Type1 } from '../../Generic';
-import { Just, Maybe, Nothing } from '../../Maybe/definitions';
+import { unfoldr as unfoldIterable } from '../../Iterable/functions/original';
+import { Maybe } from '../../Maybe/definitions';
 import {
   Applicative_1,
   Apply_1,
@@ -10,6 +9,7 @@ import {
   Filterable_1,
   Foldable_1,
   foldMapDefaultR,
+  FoldROnly_1,
   Functor_1,
   Monoid_1,
   partitionDefault,
@@ -17,9 +17,12 @@ import {
   separateByPartitionMap,
   sequenceDefault,
   Traversable_1,
+  traverseDefaultFoldableUnfoldable,
+  UnfoldROnly_1,
+  wiltDefault,
   Witherable_1,
+  witherDefault,
 } from '../../typeclasses';
-import { wiltDefault, witherDefault } from '../../typeclasses/Witherable';
 import { TArray } from '../internal';
 
 const borrow = <
@@ -90,22 +93,13 @@ export const append: Semigroup_1<TArray>['append'] = <a>(
 
 export const mempty: Monoid_1<TArray>['mempty'] = () => [];
 
-export const traverse: Traversable_1<TArray>['traverse'] = <m extends Generic1>(
-  applicative: Anon<Applicative_1<m>>
-) => <a, b>(f: (_: a) => Type1<m, b>) => (ta: ArrayLike<a>): Type1<m, ArrayLike<b>> => {
-  interface Tuple<t> {
-    0: t;
-    1: List<t>;
-    length: 2;
-  }
-  type List<t> = Maybe<Tuple<t>>;
-  const liftedCons = lift2(applicative as Applicative_1<m>)<b, List<b>, List<b>>(head => tail =>
-    Just([head, tail])
-  );
-  return applicative.map(unfoldr<b, List<b>>(x => x as Maybe<[b, List<b>]>))(
-    foldr<a, Type1<m, List<b>>>((a: a) => liftedCons(f(a)))(applicative.pure(Nothing))(ta)
-  );
-};
+export const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): ArrayLike<a> =>
+  Array.from(unfoldIterable(f)(b));
+
+export const traverse = traverseDefaultFoldableUnfoldable({ foldr, unfoldr } as FoldROnly_1<
+  TArray
+> &
+  UnfoldROnly_1<TArray>);
 
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TArray>);
 
@@ -148,15 +142,4 @@ export const range = (start: number) => (end: number): number[] => {
   return diff < 0
     ? Array.from({ length: 1 - diff }, _ => x--)
     : Array.from({ length: diff + 1 }, _ => x++);
-};
-
-export const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): a[] => {
-  let result: a[] = [];
-  let curent = f(b);
-  while (curent.isJust) {
-    const [value, next] = curent.value;
-    result.push(value);
-    curent = f(next);
-  }
-  return result;
 };

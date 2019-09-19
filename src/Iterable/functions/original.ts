@@ -1,9 +1,7 @@
-import * as array from '../../Array/functions';
-import { Anon, Generic1, Type1 } from '../../Generic';
 import { flip } from '../../helpers/flip';
 import { List } from '../../List/definitions';
 import * as list from '../../List/functions';
-import { Maybe } from '../../Maybe/definitions';
+import { Just, Maybe } from '../../Maybe/definitions';
 import {
   Applicative_1,
   Apply_1,
@@ -16,6 +14,7 @@ import {
   FilterOnly_1,
   Foldable_1,
   foldMapDefaultL,
+  FoldROnly_1,
   Functor_1,
   Monoid_1,
   partitionDefaultFilter,
@@ -25,7 +24,9 @@ import {
   SeparateOnly_1,
   sequenceDefault,
   Traversable_1,
+  traverseDefaultFoldableUnfoldable,
   TraverseOnly_1,
+  UnfoldROnly_1,
   wiltDefault,
   witherDefault,
 } from '../../typeclasses';
@@ -80,7 +81,10 @@ export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterabl
   return list.foldl(flip(f))(b0)(reversed);
 };
 
-const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): Iterable<a> => ({
+export const unfoldr1 = <a, b>(f: (_: b) => [a, Maybe<b>]) => (b: b): Iterable<a> =>
+  unfoldr<a, Maybe<b>>(x => (x.isNothing ? x : Just(f(x.value))))(Just(b));
+
+export const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): Iterable<a> => ({
   *[Symbol.iterator]() {
     let current = f(b);
     while (current.isJust) {
@@ -93,12 +97,10 @@ const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): Iterable<a> => ({
 
 export const foldMap = foldMapDefaultL({ foldl } as Foldable_1<TIterable>);
 
-export const traverse: Traversable_1<TIterable>['traverse'] = <m extends Generic1>(
-  applicative: Anon<Applicative_1<m>>
-) => <a, b>(f: (_: a) => Type1<m, b>) => (as: Iterable<a>): Type1<m, Iterable<b>> =>
-  array.traverse(applicative as Applicative_1<m>)(f)(
-    foldl<a, a[]>(xs => x => (xs.push(x), xs))([])(as)
-  );
+export const traverse = traverseDefaultFoldableUnfoldable({ foldr, unfoldr } as FoldROnly_1<
+  TIterable
+> &
+  UnfoldROnly_1<TIterable>);
 
 export const sequence = sequenceDefault({ traverse } as Traversable_1<TIterable>);
 

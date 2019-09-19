@@ -4,6 +4,7 @@ import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } fr
 import { flip } from '../helpers/flip';
 import { identity } from '../helpers/identity';
 import { applicativeIdentity } from '../Identity/instances';
+import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { Alternative_1, Alternative_2 } from './Alternative';
 import { Applicative_1, Applicative_2 } from './Applicative';
 import { Apply_1, lift2 } from './Apply';
@@ -208,4 +209,38 @@ export const traverseDefaultSnoc: {
   const lifted = lift(flip(snoc));
   const g = flip((a: a) => lifted(f(a)));
   return foldl(g)(pure(nil()));
+};
+
+export interface UnfoldROnly_1<f extends Generic1> {
+  unfoldr: <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b) => Type1<f, a>;
+}
+export interface UnfoldROnly_2<f extends Generic2> {
+  unfoldr: <a, b, c>(f: (_: c) => Maybe<[b, c]>) => (b: c) => Type2<f, a, b>;
+}
+
+export const traverseDefaultFoldableUnfoldable: {
+  <f extends Generic1>({ foldr, unfoldr }: FoldROnly_1<f> & UnfoldROnly_1<f>): Traversable_1<
+    f
+  >['traverse'];
+  <f extends Generic2>({ foldr, unfoldr }: FoldROnly_2<f> & UnfoldROnly_2<f>): Traversable_2<
+    f
+  >['traverse'];
+} = <f extends Generic1>({
+  foldr,
+  unfoldr,
+}: Anon<FoldROnly_1<f> & UnfoldROnly_1<f>>): Traversable_1<f>['traverse'] => <m extends Generic1>(
+  applicative: Anon<Applicative_1<m>>
+) => <a, b>(f: (_: a) => Type1<m, b>) => (ta: Type1<f, a>): Type1<m, Type1<f, b>> => {
+  interface Tuple<t> {
+    0: t;
+    1: List<t>;
+    length: 2;
+  }
+  type List<t> = Maybe<Tuple<t>>;
+  const liftedCons = lift2(applicative as Applicative_1<m>)<b, List<b>, List<b>>(head => tail =>
+    Just([head, tail])
+  );
+  return applicative.map(unfoldr<b, List<b>>(x => x as Maybe<[b, List<b>]>))(
+    foldr<a, Type1<m, List<b>>>((a: a) => liftedCons(f(a)))(applicative.pure(Nothing))(ta)
+  );
 };
