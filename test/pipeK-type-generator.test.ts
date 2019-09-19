@@ -10,7 +10,7 @@ test('Generate type description', () => {
     firstLetter: 'b',
     lastLetter: 'c',
     type: x => `Type2<f, a, ${x}>`,
-    lettersPrefix: 'a, ',
+    lettersPrefix: ['a'],
   });
   const z = [o1, o2].join('\n\n');
   expect(z).toMatchInlineSnapshot(`
