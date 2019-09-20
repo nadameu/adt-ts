@@ -128,12 +128,32 @@ export const safeProp = <obj, key extends keyof obj>(key: key) =>
 export const bindProp = <obj, key extends keyof obj>(key: key) =>
   bindNullable<obj, NonNullable<obj[key]>>(prop<obj, key>(key) as any);
 
+type CallableKeys<T> = {
+  [k in keyof T]: T[k] extends (...args: any[]) => unknown ? k : never;
+}[keyof T];
+
 export const safeMethod = <
-  obj extends { [k in key]: (...args: args) => out },
-  key extends keyof obj,
-  args extends unknown[],
-  out = obj[key] extends (...args: args) => infer out | null | undefined ? out : unknown
+  obj,
+  key extends CallableKeys<obj>,
+  args extends obj[key] extends (...args: infer x) => unknown ? x : unknown[]
 >(
   key: key,
   ...args: args
-): ((obj: obj) => Maybe<out>) => liftNullable(method(key, ...args));
+) =>
+  liftNullable<
+    obj,
+    obj[key] extends (...args: args) => infer out | null | undefined ? out : unknown
+  >(method<any, key, args, null | undefined>(key, ...args));
+
+export const bindMethod = <
+  obj,
+  key extends CallableKeys<obj>,
+  args extends obj[key] extends (...args: infer x) => unknown ? x : unknown[]
+>(
+  key: key,
+  ...args: args
+) =>
+  bindNullable<
+    obj,
+    obj[key] extends (...args: args) => infer out | null | undefined ? out : unknown
+  >(method<any, key, args, null | undefined>(key, ...args));
