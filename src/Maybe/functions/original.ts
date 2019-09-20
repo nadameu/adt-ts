@@ -34,6 +34,7 @@ import {
 } from '../../typeclasses';
 import { Just, Maybe, Nothing } from '../definitions';
 import { TMaybe } from '../internal';
+import { maybeBool } from '../../typeclasses/Filterable';
 
 export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
   fa.isNothing ? b : f(fa.value);
@@ -110,23 +111,22 @@ export const separate = separateByPartitionMap({ partitionMap } as PartitionMapO
 export const wilt = wiltDefault({ separate, traverse } as SeparateOnly_1<TMaybe> &
   TraverseOnly_1<TMaybe>);
 
-export const fromNullable = <a>(x: a | null | undefined): Maybe<a> =>
-  x == null ? Nothing : Just(x);
+export const fromNullable: <a>(x: a | null | undefined) => Maybe<a> = maybeBool(
+  <a>(x: a | null | undefined): x is a => x != null
+);
 
 export const liftNullable = <a, b>(f: (_: a) => b | null | undefined): ((_: a) => Maybe<b>) => a =>
   fromNullable(f(a));
 
-export const mapNullable = <a, b>(
+export const bindNullable = <a, b>(
   f: (_: a) => b | null | undefined
 ): ((fa: Maybe<a>) => Maybe<b>) => bind(liftNullable(f));
 
-export const safeProp = <
-  obj extends { [k in key]: out },
-  key extends keyof obj,
-  out = obj[key] extends infer out | null | undefined ? out : unknown
->(
-  key: key
-): ((obj: obj) => Maybe<out>) => liftNullable(prop(key));
+export const safeProp = <obj, key extends keyof obj>(key: key) =>
+  liftNullable<obj, NonNullable<obj[key]>>(prop<obj, key>(key) as any);
+
+export const bindProp = <obj, key extends keyof obj>(key: key) =>
+  bindNullable<obj, NonNullable<obj[key]>>(prop<obj, key>(key) as any);
 
 export const safeMethod = <
   obj extends { [k in key]: (...args: args) => out },
