@@ -1,4 +1,4 @@
-import { maybe, Nothing, Just, Maybe, pipe } from '../src';
+import { Just, M, Maybe, Nothing, pipe } from '../src';
 
 interface MightHaveA {
   a?: MightHaveB;
@@ -40,29 +40,29 @@ const runTests = (
 };
 
 test('With pipeK and safeProp', () => {
-  const a: (_: MightHaveA) => Maybe<MightHaveB> = maybe.pipeK(maybe.safeProp('a'));
-  const b: (_: MightHaveA) => Maybe<MightHaveC> = maybe.pipeK(
-    maybe.safeProp('a'),
-    maybe.safeProp('b')
+  const a: (_: MightHaveA) => Maybe<MightHaveB> = M.pipeK(M.safeProp('a'));
+  const b: (_: MightHaveA) => Maybe<MightHaveC> = M.pipeK(
+    M.safeProp('a'),
+    M.safeProp('b')
   );
-  const c: (_: MightHaveA) => Maybe<string> = maybe.pipeK(
-    maybe.safeProp('a'),
-    maybe.safeProp('b'),
-    maybe.safeProp('c')
+  const c: (_: MightHaveA) => Maybe<string> = M.pipeK(
+    M.safeProp('a'),
+    M.safeProp('b'),
+    M.safeProp('c')
   );
   runTests(a, b, c);
 });
 
 test('With pipe and bindProp', () => {
-  const a: (_: MightHaveA) => Maybe<MightHaveB> = pipe(maybe.safeProp('a'));
+  const a: (_: MightHaveA) => Maybe<MightHaveB> = pipe(M.safeProp('a'));
   const b: (_: MightHaveA) => Maybe<MightHaveC> = pipe(
-    maybe.safeProp('a'),
-    maybe.bindProp('b')
+    M.safeProp('a'),
+    M.bindProp('b')
   );
   const c: (_: MightHaveA) => Maybe<string> = pipe(
-    maybe.safeProp('a'),
-    maybe.bindProp('b'),
-    maybe.bindProp('c')
+    M.safeProp('a'),
+    M.bindProp('b'),
+    M.bindProp('c')
   );
 
   runTests(a, b, c);

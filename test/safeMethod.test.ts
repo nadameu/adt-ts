@@ -1,4 +1,4 @@
-import { Just, maybe, Maybe, Nothing, pipe } from '../src';
+import { Just, M, Maybe, Nothing, pipe } from '../src';
 
 interface A {
   runA(): B | null;
@@ -24,20 +24,20 @@ const runTests = (a: (_: A) => Maybe<B>, b: (_: A) => Maybe<number>) => {
 };
 
 test('With pipeK and safeMethod', () => {
-  const f: (_: A) => Maybe<B> = maybe.pipeK(maybe.safeMethod('runA'));
-  const g: (_: A) => Maybe<number> = maybe.pipeK(
-    maybe.safeMethod('runA'),
-    maybe.safeMethod('runB', 42)
+  const f: (_: A) => Maybe<B> = M.pipeK(M.safeMethod('runA'));
+  const g: (_: A) => Maybe<number> = M.pipeK(
+    M.safeMethod('runA'),
+    M.safeMethod('runB', 42)
   );
 
   runTests(f, g);
 });
 
 test('With pipe and bindMethod', () => {
-  const f: (_: A) => Maybe<B> = pipe(maybe.safeMethod('runA'));
+  const f: (_: A) => Maybe<B> = pipe(M.safeMethod('runA'));
   const g: (_: A) => Maybe<number> = pipe(
-    maybe.safeMethod('runA'),
-    maybe.bindMethod('runB', 42)
+    M.safeMethod('runA'),
+    M.bindMethod('runB', 42)
   );
 
   runTests(f, g);

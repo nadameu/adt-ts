@@ -1,36 +1,35 @@
 import {
+  applicativeIterable,
+  eitherBool,
+  Just,
+  Left,
+  makeEqIterable,
+  maybeBool,
+  monoidString,
+  Nothing,
+  Right,
+} from '../src';
+import {
+  filter,
+  filterMap,
+  foldlWithIndex,
+  foldrWithIndex,
   forEach,
   forEachRight,
   forEachWithIndex,
+  intercalate,
   mapWithIndex,
-  foldlWithIndex,
-  foldrWithIndex,
-  filter,
-  filterMap,
   partitionMap,
-  wither,
-  wilt,
   range,
-} from '../src/Array/functions/original';
+  wilt,
+  wither,
+} from '../src/Array/functions';
 import { makeEqArray } from '../src/Array/instances';
 import { eqNumber } from '../src/Number/instances';
-import {
-  maybeBool,
-  eitherBool,
-  applicativeIterable,
-  Just,
-  Nothing,
-  makeEqIterable,
-  Right,
-  Left,
-  monoidString,
-} from '../src';
 import { Eq } from '../src/typeclasses';
-import { intercalate } from '../src/Array/functions';
 
 const empty: ArrayLike<number> = { length: 0 };
 const populated: ArrayLike<number> = { 0: 1, 1: 2, 2: 3, 3: 4, length: 4 };
-const eq = makeEqArray(eqNumber).eq;
 
 const makeExpectEq = <a>(eq: Eq<a>) => {
   const isEq = makeEqArray(eq).eq;
