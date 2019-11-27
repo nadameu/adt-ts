@@ -1,5 +1,3 @@
-import { foldl } from '../Array/functions';
-
 export interface PipeValue<a> {
   pipe(): a;
   pipe<b>(f0: (_: a) => b): b;
@@ -25,7 +23,7 @@ export interface PipeValue<a> {
 }
 
 export const pipeValue = <a>(a: a): PipeValue<a> => ({
-  pipe() {
-    return foldl<(_: a) => a, a>(x => f => f(x))(a)(arguments);
+  pipe(...fs: Array<(_: a) => a>) {
+    return fs.reduce((a, f) => f(a), a);
   },
 });

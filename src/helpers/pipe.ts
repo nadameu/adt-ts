@@ -1,5 +1,3 @@
-import { foldl } from '../Array/functions';
-
 export interface Pipe {
   (): <a>(_: a) => a;
   <a, b>(f0: (_: a) => b): (_: a) => b;
@@ -24,7 +22,6 @@ export interface Pipe {
   <a, x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, b>(f0: (_: a) => x0, f1: (_: x0) => x1, f2: (_: x1) => x2, f3: (_: x2) => x3, f4: (_: x3) => x4, f5: (_: x4) => x5, f6: (_: x5) => x6, f7: (_: x6) => x7, f8: (_: x7) => x8, f9: (_: x8) => x9, f10: (_: x9) => x10, f11: (_: x10) => x11, f12: (_: x11) => x12, f13: (_: x12) => x13, f14: (_: x13) => x14, f15: (_: x14) => x15, f16: (_: x15) => x16, f17: (_: x16) => x17, f18: (_: x17) => x18, f19: (_: x18) => b): (_: a) => b;
 }
 
-export const pipe: Pipe = function<a>() {
-  const fs = (arguments as unknown) as ArrayLike<(_: a) => a>;
-  return (a: a) => foldl<(_: a) => a, a>(x => f => f(x))(a)(fs);
+export const pipe: Pipe = function<a>(...fs: Array<(_: a) => a>) {
+  return (a: a) => fs.reduce((a, f) => f(a), a);
 };
