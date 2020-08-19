@@ -12,8 +12,10 @@ const laws = <f extends Generic1, a>(
   const { bind } = bind0 as Bind_1<f>;
   return {
     associativity: (): void =>
-      jsc.assertForall(fa, f, f, (x, f, g) =>
-        eq(bind(g)(bind(f)(x)))(bind<a, a>(k => bind(g)(f(k)))(x))
+      void jsc.assertForall(fa, f, f, (x, f, g) =>
+        eq(bind(g)(bind(f)(x)))(
+          bind<a, a>(k => bind(g)(f(k)))(x)
+        )
       ),
   };
 };

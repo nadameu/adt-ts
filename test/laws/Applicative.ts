@@ -14,11 +14,13 @@ const laws = <f extends Generic1, a>(
 ) => {
   const { apply, pure } = applicative as Applicative_1<f>;
   return {
-    identity: (): void => jsc.assertForall(fa, leftIdentity(eq)(apply)(pure(identity))),
+    identity: (): void => void jsc.assertForall(fa, leftIdentity(eq)(apply)(pure(identity))),
     homomorphism: (): void =>
-      jsc.assertForall(f, a, (f, x) => homomorphism(eq)(pure)(apply)(flip(thrush as any))(f)(x)),
+      void jsc.assertForall(f, a, (f, x) =>
+        homomorphism(eq)(pure)(apply)(flip(thrush as any))(f)(x)
+      ),
     interchange: (): void =>
-      jsc.assertForall(ff, a, (u, y) => eq(apply(u)(pure(y)))(apply(pure(thrush(y)))(u))),
+      void jsc.assertForall(ff, a, (u, y) => eq(apply(u)(pure(y)))(apply(pure(thrush(y)))(u))),
   };
 };
 

@@ -7,8 +7,8 @@ import { leftIdentity, rightIdentity } from './helpers';
 const laws = <a>(monoid: Anon<Monoid_0<a>>, a: jsc.Arbitrary<a>, eq: Eq<a>['eq']) => {
   const { append, mempty } = monoid as Monoid_0<a>;
   return {
-    leftUnit: (): void => jsc.assertForall(a, leftIdentity(eq)(append)(mempty())),
-    rightUnit: (): void => jsc.assertForall(a, rightIdentity(eq)(append)(mempty())),
+    leftUnit: (): void => void jsc.assertForall(a, leftIdentity(eq)(append)(mempty())),
+    rightUnit: (): void => void jsc.assertForall(a, rightIdentity(eq)(append)(mempty())),
   };
 };
 

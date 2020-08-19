@@ -21,7 +21,10 @@ const makeArbIterable = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Iterable<a>> =
 const makeArbArray = <a>(arb: jsc.Arbitrary<a>) => {
   const arbArray = jsc.oneof<ArrayLike<a>>([
     jsc.constant({ length: 0 }),
-    arb.smap(x => ({ 0: x, length: 1 } as ArrayLike<a>), xs => xs[0]),
+    arb.smap(
+      x => ({ 0: x, length: 1 } as ArrayLike<a>),
+      xs => xs[0]
+    ),
   ]);
   const origShow = jsc.array(arb).show || String;
   arbArray.show = xs => origShow(Array.from(xs));
@@ -53,7 +56,7 @@ const laws = <t extends Generic1, a>(
   return {
     naturality: (): void => {
       const eqArray = makeEqArray({ eq } as Eq<Type1<t, a>>).eq;
-      return jsc.assertForall(jsc.fn(makeArbIterable(a)), ta, (f, ta) => {
+      return void jsc.assertForall(jsc.fn(makeArbIterable(a)), ta, (f, ta) => {
         const a = Array.from(traverse(applicativeIterable)(f)(ta));
         const b = traverse(applicativeArray)(x => Array.from(f(x)))(ta);
         return eqArray(a)(b);
@@ -65,7 +68,7 @@ const laws = <t extends Generic1, a>(
     composition: (): void => {
       const applicativeCompose = makeApplicativeCompose(applicativeIterable, applicativeArray);
       const eqCompose = makeEqIterable(makeEqArray({ eq } as Eq<Type1<t, a>>)).eq;
-      return jsc.assertForall(
+      return void jsc.assertForall(
         jsc.fn(makeArbIterable(a)),
         jsc.fn(makeArbArray(a)),
         ta,

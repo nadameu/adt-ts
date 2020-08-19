@@ -13,9 +13,11 @@ const laws = <f extends Generic1, a>(
   const { alt, map } = alt0 as Alt_1<f>;
   return {
     associativity: (): void =>
-      jsc.assertForall(a, a, a, (x, y, z) => associative(eq)(alt)(x)(y)(z)),
+      void jsc.assertForall(a, a, a, (x, y, z) => associative(eq)(alt)(x)(y)(z)),
     distributivity: (): void =>
-      jsc.assertForall(f, a, a, (f, x, y) => leftDistributive(eq)<(_: a) => a>(map)(alt)(f)(x)(y)),
+      void jsc.assertForall(f, a, a, (f, x, y) =>
+        leftDistributive(eq)<(_: a) => a>(map)(alt)(f)(x)(y)
+      ),
   };
 };
 

@@ -12,7 +12,7 @@ const laws = <f extends Generic1, a>(
   const { apply, map } = apply0 as Apply_1<f>;
   return {
     composition: (): void =>
-      jsc.assertForall(ff, ff, fa, (a, u, v) =>
+      void jsc.assertForall(ff, ff, fa, (a, u, v) =>
         eq(apply(apply(map(compose)(a))(u))(v))(apply(a)(apply(u)(v)))
       ),
   };

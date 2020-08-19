@@ -11,10 +11,10 @@ const laws = <f extends Generic1, a>(
 ) => {
   const { alt, empty, map } = plus as Plus_1<f>;
   return {
-    leftIdentity: (): void => jsc.assertForall(fa, leftIdentity(eq)(alt)(empty())),
-    rightIdentity: (): void => jsc.assertForall(fa, rightIdentity(eq)(alt)(empty())),
+    leftIdentity: (): void => void jsc.assertForall(fa, leftIdentity(eq)(alt)(empty())),
+    rightIdentity: (): void => void jsc.assertForall(fa, rightIdentity(eq)(alt)(empty())),
     annihilation: (): void =>
-      jsc.assertForall(jsc.fn(jsc.unit), f => leftIdentity(eq)(map)(f)(empty())),
+      void jsc.assertForall(jsc.fn(jsc.unit), f => leftIdentity(eq)(map)(f)(empty())),
   };
 };
 

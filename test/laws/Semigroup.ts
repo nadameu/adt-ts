@@ -8,7 +8,7 @@ const laws = <a>(semigroup: Anon<Semigroup_0<a>>, a: jsc.Arbitrary<a>, eq: Eq<a>
   const { append } = semigroup as Semigroup_0<a>;
   return {
     associativity: (): void =>
-      jsc.assertForall(a, a, a, (x, y, z) => associative(eq)(append)(x)(y)(z)),
+      void jsc.assertForall(a, a, a, (x, y, z) => associative(eq)(append)(x)(y)(z)),
   };
 };
 
