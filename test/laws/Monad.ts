@@ -11,8 +11,8 @@ const laws = <f extends Generic1, a>(
   const { bind, pure } = monad as Monad_1<f>;
   return {
     leftIdentity: (): void =>
-      jsc.assertForall(jsc.number, jsc.fn(fa), (x, f) => eq(bind(f)(pure(x)))(f(x))),
-    rightIdentity: (): void => jsc.assertForall(fa, x => eq(bind(pure)(x))(x)),
+      void jsc.assertForall(jsc.number, jsc.fn(fa), (x, f) => eq(bind(f)(pure(x)))(f(x))),
+    rightIdentity: (): void => void jsc.assertForall(fa, x => eq(bind(pure)(x))(x)),
   };
 };
 

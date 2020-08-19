@@ -6,10 +6,10 @@ import { Eq } from '../../src/typeclasses';
 const laws = <a>(eq0: Eq<a>, a: jsc.Arbitrary<a>) => {
   const { eq } = eq0 as Eq<a>;
   return {
-    reflexivity: (): void => jsc.assertForall(a, x => eq(x)(x)),
-    symmetry: (): void => jsc.assertForall(a, a, (x, y) => eq(x)(y) === eq(y)(x)),
+    reflexivity: (): void => void jsc.assertForall(a, x => eq(x)(x)),
+    symmetry: (): void => void jsc.assertForall(a, a, (x, y) => eq(x)(y) === eq(y)(x)),
     transitivity: (): void =>
-      jsc.assertForall(a, a, a, (x, y, z) => (eq(x)(y) && eq(y)(z) ? eq(x)(z) : true)),
+      void jsc.assertForall(a, a, a, (x, y, z) => (eq(x)(y) && eq(y)(z) ? eq(x)(z) : true)),
   };
 };
 

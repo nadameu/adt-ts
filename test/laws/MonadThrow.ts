@@ -12,7 +12,7 @@ const laws = <f extends Generic2, e, a>(
   const { bind, throwError } = monadThrow as MonadThrow_2<f>;
   return {
     leftZero: (): void =>
-      jsc.assertForall(e, jsc.fn(fa), (e, f) => eq(bind(f)(throwError(e)))(throwError(e))),
+      void jsc.assertForall(e, jsc.fn(fa), (e, f) => eq(bind(f)(throwError(e)))(throwError(e))),
   };
 };
 

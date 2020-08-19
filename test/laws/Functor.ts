@@ -12,9 +12,9 @@ const laws = <f extends Generic1, a>(
 ) => {
   const { map } = functor as Functor_1<f>;
   return {
-    identity: (): void => jsc.assertForall(fa, leftIdentity(eq)(map)(identity)),
+    identity: (): void => void jsc.assertForall(fa, leftIdentity(eq)(map)(identity)),
     composition: (): void =>
-      jsc.assertForall(fa, jsc.fn(a), jsc.fn(a), (x, f, g) =>
+      void jsc.assertForall(fa, jsc.fn(a), jsc.fn(a), (x, f, g) =>
         eq(map(f)(map(g)(x)))(map(x => f(g(x)))(x))
       ),
   };

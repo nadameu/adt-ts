@@ -13,9 +13,9 @@ const laws = <f extends Generic2, e, a>(
   const { catchError, pure, throwError } = monadError as MonadError_2<f>;
   return {
     catch: (): void =>
-      jsc.assertForall(jsc.fn(fa), e, (f, e) => eq(catchError(f)(throwError(e)))(f(e))),
+      void jsc.assertForall(jsc.fn(fa), e, (f, e) => eq(catchError(f)(throwError(e)))(f(e))),
     pure: (): void =>
-      jsc.assertForall(jsc.fn(fa), a, (f, a) => eq(catchError(f)(pure(a)))(pure(a))),
+      void jsc.assertForall(jsc.fn(fa), a, (f, a) => eq(catchError(f)(pure(a)))(pure(a))),
   };
 };
 

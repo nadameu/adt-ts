@@ -13,8 +13,8 @@ const laws = <f extends Generic1, a>(
   const { alt, apply, empty } = alternative as Alternative_1<f>;
   return {
     distributivity: (): void =>
-      jsc.assertForall(f, f, a, (f, g, x) => rightDistributive(eq)(apply)(alt)(f)(g)(x)),
-    annihilation: (): void => jsc.assertForall(a, a => eq(apply(empty())(a))(empty())),
+      void jsc.assertForall(f, f, a, (f, g, x) => rightDistributive(eq)(apply)(alt)(f)(g)(x)),
+    annihilation: (): void => void jsc.assertForall(a, a => eq(apply(empty())(a))(empty())),
   };
 };
 

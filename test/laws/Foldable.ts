@@ -20,15 +20,15 @@ const laws = <f extends Generic1, a>(
   const { foldMap, foldl, foldr } = foldable as Foldable_1<f>;
   return {
     foldl: (): void =>
-      jsc.assertForall(fa, a, jsc.fn(jsc.fn(a)), (fa, z, f) =>
+      void jsc.assertForall(fa, a, jsc.fn(jsc.fn(a)), (fa, z, f) =>
         eq(foldl(f)(z)(fa))(foldMap(makeMonoidDual(monoidEndo))(flip(f))(fa)(z))
       ),
     foldr: (): void =>
-      jsc.assertForall(fa, a, jsc.fn(jsc.fn(a)), (fa, z, f) =>
+      void jsc.assertForall(fa, a, jsc.fn(jsc.fn(a)), (fa, z, f) =>
         eq(foldr(f)(z)(fa))(foldMap(monoidEndo)(f)(fa)(z))
       ),
     foldMap: (): void =>
-      jsc.assertForall(fa, fa =>
+      void jsc.assertForall(fa, fa =>
         makeEqArray({ eq } as Eq<a>).eq(foldMap(monoidArray)(array.pure)(fa))(
           foldl<a, a[]>(xs => x => (xs.push(x), xs))([])(fa)
         )
