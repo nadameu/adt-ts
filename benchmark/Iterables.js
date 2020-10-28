@@ -4,7 +4,7 @@ const suite = new Benchmark.Suite();
 
 suite
   .add(
-    'True iterable',
+    'Generator - for...of',
     () => {
       for (const x of iter) {
         x;
@@ -21,12 +21,11 @@ suite
     }
   )
   .add(
-    'True iterable - next()',
+    'Generator - next()',
     () => {
       const it = iter[Symbol.iterator]();
-      let x;
-      while (!(x = it.next()).done) {
-        x.value;
+      for (let result = it.next(); !result.done; result = it.next()) {
+        result.value;
       }
     },
     {
@@ -40,12 +39,32 @@ suite
     }
   )
   .add(
-    'True iterable - by hand - next()',
+    'Manual iterator - for...of',
+    () => {
+      for (const result of iter) result;
+    },
+    {
+      setup() {
+        const iter = {
+          [Symbol.iterator]() {
+            let i = 0;
+            return {
+              next() {
+                if (i < 1e6) return { done: false, value: i++ };
+                return { done: true };
+              },
+            };
+          },
+        };
+      },
+    }
+  )
+  .add(
+    'Manual iterator - next()',
     () => {
       const it = iter[Symbol.iterator]();
-      let x;
-      while (!(x = it.next()).done) {
-        x.value;
+      for (let result = it.next(); !result.done; result = it.next()) {
+        result.value;
       }
     },
     {
@@ -67,11 +86,7 @@ suite
   .add(
     'LazyList',
     () => {
-      let current = iter();
-      while (current.isCons) {
-        current.head;
-        current = current.tail();
-      }
+      for (let current = iter(); current.isCons; current = current.tail()) current.head;
     },
     {
       setup() {
@@ -95,7 +110,7 @@ suite
   .on('start', () => {
     console.log('Start');
   })
-  .on('cycle', evt => {
+  .on('cycle', (evt) => {
     console.log(String(evt.target));
   })
   .on('complete', () => {
@@ -107,7 +122,7 @@ suite
     const pct = Benchmark.formatNumber((stats[0].hz / stats[1].hz - 1) * 100);
     console.log(`${stats[0].name} is ${pct}% faster than ${stats[1].name}.`);
   })
-  .on('error', evt => {
+  .on('error', (evt) => {
     console.error(evt.target.error);
   })
   .run();
