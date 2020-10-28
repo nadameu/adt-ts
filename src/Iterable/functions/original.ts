@@ -1,10 +1,9 @@
 import { flip } from '../../helpers/flip';
 import { List } from '../../List/definitions';
 import * as list from '../../List/functions';
-import { Just, Maybe } from '../../Maybe/definitions';
+import { Just, Maybe, Nothing } from '../../Maybe/definitions';
 import {
   Applicative_1,
-  Apply_1,
   Bind_1,
   Compactable_1,
   CompactOnly_1,
@@ -19,7 +18,6 @@ import {
   Monoid_1,
   partitionDefaultFilter,
   partitionMapDefault,
-  Semigroup_1,
   separateDefault,
   SeparateOnly_1,
   sequenceDefault,
@@ -30,36 +28,130 @@ import {
   wiltDefault,
   witherDefault,
 } from '../../typeclasses';
+import { applyDefault } from '../../typeclasses/Bind';
 import { TIterable } from '../internal';
 
-export const map: Functor_1<TIterable>['map'] = f => fa => ({
-  *[Symbol.iterator]() {
-    for (const x of fa) yield f(x);
+const iteratorReturnResult: IteratorReturnResult<undefined> = { done: true, value: undefined };
+const iteratorYieldResult = <a>(value: a): IteratorYieldResult<a> => ({ done: false, value });
+
+export const map: Functor_1<TIterable>['map'] = <a, b>(f: (_: a) => b) => (fa: Iterable<a>) => ({
+  [Symbol.iterator]() {
+    const enum StateTag {
+      YIELDING,
+      DONE,
+    }
+    type State = { tag: StateTag.YIELDING; iterator: Iterator<a> } | { tag: StateTag.DONE };
+    let state: State = { tag: StateTag.YIELDING, iterator: fa[Symbol.iterator]() };
+    return {
+      next() {
+        switch (state.tag) {
+          case StateTag.YIELDING:
+            const result = state.iterator.next();
+            if (result.done) {
+              state = { tag: StateTag.DONE };
+            } else {
+              return iteratorYieldResult(f(result.value));
+            }
+
+          case StateTag.DONE:
+            return iteratorReturnResult;
+        }
+      },
+    };
   },
 });
 
-export const apply: Apply_1<TIterable>['apply'] = fs => xs => ({
-  *[Symbol.iterator]() {
-    for (const f of fs) for (const x of xs) yield f(x);
+export const pure: Applicative_1<TIterable>['pure'] = (value) => ({
+  [Symbol.iterator]() {
+    let done = false;
+    return {
+      next() {
+        if (done) return iteratorReturnResult;
+        done = true;
+        return iteratorYieldResult(value);
+      },
+    };
   },
 });
 
-export const pure: Applicative_1<TIterable>['pure'] = value => ({
-  *[Symbol.iterator]() {
-    yield value;
+// export const bind: Bind_1<TIterable>['bind'] = <a, b>(f: (_: a) => Iterable<b>) => (
+//   fa: Iterable<a>
+// ): Iterable<b> => foldl(append)(mempty<b>())(map(f)(fa));
+
+export const bind = <a, b>(f: (_: a) => Iterable<b>) => (fa: Iterable<a>): Iterable<b> => ({
+  [Symbol.iterator]() {
+    const enum Tag {
+      OUTER,
+      INNER,
+      DONE,
+    }
+    type State =
+      | { tag: Tag.OUTER; outer: Iterator<a> }
+      | { tag: Tag.INNER; outer: Iterator<a>; inner: Iterator<b> }
+      | { tag: Tag.DONE };
+    let state: State = { tag: Tag.OUTER, outer: fa[Symbol.iterator]() };
+    return {
+      next() {
+        while (true)
+          switch (state.tag) {
+            case Tag.OUTER: {
+              const result = state.outer.next();
+              if (result.done) {
+                state = { tag: Tag.DONE };
+                break;
+              } else {
+                state = {
+                  tag: Tag.INNER,
+                  outer: state.outer,
+                  inner: f(result.value)[Symbol.iterator](),
+                };
+                break;
+              }
+            }
+
+            case Tag.INNER: {
+              const result = state.inner.next();
+              if (result.done) {
+                state = { tag: Tag.OUTER, outer: state.outer };
+                break;
+              } else {
+                return iteratorYieldResult(result.value);
+              }
+            }
+
+            case Tag.DONE:
+              return iteratorReturnResult;
+          }
+      },
+    };
   },
 });
 
-export const bind: Bind_1<TIterable>['bind'] = f => xs => ({
-  *[Symbol.iterator]() {
-    for (const x of xs) for (const y of f(x)) yield y;
-  },
-});
+export const apply = applyDefault({ bind, map } as Bind_1<TIterable>);
 
-export const append: Semigroup_1<TIterable>['append'] = xs => ys => ({
-  *[Symbol.iterator]() {
-    for (const x of xs) yield x;
-    for (const y of ys) yield y;
+export const append = <a>(xs: Iterable<a>) => (ys: Iterable<a>): Iterable<a> => ({
+  [Symbol.iterator]() {
+    const enum State {
+      LEFT,
+      RIGHT,
+      DONE,
+    }
+    let state: State = State.LEFT;
+    let iterator = xs[Symbol.iterator]();
+    return {
+      next() {
+        while (true) {
+          if (state === State.DONE) return iteratorReturnResult;
+          const result = iterator.next();
+          if (result.done) {
+            if (state === State.LEFT) {
+              state = State.RIGHT;
+              iterator = ys[Symbol.iterator]();
+            } else state = State.DONE;
+          } else return iteratorYieldResult(result.value);
+        }
+      },
+    };
   },
 });
 
@@ -82,16 +174,21 @@ export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterabl
 };
 
 export const unfoldr1 = <a, b>(f: (_: b) => [a, Maybe<b>]) => (b: b): Iterable<a> =>
-  unfoldr<a, Maybe<b>>(x => (x.isNothing ? x : Just(f(x.value))))(Just(b));
+  unfoldr<a, Maybe<b>>((x) => (x.isNothing ? x : Just(f(x.value))))(Just(b));
 
 export const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): Iterable<a> => ({
-  *[Symbol.iterator]() {
-    let current = f(b);
-    while (current.isJust) {
-      const [value, next] = current.value;
-      yield value;
-      current = f(next);
-    }
+  [Symbol.iterator]() {
+    let next = b;
+    return {
+      next() {
+        const result = f(next);
+        if (result.isJust) {
+          let value: a;
+          [value, next] = result.value;
+          return iteratorYieldResult(value);
+        } else return iteratorReturnResult;
+      },
+    };
   },
 });
 
@@ -108,25 +205,27 @@ export const range = (start: number) => (end: number): Iterable<number> => {
   if (!Number.isInteger(start) || !Number.isInteger(end))
     throw new TypeError('Start and end must be integers.');
   let step = start < end ? 1 : -1;
-  return {
-    *[Symbol.iterator]() {
-      for (let i = start; i !== end; i += step) yield i;
-    },
-  };
+  const stop = end + step;
+  return unfoldr<number, number>((i) => (i !== stop ? Just([i, i + step]) : Nothing))(start);
 };
 
-export const fromArray = <a>(xs: ArrayLike<a>): Iterable<a> => ({
-  *[Symbol.iterator]() {
-    const len = xs.length;
-    for (let i = 0; i < len; i++) yield xs[i];
-  },
-});
+export const fromArray = <a>(xs: ArrayLike<a>): Iterable<a> => {
+  const len = xs.length;
+  return unfoldr<a, number>((index) => (index < len ? Just([xs[index], index + 1]) : Nothing))(0);
+};
 
 export const compact: Compactable_1<TIterable>['compact'] = <a>(
   fma: Iterable<Maybe<a>>
 ): Iterable<a> => ({
-  *[Symbol.iterator]() {
-    for (const ma of fma) if (ma.isJust) yield ma.value;
+  [Symbol.iterator]() {
+    const iter = fma[Symbol.iterator]();
+    return {
+      next() {
+        for (let result = iter.next(); !result.done; result = iter.next())
+          if (result.value.isJust) return iteratorYieldResult(result.value.value);
+        return iteratorReturnResult;
+      },
+    };
   },
 });
 

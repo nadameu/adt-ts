@@ -120,6 +120,11 @@ describe('Traversable', () => {
   test('Traversable - composition', traversableLaws.composition);
 });
 
+describe('Range', () => {
+  test('ascending', () => expect(Array.from(iterable.range(4)(8))).toEqual([4, 5, 6, 7, 8]));
+  test('descending', () => expect(Array.from(iterable.range(9)(5))).toEqual([9, 8, 7, 6, 5]));
+});
+
 test.skip('Stack safety', () => {
   const iter = iterable.range(0)(1e6);
   const trav = () => iterable.sequence(applicativeIdentity)(iter);
