@@ -3,9 +3,9 @@ import {
   array,
   eqNumber,
   flip,
-  makeEqArray,
+  makeEqArrayLike,
   makeMonoidDual,
-  monoidArray,
+  monoidArrayLike,
   monoidEndo,
 } from '../../src';
 import { Anon, Generic1, Generic2, Generic2as1, Type1, Type2 } from '../../src/Generic';
@@ -29,7 +29,7 @@ const laws = <f extends Generic1, a>(
       ),
     foldMap: (): void =>
       void jsc.assertForall(fa, fa =>
-        makeEqArray({ eq } as Eq<a>).eq(foldMap(monoidArray)(array.pure)(fa))(
+        makeEqArrayLike({ eq } as Eq<a>).eq(foldMap(monoidArrayLike)(array.pure)(fa))(
           foldl<a, a[]>(xs => x => (xs.push(x), xs))([])(fa)
         )
       ),

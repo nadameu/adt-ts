@@ -23,24 +23,24 @@ import {
   range,
   wilt,
   wither,
-} from '../src/Array/functions';
-import { makeEqArray } from '../src/Array/instances';
+} from '../src/ArrayLike/functions';
+import { makeEqArrayLike } from '../src/ArrayLike/instances';
 import { eqNumber } from '../src/Number/instances';
 import { Eq } from '../src/typeclasses';
 
-const empty: number[] = [];
-const populated: number[] = [1, 2, 3, 4];
+const empty: ArrayLike<number> = { length: 0 };
+const populated: ArrayLike<number> = { 0: 1, 1: 2, 2: 3, 3: 4, length: 4 };
 
 const makeExpectEq = <a>(eq: Eq<a>) => {
-  const isEq = makeEqArray(eq).eq;
-  return (xs: a[], ys: a[]) => expect(isEq(xs)(ys)).toBe(true);
+  const isEq = makeEqArrayLike(eq).eq;
+  return (xs: ArrayLike<a>, ys: ArrayLike<a>) => expect(isEq(xs)(ys)).toBe(true);
 };
 const expectEqNumber = makeExpectEq(eqNumber);
 
 test('forEach', () => {
-  const newArray: number[] = [];
+  const newArray: ArrayLike<number> = { length: 0 };
   const push = forEach<number>(x => {
-    newArray.push(x);
+    (newArray as any)[(newArray.length as any)++] = x;
   });
   push(empty);
   expectEqNumber(newArray, empty);
@@ -49,9 +49,9 @@ test('forEach', () => {
 });
 
 test('forEachRight', () => {
-  const newArray: number[] = [];
+  const newArray: ArrayLike<number> = { length: 0 };
   const unshift = forEachRight<number>(x => {
-    newArray.push(x);
+    (newArray as any)[(newArray.length as any)++] = x;
   });
   unshift(empty);
   expectEqNumber(newArray, empty);
@@ -60,13 +60,13 @@ test('forEachRight', () => {
 });
 
 test('forEachWithIndex', () => {
-  const expectEq = makeExpectEq(makeEqArray(eqNumber));
-  const newArray: [number, number][] = [];
+  const expectEq = makeExpectEq(makeEqArrayLike(eqNumber));
+  const newArray: ArrayLike<[number, number]> = { length: 0 };
   const push = forEachWithIndex<number>(i => x => {
-    newArray.push([i, x]);
+    (newArray as any)[(newArray.length as any)++] = [i, x];
   });
   push(empty);
-  expectEq(newArray, empty as never[]);
+  expectEq(newArray, empty as ArrayLike<never>);
   push(populated);
   expectEq(
     newArray,
@@ -131,7 +131,7 @@ test('partitionMap', () => {
 });
 
 test('wither', () => {
-  const eq = makeEqIterable(makeEqArray(eqNumber)).eq;
+  const eq = makeEqIterable(makeEqArrayLike(eqNumber)).eq;
   const witherF = wither(applicativeIterable)((x: number) =>
     x > 1 ? [x < 3 ? Just(x) : Nothing] : [Just(x - 3)]
   );
@@ -142,12 +142,12 @@ test('wither', () => {
 });
 
 test('wilt', () => {
-  const eqArrNumber = makeEqArray(eqNumber);
+  const eqArrNumber = makeEqArrayLike(eqNumber);
   const eq = makeEqIterable({
     eq: x => y => eqArrNumber.eq(x.left)(y.left) && eqArrNumber.eq(x.right)(y.right),
   } as Eq<{
-    left: number[];
-    right: number[];
+    left: ArrayLike<number>;
+    right: ArrayLike<number>;
   }>).eq;
   const wiltF = wilt(applicativeIterable)((x: number) =>
     x > 1 ? [x < 3 ? Right(x) : Left(x)] : [Left(x - 3)]
@@ -169,7 +169,7 @@ test('range', () => {
 test('intercalate', () => {
   const intComma = intercalate(monoidString)(', ');
   expect(intComma([])).toEqual('');
-  expect(intComma(['a'])).toEqual('a');
-  expect(intComma(['a', 'b'])).toEqual('a, b');
-  expect(intComma(['a', 'b', 'c'])).toEqual('a, b, c');
+  expect(intComma({ '0': 'a', length: 1 })).toEqual('a');
+  expect(intComma({ '0': 'a', '1': 'b', length: 2 })).toEqual('a, b');
+  expect(intComma({ '0': 'a', '1': 'b', '2': 'c', length: 3 })).toEqual('a, b, c');
 });

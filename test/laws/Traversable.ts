@@ -1,10 +1,10 @@
 import * as jsc from 'jsverify';
 import {
-  applicativeArray,
+  applicativeArrayLike,
   applicativeIdentity,
   applicativeIterable,
   eqNumber,
-  makeEqArray,
+  makeEqArrayLike,
   makeEqIterable,
 } from '../../src';
 import { Anon, Generic1, Type1 } from '../../src/Generic';
@@ -22,7 +22,7 @@ const makeArbArray = <a>(arb: jsc.Arbitrary<a>) => {
   const arbArray = jsc.oneof<ArrayLike<a>>([
     jsc.constant({ length: 0 }),
     arb.smap(
-      x => ({ 0: x, length: 1 } as ArrayLike<a>),
+      x => ({ '0': x, length: 1 } as ArrayLike<a>),
       xs => xs[0]
     ),
   ]);
@@ -55,10 +55,10 @@ const laws = <t extends Generic1, a>(
   const { sequence, traverse } = traversable;
   return {
     naturality: (): void => {
-      const eqArray = makeEqArray({ eq } as Eq<Type1<t, a>>).eq;
+      const eqArray = makeEqArrayLike({ eq } as Eq<Type1<t, a>>).eq;
       return void jsc.assertForall(jsc.fn(makeArbIterable(a)), ta, (f, ta) => {
         const a = Array.from(traverse(applicativeIterable)(f)(ta));
-        const b = traverse(applicativeArray)(x => Array.from(f(x)))(ta);
+        const b = traverse(applicativeArrayLike)(x => Array.from(f(x)))(ta);
         return eqArray(a)(b);
       });
     },
@@ -66,8 +66,8 @@ const laws = <t extends Generic1, a>(
       jsc.assertForall(ta, ta => eq(sequence(applicativeIdentity)(ta))(ta));
     },
     composition: (): void => {
-      const applicativeCompose = makeApplicativeCompose(applicativeIterable, applicativeArray);
-      const eqCompose = makeEqIterable(makeEqArray({ eq } as Eq<Type1<t, a>>)).eq;
+      const applicativeCompose = makeApplicativeCompose(applicativeIterable, applicativeArrayLike);
+      const eqCompose = makeEqIterable(makeEqArrayLike({ eq } as Eq<Type1<t, a>>)).eq;
       return void jsc.assertForall(
         jsc.fn(makeArbIterable(a)),
         jsc.fn(makeArbArray(a)),
@@ -75,7 +75,7 @@ const laws = <t extends Generic1, a>(
         (f, g, ta) => {
           const a = traverse(applicativeCompose)((x: a) => applicativeIterable.map(g)(f(x)))(ta);
           for (const _ of a); // Making sure the inner value is recalculated every time
-          const b = applicativeIterable.map(traverse(applicativeArray)(g))(
+          const b = applicativeIterable.map(traverse(applicativeArrayLike)(g))(
             traverse(applicativeIterable)(f)(ta)
           );
           for (const _ of b); // Making sure the inner value is recalculated every time

@@ -1,20 +1,20 @@
 import * as jsc from 'jsverify';
-import { identity, makeEqArray, monoidArray, semigroupArray } from '../src';
-import { functorConst, makeApplicativeConst, makeApplyConst } from '../src/Const';
+import {
+  functorConst,
+  identity,
+  makeApplicativeConst,
+  makeApplyConst,
+  makeEqArray,
+  monoidArray,
+  semigroupArray,
+} from '../src';
 import { makeApplicative2Laws } from './laws/Applicative';
 import { makeApply2Laws } from './laws/Apply';
 import { makeFunctor2Laws } from './laws/Functor';
 
 const makeEqConst = identity;
 const makeArb = identity;
-const makeArbArray = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<ArrayLike<a>> => {
-  const base = jsc.array(arb);
-  return base.smap<ArrayLike<a>>(
-    xs => xs,
-    xs => Array.from(xs),
-    xs => (base.show || String)(Array.from(xs))
-  );
-};
+const makeArbArray = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<a[]> => jsc.array(arb);
 
 describe('Functor', () => {
   const functorLaws = makeFunctor2Laws(functorConst)(makeEqConst)(makeArb);
