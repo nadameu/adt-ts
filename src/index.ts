@@ -23,6 +23,7 @@ export * from './Number';
 export * from './Ordering';
 export * from './Star';
 export * from './String';
+export * from './Validation';
 export { eitherBool, maybeBool } from './typeclasses/Filterable';
 import * as derivations from './derivations';
 import * as typeclasses from './typeclasses';
