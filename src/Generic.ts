@@ -59,19 +59,26 @@ export interface IdentifiedFn3<f extends GenericFn3> {
   [GenericFn3Type]: f;
 }
 
+export declare const GenericOType: unique symbol;
+export type GenericOType = typeof GenericOType;
+export interface IdentifiedO {
+  [GenericOType]: unknown;
+}
+
 export type Anon<
   obj extends
     | Identified0<any>
     | Identified1<any>
     | Identified2<any>
     | IdentifiedFn<any>
-    | IdentifiedFn3<any>,
+    | IdentifiedFn3<any>
+    | IdentifiedO,
   keys extends Exclude<
     keyof obj,
-    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type
+    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type | GenericOType
   > = Exclude<
     keyof obj,
-    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type
+    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type | GenericOType
   >
 > = Pick<obj, keys>;
 

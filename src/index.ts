@@ -21,6 +21,7 @@ export * from './Maybe';
 export * from './Multiplicative';
 export * from './NEList';
 export * from './Number';
+export * from './Object';
 export * from './Ordering';
 export * from './Star';
 export * from './String';

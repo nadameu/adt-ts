@@ -1,6 +1,6 @@
-import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
+import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, GenericOType, Type1, Type2 } from '../Generic';
 import { compose } from '../helpers/compose';
-import { Functor_1, Functor_2 } from './Functor';
+import { Functor_1, Functor_2, Functor_O } from './Functor';
 
 export interface Apply_1<f extends Generic1> extends Functor_1<f> {
   apply: Helpers1<f>['apply'];
@@ -10,9 +10,15 @@ export interface Apply_2<f extends Generic2> extends Functor_2<f> {
   apply: Helpers2<f>['apply'];
 }
 
+export interface Apply_O extends Functor_O {
+  apply: HelpersO['apply'];
+}
+
 export interface ApplyOnly_1<f extends Generic1> extends Pick<Apply_1<f>, Generic1Type | 'apply'> {}
 
 export interface ApplyOnly_2<f extends Generic2> extends Pick<Apply_2<f>, Generic2Type | 'apply'> {}
+
+export interface ApplyOnly_O extends Pick<Apply_O, GenericOType | 'apply'> {}
 
 interface Helpers1<f extends Generic1> {
   apply: <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>) => Type1<f, b>;
@@ -28,10 +34,20 @@ interface Helpers2<f extends Generic2> {
   lift4: <b, c, d, e, g>(f: (_: b) => (_: c) => (_: d) => (_: e) => g) => <a>(fab: Type2<f, a, b>) => (fac: Type2<f, a, c>) => (fad: Type2<f, a, d>) => (fae: Type2<f, a, e>) => Type2<f, a, g>;
   lift5: <b, c, d, e, g, h>(f: (_: b) => (_: c) => (_: d) => (_: e) => (_: g) => h) => <a>(fab: Type2<f, a, b>) => (fac: Type2<f, a, c>) => (fad: Type2<f, a, d>) => (fae: Type2<f, a, e>) => (faf: Type2<f, a, g>) => Type2<f, a, h>;
 }
+interface HelpersO {
+  apply: <T extends Record<keyof T, (_: any) => unknown>>(ff: T) => <U extends { [k in keyof T]: T[k] extends (_: infer a) => unknown ? a : never }>(fa: U) => { [k in keyof T]: T[k] extends (_: any) => infer b ? b : never };
+  lift2: <a, b, c>(f: (_: a) => (_: b) => c) => <T extends Record<keyof T, a>>(fa: T) => <U extends Record<keyof T, b>>(fb: U) => { [k in keyof T]: c };
+  lift3: <a, b, c, d>(f: (_: a) => (_: b) => (_: c) => d) => <T extends Record<keyof T, a>>(fa: T) => <U extends Record<keyof T, b>>(fb: U) => <V extends Record<keyof T, c>>(fc: V) => { [k in keyof T]: d };
+  lift4: <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) => <T extends Record<keyof T, a>>(fa: T) => <U extends Record<keyof T, b>>(fb: U) => <V extends Record<keyof T, c>>(fc: V) => <W extends Record<keyof T, d>>(fd: W) => { [k in keyof T]: e };
+  lift5: <a, b, c, d, e, f>(
+    f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => f
+  ) => <T extends Record<keyof T, a>>(fa: T) => <U extends Record<keyof T, b>>(fb: U) => <V extends Record<keyof T, c>>(fc: V) => <W extends Record<keyof T, d>>(fd: W) => <X extends Record<keyof T, e>>(fe: X) => { [k in keyof T]: f };
+}
 type Helper = {
   [k in keyof Helpers1<never>]: {
     <f extends Generic1>({ apply, map }: Apply_1<f>): Helpers1<f>[k];
     <f extends Generic2>({ apply, map }: Apply_2<f>): Helpers2<f>[k];
+    ({ apply, map }: Apply_O): HelpersO[k];
   };
 };
 

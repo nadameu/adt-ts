@@ -10,8 +10,10 @@ import {
   Generic1Type,
   Generic2,
   Generic2Type,
+  GenericOType,
   Identified1,
   Identified2,
+  IdentifiedO,
   Type1,
   Type2,
 } from '../Generic';
@@ -38,11 +40,19 @@ export interface Foldable_2<f extends Generic2> extends Identified2<f> {
   foldMap: Helpers2<f>['foldMap'];
 }
 
+export interface Foldable_O extends IdentifiedO {
+  foldl: HelpersO['foldl'];
+  foldr: HelpersO['foldr'];
+  foldMap: HelpersO['foldMap'];
+}
+
 export interface FoldLOnly_1<f extends Generic1>
   extends Pick<Foldable_1<f>, Generic1Type | 'foldl'> {}
 
 export interface FoldLOnly_2<f extends Generic2>
   extends Pick<Foldable_2<f>, Generic2Type | 'foldl'> {}
+
+export interface FoldLOnly_O extends Pick<Foldable_O, GenericOType | 'foldl'> {}
 
 export interface FoldROnly_1<f extends Generic1>
   extends Pick<Foldable_1<f>, Generic1Type | 'foldr'> {}
@@ -50,11 +60,15 @@ export interface FoldROnly_1<f extends Generic1>
 export interface FoldROnly_2<f extends Generic2>
   extends Pick<Foldable_2<f>, Generic2Type | 'foldr'> {}
 
+export interface FoldROnly_O extends Pick<Foldable_O, GenericOType | 'foldr'> {}
+
 export interface FoldMapOnly_1<f extends Generic1>
   extends Pick<Foldable_1<f>, Generic1Type | 'foldMap'> {}
 
 export interface FoldMapOnly_2<f extends Generic2>
   extends Pick<Foldable_2<f>, Generic2Type | 'foldMap'> {}
+
+export interface FoldMapOnly_O extends Pick<Foldable_O, GenericOType | 'foldMap'> {}
 
 interface Helpers1<f extends Generic1> {
   foldl: <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (fa: Type1<f, a>) => b;
@@ -76,6 +90,18 @@ interface Helpers2<f extends Generic2> {
   sumProduct: <a>(fab: Type2<f, a, number>) => number;
   maxMin: <b>(compare: (_: b) => (_: b) => Ordering) => <a>(fab: Type2<f, a, b>) => Maybe<b>;
 }
+interface HelpersO {
+  foldl: <a, b>(f: (_: b) => (_: a) => b) => (b: b) => <T extends Record<keyof T, a>>(fa: T) => b;
+  foldr: <a, b>(f: (_: a) => (_: b) => b) => (b: b) => <T extends Record<keyof T, a>>(fa: T) => b;
+  foldMap: HelperOMonoid['foldMap'];
+  allAny: <a>(p: (_: a) => boolean) => <T extends Record<keyof T, a>>(fa: T) => boolean;
+  andOr: <T extends Record<keyof T, boolean>>(fa: T) => boolean;
+  length: <T>(fa: T) => number;
+  sumProduct: <T extends Record<keyof T, number>>(fa: T) => number;
+  maxMin: <a>(
+    compare: (_: a) => (_: a) => Ordering
+  ) => <T extends Record<keyof T, a>>(fa: T) => Maybe<a>;
+}
 type Helper = {
   [k in keyof Helpers1<never>]: {
     <f extends Generic1>(foldable: Foldable_1<f>): Helpers1<f>[k];
@@ -86,6 +112,7 @@ type PartialHelper<keys extends keyof Foldable_1<never> & keyof Foldable_2<never
   [k in keyof Helpers1<never>]: {
     <f extends Generic1>(_: Pick<Foldable_1<f>, Generic1Type | keys>): Helpers1<f>[k];
     <f extends Generic2>(_: Pick<Foldable_2<f>, Generic2Type | keys>): Helpers2<f>[k];
+    (_: Pick<Foldable_O, GenericOType | keys>): HelpersO[k];
   };
 };
 interface Helpers1Monoid0<f extends Generic1, m> {
@@ -108,6 +135,20 @@ interface Helpers2Monoid1<f extends Generic2, m extends Generic1> {
   fold: <a, b>(famb: Type2<f, a, Type1<m, b>>) => Type1<m, b>;
   intercalate: <b>(sep: Type1<m, b>) => <a>(fm: Type2<f, a, Type1<m, b>>) => Type1<m, b>;
 }
+interface HelpersOMonoid0<m> {
+  foldMap: <a>(f: (_: a) => m) => <T extends Record<keyof T, a>>(fa: T) => m;
+  fold: <T extends Record<keyof T, m>>(fm: T) => m;
+  intercalate: (sep: m) => <T extends Record<keyof T, m>>(fm: T) => m;
+}
+interface HelpersOMonoid1<m extends Generic1> {
+  foldMap: <a, b>(f: (_: a) => Type1<m, b>) => <T extends Record<keyof T, a>>(fa: T) => Type1<m, b>;
+  fold: <T extends Record<keyof T, Type1<m, unknown>>>(
+    fma: T
+  ) => Type1<m, T extends Record<keyof T, Type1<m, infer a>> ? a : never>;
+  intercalate: <a>(
+    sep: Type1<m, a>
+  ) => <T extends Record<keyof T, Type1<m, a>>>(fm: T) => Type1<m, a>;
+}
 type Helper1Monoid<f extends Generic1> = {
   [k in keyof Helpers1Monoid0<never, never>]: {
     <m extends Generic1>(monoid: Monoid_1<m>): Helpers1Monoid1<f, m>[k];
@@ -120,16 +161,24 @@ type Helper2Monoid<f extends Generic2> = {
     <m>(monoid: Monoid_0<m>): Helpers2Monoid0<f, m>[k];
   };
 };
+type HelperOMonoid = {
+  [k in keyof HelpersOMonoid0<never>]: {
+    <m extends Generic1>(monoid: Monoid_1<m>): HelpersOMonoid1<m>[k];
+    <m>(monoid: Monoid_0<m>): HelpersOMonoid0<m>[k];
+  };
+};
 type HelperMonoid = {
   [k in keyof Helper1Monoid<never>]: {
     <f extends Generic1>({ foldMap }: FoldMapOnly_1<f>): Helper1Monoid<f>[k];
     <f extends Generic2>({ foldMap }: FoldMapOnly_2<f>): Helper2Monoid<f>[k];
+    ({ foldMap }: FoldMapOnly_O): HelperOMonoid[k];
   };
 };
 type HelperMonoidL = {
   [k in keyof Helper1Monoid<never>]: {
     <f extends Generic1>({ foldl }: FoldLOnly_1<f>): Helper1Monoid<f>[k];
     <f extends Generic2>({ foldl }: FoldLOnly_2<f>): Helper2Monoid<f>[k];
+    ({ foldl }: FoldLOnly_O): HelperOMonoid[k];
   };
 };
 interface Helpers1Semigroup0<f extends Generic1, m> {
@@ -152,6 +201,18 @@ interface Helpers2Semigroup1<f extends Generic2, m extends Generic1> {
   ) => <b>(f: (_: b) => Type1<m, c>) => <a>(fab: Type2<f, a, b>) => Type1<m, c>;
   surround: <b>(sep: Type1<m, b>) => <a>(famb: Type2<f, a, Type1<m, b>>) => Type1<m, b>;
 }
+interface HelpersOSemigroup0<m> {
+  surroundMap: (sep: m) => <a>(f: (_: a) => m) => <T extends Record<keyof T, a>>(fa: T) => m;
+  surround: (sep: m) => <T extends Record<keyof T, m>>(fm: T) => m;
+}
+interface HelpersOSemigroup1<m extends Generic1> {
+  surroundMap: <b>(
+    sep: Type1<m, b>
+  ) => <a>(f: (_: a) => Type1<m, b>) => <T extends Record<keyof T, a>>(fa: T) => Type1<m, b>;
+  surround: <a>(
+    sep: Type1<m, a>
+  ) => <T extends Record<keyof T, Type1<m, a>>>(fma: T) => Type1<m, a>;
+}
 type Helper1Semigroup<f extends Generic1> = {
   [k in keyof Helpers1Semigroup0<never, never>]: {
     <m extends Generic1>(semigroup: Semigroup_1<m>): Helpers1Semigroup1<f, m>[k];
@@ -164,10 +225,17 @@ type Helper2Semigroup<f extends Generic2> = {
     <m>(semigroup: Semigroup_0<m>): Helpers2Semigroup0<f, m>[k];
   };
 };
+type HelperOSemigroup = {
+  [k in keyof HelpersOSemigroup0<never>]: {
+    <m extends Generic1>(semigroup: Semigroup_1<m>): HelpersOSemigroup1<m>[k];
+    <m>(semigroup: Semigroup_0<m>): HelpersOSemigroup0<m>[k];
+  };
+};
 type HelperSemigroup = {
   [k in keyof Helper1Semigroup<never>]: {
     <f extends Generic1>({ foldMap }: FoldMapOnly_1<f>): Helper1Semigroup<f>[k];
     <f extends Generic2>({ foldMap }: FoldMapOnly_2<f>): Helper2Semigroup<f>[k];
+    ({ foldMap }: FoldMapOnly_O): HelperOSemigroup[k];
   };
 };
 interface Helpers1Plus1<f extends Generic1, g extends Generic1> {
@@ -186,6 +254,24 @@ interface Helpers2Plus2<f extends Generic2, g extends Generic2> {
   oneOf: <a, b, c>(fagbc: Type2<f, a, Type2<g, b, c>>) => Type2<g, b, c>;
   oneOfMap: <b, c, d>(f: (_: b) => Type2<g, c, d>) => <a>(fab: Type2<f, a, b>) => Type2<g, c, d>;
 }
+interface HelpersOPlus1<f extends Generic1> {
+  oneOf: <T extends Record<keyof T, Type1<f, unknown>>>(
+    fga: T
+  ) => Type1<f, T extends Record<keyof T, Type1<f, infer a>> ? a : never>;
+  oneOfMap: <a, b>(
+    f: (_: a) => Type1<f, b>
+  ) => <T extends Record<keyof T, a>>(fa: T) => Type1<f, b>;
+}
+interface HelpersOPlus2<f extends Generic2> {
+  oneOf: <T extends Record<keyof T, Type2<f, unknown, unknown>>>(
+    fga: T
+  ) => T extends Record<keyof T, Type2<f, infer a, infer b>>
+    ? Type2<f, a, b>
+    : Type2<f, never, never>;
+  oneOfMap: <a, b, c>(
+    f: (_: b) => Type2<f, a, c>
+  ) => <T extends Record<keyof T, b>>(fa: T) => Type2<f, a, c>;
+}
 type Helper1Plus<f extends Generic1> = {
   [k in keyof Helpers1Plus1<never, never>]: {
     <g extends Generic1>(plus: Plus_1<g>): Helpers1Plus1<f, g>[k];
@@ -198,10 +284,17 @@ type Helper2Plus<f extends Generic2> = {
     <g extends Generic2>(plus: Plus_2<g>): Helpers2Plus2<f, g>[k];
   };
 };
+type HelperOPlus = {
+  [k in keyof HelpersOPlus1<never>]: {
+    <f extends Generic1>(plus: Plus_1<f>): HelpersOPlus1<f>[k];
+    <f extends Generic2>(plus: Plus_2<f>): HelpersOPlus2<f>[k];
+  };
+};
 type HelperPlus = {
   [k in keyof Helper1Plus<never>]: {
     <f extends Generic1>({ foldMap }: FoldMapOnly_1<f>): Helper1Plus<f>[k];
     <f extends Generic2>({ foldMap }: FoldMapOnly_2<f>): Helper2Plus<f>[k];
+    ({ foldMap }: FoldMapOnly_O): HelperOPlus[k];
   };
 };
 
@@ -300,7 +393,7 @@ export const or: PartialHelper<'foldMap'>['andOr'] = <f extends Generic1>(
 
 export const length: PartialHelper<'foldMap'>['length'] = <f extends Generic1>({
   foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => /*#__PURE__*/ foldMap(monoidAdditive)(constant(1));
+}: Anon<Foldable_1<f>, 'foldMap'>) => /*#__PURE__*/ foldMap(monoidAdditive)(constant(1)) as any;
 
 export const sum: PartialHelper<'foldMap'>['sumProduct'] = <f extends Generic1>({
   foldMap,
