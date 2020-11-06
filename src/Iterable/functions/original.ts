@@ -90,27 +90,26 @@ export const bind = <a, b>(f: (_: a) => Iterable<b>) => (fa: Iterable<a>): Itera
       next() {
         while (true)
           switch (state.tag) {
+            case Tag.INNER: {
+              const result = state.inner.next();
+              if (result.done) {
+                state = { tag: Tag.OUTER, outer: state.outer };
+              } else {
+                return iteratorYieldResult(result.value);
+              }
+            }
+
             case Tag.OUTER: {
               const result = state.outer.next();
               if (result.done) {
                 state = { tag: Tag.DONE };
-                break;
               } else {
                 state = {
                   tag: Tag.INNER,
                   outer: state.outer,
                   inner: f(result.value)[Symbol.iterator](),
                 };
-              }
-            }
-
-            case Tag.INNER: {
-              const result = state.inner.next();
-              if (result.done) {
-                state = { tag: Tag.OUTER, outer: state.outer };
-                break;
-              } else {
-                return iteratorYieldResult(result.value);
+                continue;
               }
             }
 
