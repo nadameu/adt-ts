@@ -61,7 +61,7 @@ export const map: Functor_1<TIterable>['map'] = <a, b>(f: (_: a) => b) => (fa: I
   },
 });
 
-export const pure: Applicative_1<TIterable>['pure'] = (value) => ({
+export const pure: Applicative_1<TIterable>['pure'] = value => ({
   [Symbol.iterator]() {
     let done = false;
     return {
@@ -73,10 +73,6 @@ export const pure: Applicative_1<TIterable>['pure'] = (value) => ({
     };
   },
 });
-
-// export const bind: Bind_1<TIterable>['bind'] = <a, b>(f: (_: a) => Iterable<b>) => (
-//   fa: Iterable<a>
-// ): Iterable<b> => foldl(append)(mempty<b>())(map(f)(fa));
 
 export const bind = <a, b>(f: (_: a) => Iterable<b>) => (fa: Iterable<a>): Iterable<b> => ({
   [Symbol.iterator]() {
@@ -105,7 +101,6 @@ export const bind = <a, b>(f: (_: a) => Iterable<b>) => (fa: Iterable<a>): Itera
                   outer: state.outer,
                   inner: f(result.value)[Symbol.iterator](),
                 };
-                break;
               }
             }
 
@@ -131,24 +126,41 @@ export const apply = applyDefault({ bind, map } as Bind_1<TIterable>);
 
 export const append = <a>(xs: Iterable<a>) => (ys: Iterable<a>): Iterable<a> => ({
   [Symbol.iterator]() {
-    const enum State {
+    const enum Tag {
       LEFT,
       RIGHT,
       DONE,
     }
-    let state: State = State.LEFT;
-    let iterator = xs[Symbol.iterator]();
+    type State =
+      | { tag: Tag.LEFT; iterator: Iterator<a> }
+      | { tag: Tag.RIGHT; iterator: Iterator<a> }
+      | { tag: Tag.DONE };
+    let state: State = { tag: Tag.LEFT, iterator: xs[Symbol.iterator]() };
     return {
       next() {
         while (true) {
-          if (state === State.DONE) return iteratorReturnResult;
-          const result = iterator.next();
-          if (result.done) {
-            if (state === State.LEFT) {
-              state = State.RIGHT;
-              iterator = ys[Symbol.iterator]();
-            } else state = State.DONE;
-          } else return iteratorYieldResult(result.value);
+          switch (state.tag) {
+            case Tag.LEFT: {
+              const result = state.iterator.next();
+              if (result.done) {
+                state = { tag: Tag.RIGHT, iterator: ys[Symbol.iterator]() };
+              } else {
+                return iteratorYieldResult(result.value);
+              }
+            }
+
+            case Tag.RIGHT: {
+              const result = state.iterator.next();
+              if (result.done) {
+                state = { tag: Tag.DONE };
+              } else {
+                return iteratorYieldResult(result.value);
+              }
+            }
+
+            case Tag.DONE:
+              return iteratorReturnResult;
+          }
         }
       },
     };
@@ -174,7 +186,7 @@ export const foldr = <a, b>(f: (_: a) => (_: b) => b) => (b0: b) => (xs: Iterabl
 };
 
 export const unfoldr1 = <a, b>(f: (_: b) => [a, Maybe<b>]) => (b: b): Iterable<a> =>
-  unfoldr<a, Maybe<b>>((x) => (x.isNothing ? x : Just(f(x.value))))(Just(b));
+  unfoldr<a, Maybe<b>>(x => (x.isNothing ? x : Just(f(x.value))))(Just(b));
 
 export const unfoldr = <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b): Iterable<a> => ({
   [Symbol.iterator]() {
@@ -206,12 +218,12 @@ export const range = (start: number) => (end: number): Iterable<number> => {
     throw new TypeError('Start and end must be integers.');
   let step = start < end ? 1 : -1;
   const stop = end + step;
-  return unfoldr<number, number>((i) => (i !== stop ? Just([i, i + step]) : Nothing))(start);
+  return unfoldr<number, number>(i => (i !== stop ? Just([i, i + step]) : Nothing))(start);
 };
 
 export const fromArray = <a>(xs: ArrayLike<a>): Iterable<a> => {
   const len = xs.length;
-  return unfoldr<a, number>((index) => (index < len ? Just([xs[index], index + 1]) : Nothing))(0);
+  return unfoldr<a, number>(index => (index < len ? Just([xs[index], index + 1]) : Nothing))(0);
 };
 
 export const compact: Compactable_1<TIterable>['compact'] = <a>(
