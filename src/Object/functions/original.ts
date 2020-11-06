@@ -1,19 +1,21 @@
 import { array } from '../../Array';
 import { Anon, Generic1, Type1 } from '../../Generic';
-import { pipeValue } from '../../helpers/pipeValue';
-import { thrush } from '../../helpers/thrush';
 import { iterable } from '../../Iterable';
-import { Alt_O, Applicative_1, Apply_O, Functor_O } from '../../typeclasses';
-import { lift2 } from '../../typeclasses/Apply';
-import { Foldable_O, foldlDefault, FoldMapOnly_O, foldrDefault } from '../../typeclasses/Foldable';
-import { Monoid_0 } from '../../typeclasses/Monoid';
-import { Plus_O } from '../../typeclasses/Plus';
 import {
+  Alt_O,
+  Applicative_1,
+  Apply_O,
+  Foldable_O,
+  foldlDefault,
+  FoldMapOnly_O,
+  foldrDefault,
+  Functor_O,
+  Monoid_0,
+  Plus_O,
   sequenceDefault,
   Traversable_O,
-  TraverseOnly_1,
   TraverseOnly_O,
-} from '../../typeclasses/Traversable';
+} from '../../typeclasses';
 
 export const entries = <T>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][];
 
