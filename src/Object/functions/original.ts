@@ -16,6 +16,7 @@ import {
   Traversable_O,
   TraverseOnly_O,
 } from '../../typeclasses';
+import { lift2 } from '../../typeclasses/Apply';
 
 export const entries = <T>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][];
 
@@ -57,11 +58,11 @@ export const traverse: Traversable_O['traverse'] = <m extends Generic1>(
   applicative: Anon<Applicative_1<m>>
 ) => <a, b>(f: (_: a) => Type1<m, b>) => <T extends Record<keyof T, a>>(
   ta: T
-): Type1<m, { [k in keyof T]: b }> =>
-  (applicative as Applicative_1<m>).map(fromEntries)(
-    array.traverse(applicative as Applicative_1<m>)(([k, x]: [keyof T, a]) =>
-      (applicative as Applicative_1<m>).map((y: b) => [k, y] as [keyof T, b])(f(x))
-    )(entries(ta))
-  );
+): Type1<m, { [k in keyof T]: b }> => {
+  const A = applicative as Applicative_1<m>;
+  return array.foldr(([k, x]: [keyof T, a]) =>
+    A.apply(A.map((x: b) => (obj: Record<keyof T, b>) => ((obj[k] = x), obj))(f(x)))
+  )(A.pure({} as Record<keyof T, b>))(entries(ta));
+};
 
 export const sequence = sequenceDefault({ traverse } as TraverseOnly_O);
