@@ -54,7 +54,7 @@ export const pipeK: {
   <f extends Generic1>({ bind, pure }: BindOnly_1<f> & PureOnly_1<f>): PipeKleisli_1<f>;
   <f extends Generic2>({ bind, pure }: BindOnly_2<f> & PureOnly_2<f>): PipeKleisli_2<f>;
 } = <f extends Generic1>({ bind, pure }: Anon<BindOnly_1<f> & PureOnly_1<f>>): PipeKleisli_1<f> =>
-  function<a>(_: (_: a) => Type1<f, a> = pure) {
+  function <a>(_: (_: a) => Type1<f, a> = pure) {
     const [f, ...fs]: Iterable<(_: a) => Type1<f, a>> = arguments;
     return (a: a) => fs.reduce((fa, f) => bind(f)(fa), f(a));
   };

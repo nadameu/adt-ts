@@ -35,8 +35,8 @@ const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Iterable<a>> => {
   const base = jsc.array(arb);
   return base.smap(
     iterable.fromArray,
-    (xs) => Array.from(xs),
-    (xs) => (base.show || String)(Array.from(xs))
+    xs => Array.from(xs),
+    xs => (base.show || String)(Array.from(xs))
   );
 };
 

@@ -61,8 +61,8 @@ export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b) => {
 export const foldrWithIndex = <a, b>(f: (_: number) => (_: a) => (_: b) => b) => (b: b) => (
   xs: LazyList<a>
 ): b =>
-  foldr<[number, a], b>(([i, a]) => (b) => f(i)(a)(b))(b)(
-    mapWithIndex<a, [number, a]>((i) => (a) => [i, a])(xs)
+  foldr<[number, a], b>(([i, a]) => b => f(i)(a)(b))(b)(
+    mapWithIndex<a, [number, a]>(i => a => [i, a])(xs)
   );
 export const foldMapWithIndex: {
   <m extends Generic1>(monoid: Monoid_1<m>): <a, b>(
@@ -74,8 +74,7 @@ export const foldMapWithIndex: {
   <m>(monoid: Monoid_0<m>): <a>(f: (_: number) => (_: a) => m) => (fa: LazyList<a>) => m;
 } = <m>({ append, mempty }: Anon<Monoid_0<m>>) => <a>(
   f: (_: number) => (_: a) => m
-): ((fa: LazyList<a>) => m) =>
-  foldlWithIndex<a, m>((i) => (m) => (a) => append(m)(f(i)(a)))(mempty());
+): ((fa: LazyList<a>) => m) => foldlWithIndex<a, m>(i => m => a => append(m)(f(i)(a)))(mempty());
 
 export const foldMap = foldMapDefaultL({ foldl } as Foldable_1<TLazyList>);
 

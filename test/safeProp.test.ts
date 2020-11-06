@@ -41,10 +41,7 @@ const runTests = (
 
 test('With pipeK and safeProp', () => {
   const a: (_: MightHaveA) => Maybe<MightHaveB> = M.pipeK(M.safeProp('a'));
-  const b: (_: MightHaveA) => Maybe<MightHaveC> = M.pipeK(
-    M.safeProp('a'),
-    M.safeProp('b')
-  );
+  const b: (_: MightHaveA) => Maybe<MightHaveC> = M.pipeK(M.safeProp('a'), M.safeProp('b'));
   const c: (_: MightHaveA) => Maybe<string> = M.pipeK(
     M.safeProp('a'),
     M.safeProp('b'),
@@ -55,10 +52,7 @@ test('With pipeK and safeProp', () => {
 
 test('With pipe and bindProp', () => {
   const a: (_: MightHaveA) => Maybe<MightHaveB> = pipe(M.safeProp('a'));
-  const b: (_: MightHaveA) => Maybe<MightHaveC> = pipe(
-    M.safeProp('a'),
-    M.bindProp('b')
-  );
+  const b: (_: MightHaveA) => Maybe<MightHaveC> = pipe(M.safeProp('a'), M.bindProp('b'));
   const c: (_: MightHaveA) => Maybe<string> = pipe(
     M.safeProp('a'),
     M.bindProp('b'),

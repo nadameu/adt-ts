@@ -25,20 +25,14 @@ const runTests = (a: (_: A) => Maybe<B>, b: (_: A) => Maybe<number>) => {
 
 test('With pipeK and safeMethod', () => {
   const f: (_: A) => Maybe<B> = M.pipeK(M.safeMethod('runA'));
-  const g: (_: A) => Maybe<number> = M.pipeK(
-    M.safeMethod('runA'),
-    M.safeMethod('runB', 42)
-  );
+  const g: (_: A) => Maybe<number> = M.pipeK(M.safeMethod('runA'), M.safeMethod('runB', 42));
 
   runTests(f, g);
 });
 
 test('With pipe and bindMethod', () => {
   const f: (_: A) => Maybe<B> = pipe(M.safeMethod('runA'));
-  const g: (_: A) => Maybe<number> = pipe(
-    M.safeMethod('runA'),
-    M.bindMethod('runB', 42)
-  );
+  const g: (_: A) => Maybe<number> = pipe(M.safeMethod('runA'), M.bindMethod('runB', 42));
 
   runTests(f, g);
 });

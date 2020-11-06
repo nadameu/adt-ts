@@ -60,6 +60,8 @@ export const composeKleisli: Helper['composeKleisli'] = <f extends Generic1>({
 export const composeKleisliFlipped: Helper['composeKleisliFlipped'] = <f extends Generic1>({
   bind,
 }: Anon<Bind_1<f>, 'bind'>) =>
-  flip(composeKleisli({ bind } as Bind_1<f>) as <a, b, c>(
-    f: (_: b) => Type1<f, c>
-  ) => (g: (_: a) => Type1<f, b>) => (_: a) => Type1<f, c>);
+  flip(
+    composeKleisli({ bind } as Bind_1<f>) as <a, b, c>(
+      f: (_: b) => Type1<f, c>
+    ) => (g: (_: a) => Type1<f, b>) => (_: a) => Type1<f, c>
+  );

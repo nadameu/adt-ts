@@ -39,7 +39,7 @@ const borrow = <
 const snocArray = <a>(xs: a[]) => (x: a) => (xs.push(x), xs);
 
 export const forEach = <a>(f: (_: a) => void): ((xs: ArrayLike<a>) => void) =>
-  borrow('forEach', (x) => f(x));
+  borrow('forEach', x => f(x));
 
 export const forEachRight = <a>(f: (_: a) => void) => (xs: ArrayLike<a>) => {
   for (let i = xs.length - 1; i > -1; i--) f(xs[i]);
@@ -56,11 +56,11 @@ export const foldl: Foldable_1<TArrayLike>['foldl'] = <a, b>(f: (_: b) => (_: a)
 export const bind: Bind_1<TArrayLike>['bind'] = <a, b>(
   f: (_: a) => ArrayLike<b>
 ): ((xs: ArrayLike<a>) => ArrayLike<b>) =>
-  foldl<a, b[]>((ys) => (x) => foldl<b, b[]>(snocArray)(ys)(f(x)))([]);
+  foldl<a, b[]>(ys => x => foldl<b, b[]>(snocArray)(ys)(f(x)))([]);
 
 export const map: Functor_1<TArrayLike>['map'] = <a, b>(
   f: (_: a) => b
-): ((xs: ArrayLike<a>) => ArrayLike<b>) => borrow('map', (x) => f(x));
+): ((xs: ArrayLike<a>) => ArrayLike<b>) => borrow('map', x => f(x));
 
 export const mapWithIndex = <a, b>(
   f: (_: number) => (_: a) => b
@@ -69,11 +69,9 @@ export const mapWithIndex = <a, b>(
 export const apply: Apply_1<TArrayLike>['apply'] = <a, b>(fs: ArrayLike<(_: a) => b>) => (
   xs: ArrayLike<a>
 ): ArrayLike<b> =>
-  foldl<(_: a) => b, b[]>((ys) => (f) => foldl<a, b[]>((ys) => (x) => snocArray(ys)(f(x)))(ys)(xs))(
-    []
-  )(fs);
+  foldl<(_: a) => b, b[]>(ys => f => foldl<a, b[]>(ys => x => snocArray(ys)(f(x)))(ys)(xs))([])(fs);
 
-export const pure: Applicative_1<TArrayLike>['pure'] = (x) => [x];
+export const pure: Applicative_1<TArrayLike>['pure'] = x => [x];
 
 export const foldlWithIndex = <a, b>(f: (_: number) => (_: b) => (_: a) => b) => (
   b: b
@@ -110,10 +108,10 @@ export const alt = append;
 export const empty = mempty;
 
 export const filter = <a>(p: (_: a) => boolean): ((fa: ArrayLike<a>) => ArrayLike<a>) =>
-  borrow('filter', (x) => p(x));
+  borrow('filter', x => p(x));
 
 export const filterMap = <a, b>(p: (_: a) => Maybe<b>): ((fa: ArrayLike<a>) => ArrayLike<b>) =>
-  foldl<a, b[]>((ys) => (x) => ((y) => (y.isJust && ys.push(y.value), ys))(p(x)))([]);
+  foldl<a, b[]>(ys => x => (y => (y.isJust && ys.push(y.value), ys))(p(x)))([]);
 
 export const compact = compactByFilterMap({ filterMap } as Filterable_1<TArrayLike>);
 
@@ -122,7 +120,7 @@ export const partitionMap: Filterable_1<TArrayLike>['partitionMap'] = <a, b, c>(
 ) => (as: ArrayLike<a>) => {
   const left: b[] = [];
   const right: c[] = [];
-  forEach<a>((a) => {
+  forEach<a>(a => {
     const either = f(a);
     if (either.isLeft) left.push(either.leftValue);
     else right.push(either.rightValue);
@@ -142,6 +140,6 @@ export const range = (start: number) => (end: number): number[] => {
   let x = start;
   const diff = end - start;
   return diff < 0
-    ? Array.from({ length: 1 - diff }, (_) => x--)
-    : Array.from({ length: diff + 1 }, (_) => x++);
+    ? Array.from({ length: 1 - diff }, _ => x--)
+    : Array.from({ length: diff + 1 }, _ => x++);
 };

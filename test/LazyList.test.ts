@@ -81,8 +81,8 @@ const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<LazyList<a>> => {
   const base = jsc.array(arb);
   return base.smap(
     fromArray,
-    (xs) => toArray(xs),
-    (xs) => (base.show || String)(toArray(xs))
+    xs => toArray(xs),
+    xs => (base.show || String)(toArray(xs))
   );
 };
 
