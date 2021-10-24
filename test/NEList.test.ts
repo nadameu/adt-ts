@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import {
   altNEList,
   applicativeNEList,
@@ -13,6 +13,9 @@ import {
   NEList,
   semigroupNEList,
   traversableNEList,
+  semigroupArray,
+  pipeValue,
+  list,
 } from '../src';
 import { TNEList } from '../src/NEList/internal';
 import { makeAlt1Laws } from './laws/Alt';
@@ -26,18 +29,16 @@ import { makeMonad1Laws } from './laws/Monad';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const nelistToNEArray: <a>(list: NEList<a>) => a[] = nelist.foldl<unknown, any[]>(xs => x => (
-  xs.push(x), xs
-))([]);
+const nelistToNEArray: <a>(list: NEList<a>) => a[] = nelist.foldl<unknown, any[]>(xs => x => {
+  xs.push(x);
+  return xs;
+})([]);
 const nearrayToNEList: <a>(array: a[]) => NEList<a> = array.foldr<unknown, NEList<any>>(
   nelist.cons
 )(nelist.nil as any);
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<NEList<a>> => {
-  const base = jsc.nearray(arb);
-  return base.smap(nearrayToNEList, nelistToNEArray, xs =>
-    (base.show || String)(nelistToNEArray(xs))
-  );
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<NEList<a>> => {
+  return fc.tuple(arb, fc.array(arb)).map(([x, xs]) => nelist.cons(x)(nearrayToNEList(xs)));
 };
 
 describe('Functor', () => {
@@ -99,4 +100,12 @@ describe('Traversable', () => {
   test('Traversable - naturality', traversableLaws.naturality);
   test('Traversable - identity', traversableLaws.identity);
   test('Traversable - composition', traversableLaws.composition);
+});
+
+test('foldMap1', () => {
+  expect(
+    pipeValue(nelist.cons(1)(list.cons(2)(list.cons(3)(list.nil)))).pipe(
+      nelist.foldMap1(semigroupArray)(x => [x, x + 1])
+    )
+  ).toEqual([1, 2, 2, 3, 3, 4]);
 });

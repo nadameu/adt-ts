@@ -53,9 +53,11 @@ export interface PipeKleisliValue_2<f extends Generic2, b> {
 export const pipeKValue: {
   <f extends Generic1>({ bind, pure }: BindOnly_1<f> & PureOnly_1<f>): <a>(_: a) => PipeKleisliValue_1<f, a>;
   <f extends Generic2>({ bind, pure }: BindOnly_2<f> & PureOnly_2<f>): <a>(_: a) => PipeKleisliValue_2<f, a>;
-} = <f extends Generic1>({ bind, pure }: Anon<BindOnly_1<f> & PureOnly_1<f>>) => <a>(a: a): PipeKleisliValue_1<f, a> => ({
-  pipeK(_: (_: a) => Type1<f, a> = pure) {
-    const [f, ...fs]: Iterable<(_: a) => Type1<f, a>> = arguments;
-    return fs.reduce((fa, f) => bind(f)(fa), f(a));
-  },
-});
+} =
+  <f extends Generic1>({ bind, pure }: Anon<BindOnly_1<f> & PureOnly_1<f>>) =>
+  <a>(a: a): PipeKleisliValue_1<f, a> => ({
+    pipeK(_: (_: a) => Type1<f, a> = pure) {
+      const [f, ...fs]: Iterable<(_: a) => Type1<f, a>> = arguments;
+      return fs.reduce((fa, f) => bind(f)(fa), f(a));
+    },
+  });

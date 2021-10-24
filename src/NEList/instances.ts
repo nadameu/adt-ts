@@ -1,6 +1,5 @@
 import { makeEqList } from '../List/instances';
 import {
-  Alternative_1,
   Alt_1,
   Applicative_1,
   Apply_1,
@@ -10,8 +9,6 @@ import {
   Foldable_1,
   Functor_1,
   Monad_1,
-  Monoid_1,
-  Plus_1,
   Semigroup_1,
   Traversable_1,
 } from '../typeclasses';
@@ -21,14 +18,12 @@ import {
   append,
   apply,
   bind,
-  empty,
   fold1,
   foldl,
   foldMap,
   foldMap1,
   foldr,
   map,
-  mempty,
   pure,
   sequence,
   traverse,
@@ -44,11 +39,8 @@ export const bindNEList = { apply, bind, map } as Bind_1<TNEList>;
 export const monadNEList = { apply, bind, map, pure } as Monad_1<TNEList>;
 
 export const semigroupNEList = { append } as Semigroup_1<TNEList>;
-export const monoidNEList = { append, mempty } as Monoid_1<TNEList>;
 
 export const altNEList = { alt, map } as Alt_1<TNEList>;
-export const plusNEList = { alt, empty, map } as Plus_1<TNEList>;
-export const alternativeNEList = { alt, apply, empty, map, pure } as Alternative_1<TNEList>;
 
 export const foldableNEList = { foldMap, foldl, foldr } as Foldable_1<TNEList>;
 export const traversableNEList = {

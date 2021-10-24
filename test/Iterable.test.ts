@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import {
   alternativeIterable,
   altIterable,
@@ -31,13 +31,9 @@ import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Iterable<a>> => {
-  const base = jsc.array(arb);
-  return base.smap(
-    iterable.fromArray,
-    xs => Array.from(xs),
-    xs => (base.show || String)(Array.from(xs))
-  );
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<Iterable<a>> => {
+  const base = fc.array(arb);
+  return base.map(iterable.fromArray);
 };
 
 describe('Functor', () => {
@@ -123,6 +119,10 @@ describe('Traversable', () => {
 describe('Range', () => {
   test('ascending', () => expect(Array.from(iterable.range(4)(8))).toEqual([4, 5, 6, 7, 8]));
   test('descending', () => expect(Array.from(iterable.range(9)(5))).toEqual([9, 8, 7, 6, 5]));
+  test('when inputs are not integers', () => {
+    expect(() => iterable.range(0.5)(4)).toThrow();
+    expect(() => iterable.range(1)(3.7)).toThrow();
+  });
 });
 
 test.skip('Stack safety', () => {

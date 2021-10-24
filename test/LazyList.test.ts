@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import {
   alternativeLazyList,
   altLazyList,
@@ -36,14 +36,16 @@ import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const fromArray = <a>(array: a[]): LazyList<a> => () => {
-  const len = array.length;
-  const go = (i = 0): ConsResult<a> | NilResult => {
-    if (i >= len) return NilResult;
-    return ConsResult(array[i])(() => go(i + 1));
+const fromArray =
+  <a>(array: a[]): LazyList<a> =>
+  () => {
+    const len = array.length;
+    const go = (i = 0): ConsResult<a> | NilResult => {
+      if (i >= len) return NilResult;
+      return ConsResult(array[i])(() => go(i + 1));
+    };
+    return go();
   };
-  return go();
-};
 
 const toIterable = <a>(list: LazyList<a>): Iterable<a> => ({
   [Symbol.iterator]() {
@@ -77,13 +79,9 @@ const toIterable = <a>(list: LazyList<a>): Iterable<a> => ({
 
 const toArray = <a>(xs: LazyList<a>) => Array.from(toIterable(xs));
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<LazyList<a>> => {
-  const base = jsc.array(arb);
-  return base.smap(
-    fromArray,
-    xs => toArray(xs),
-    xs => (base.show || String)(toArray(xs))
-  );
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<LazyList<a>> => {
+  const base = fc.array(arb);
+  return base.map(fromArray);
 };
 
 test.skip('Stack safety', () => {

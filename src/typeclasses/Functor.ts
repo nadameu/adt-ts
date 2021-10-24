@@ -54,11 +54,17 @@ type Helper = {
   };
 };
 
-export const voidRight: Helper['voidRight'] = ({ map }: any): any => (a: any) => map(constant(a));
+export const voidRight: Helper['voidRight'] =
+  ({ map }: any): any =>
+  (a: any) =>
+    map(constant(a));
 
 export const voidLeft: Helper['voidLeft'] = ({ map }: any): any => flip(voidRight({ map } as any));
 
 export const $$void: Helper['$$void'] = ({ map }: any): any =>
   /*#__PURE__*/ voidRight({ map } as any)(undefined);
 
-export const flap: Helper['flap'] = ({ map }: any): any => (a: any) => map(thrush(a));
+export const flap: Helper['flap'] =
+  ({ map }: any): any =>
+  (a: any) =>
+    map(thrush(a));

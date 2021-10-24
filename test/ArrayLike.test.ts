@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import { applicativeIdentity, constant } from '../src';
 import {
   altArrayLike,
@@ -32,19 +32,15 @@ import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<ArrayLike<a>> => {
-  const base = jsc.array(arb);
-  return base.smap(
-    xs => {
-      const ys: { [index: number]: a; length: number } = { length: xs.length };
-      forEachWithIndex<a>(i => x => {
-        ys[i] = x;
-      })(xs);
-      return ys;
-    },
-    xs => Array.from(xs),
-    xs => (base.show || String)(Array.from(xs))
-  );
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<ArrayLike<a>> => {
+  const base = fc.array(arb);
+  return base.map(xs => {
+    const ys: { [index: number]: a; length: number } = { length: xs.length };
+    forEachWithIndex<a>(i => x => {
+      ys[i] = x;
+    })(xs);
+    return ys;
+  });
 };
 
 describe('Functor', () => {

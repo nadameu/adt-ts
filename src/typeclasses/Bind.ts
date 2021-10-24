@@ -51,11 +51,12 @@ export const applyDefault: {
 } = <f extends Generic1>({ bind, map }: Anon<Functor_1<f> & BindOnly_1<f>>) =>
   flip(<a, b>(fa: Type1<f, a>) => bind<(_: a) => b, b>(f => map(f)(fa)));
 
-export const composeKleisli: Helper['composeKleisli'] = <f extends Generic1>({
-  bind,
-}: Anon<Bind_1<f>, 'bind'>) => <b, c>(f: (_: b) => Type1<f, c>) => <a>(
-  g: (_: a) => Type1<f, b>
-) => (a: a): Type1<f, c> => bind(f)(g(a));
+export const composeKleisli: Helper['composeKleisli'] =
+  <f extends Generic1>({ bind }: Anon<Bind_1<f>, 'bind'>) =>
+  <b, c>(f: (_: b) => Type1<f, c>) =>
+  <a>(g: (_: a) => Type1<f, b>) =>
+  (a: a): Type1<f, c> =>
+    bind(f)(g(a));
 
 export const composeKleisliFlipped: Helper['composeKleisliFlipped'] = <f extends Generic1>({
   bind,

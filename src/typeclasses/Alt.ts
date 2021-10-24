@@ -18,11 +18,9 @@ export interface Alt_2<f extends Generic2> extends Functor_2<f> {
 }
 
 export interface Alt_O extends Functor_O {
-  alt: <T>(
-    x: T
-  ) => <U>(
-    y: U
-  ) => { [k in keyof T | keyof U]: k extends keyof T ? T[k] : k extends keyof U ? U[k] : never };
+  alt: <T>(x: T) => <U>(y: U) => {
+    [k in keyof T | keyof U]: k extends keyof T ? T[k] : k extends keyof U ? U[k] : never;
+  };
 }
 
 export interface AltOnly_1<f extends Generic1> extends Pick<Alt_1<f>, Generic1Type | 'alt'> {}

@@ -298,78 +298,79 @@ type HelperPlus = {
   };
 };
 
-export const foldlDefault: PartialHelper<'foldMap'>['foldl'] = <f extends Generic1>({
-  foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (
-  fa: Type1<f, a>
-): b => foldMap(makeMonoidDual(monoidEndo))(flip(f))(fa)(b);
+export const foldlDefault: PartialHelper<'foldMap'>['foldl'] =
+  <f extends Generic1>({ foldMap }: Anon<Foldable_1<f>, 'foldMap'>) =>
+  <a, b>(f: (_: b) => (_: a) => b) =>
+  (b: b) =>
+  (fa: Type1<f, a>): b =>
+    foldMap(makeMonoidDual(monoidEndo))(flip(f))(fa)(b);
 
-export const foldrDefault: PartialHelper<'foldMap'>['foldr'] = <f extends Generic1>({
-  foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (
-  fa: Type1<f, a>
-): b => foldMap(monoidEndo)(f)(fa)(b);
+export const foldrDefault: PartialHelper<'foldMap'>['foldr'] =
+  <f extends Generic1>({ foldMap }: Anon<Foldable_1<f>, 'foldMap'>) =>
+  <a, b>(f: (_: a) => (_: b) => b) =>
+  (b: b) =>
+  (fa: Type1<f, a>): b =>
+    foldMap(monoidEndo)(f)(fa)(b);
 
-export const foldMapDefaultL: PartialHelper<'foldl'>['foldMap'] = <f extends Generic1>({
-  foldl,
-}: Anon<Foldable_1<f>, 'foldl'>) => <b>({ append, mempty }: Anon<Monoid_0<b>>) => <a>(
-  f: (_: a) => b
-) => foldl<a, b>(acc => x => append(acc)(f(x)))(mempty());
+export const foldMapDefaultL: PartialHelper<'foldl'>['foldMap'] =
+  <f extends Generic1>({ foldl }: Anon<Foldable_1<f>, 'foldl'>) =>
+  <b>({ append, mempty }: Anon<Monoid_0<b>>) =>
+  <a>(f: (_: a) => b) =>
+    foldl<a, b>(acc => x => append(acc)(f(x)))(mempty());
 
-export const foldMapDefaultR: PartialHelper<'foldr'>['foldMap'] = <f extends Generic1>({
-  foldr,
-}: Pick<Foldable_1<f>, 'foldr'>) => <b>({ append, mempty }: Anon<Monoid_0<b>>) => <a>(
-  f: (_: a) => b
-) => foldr<a, b>(compose(append)(f))(mempty());
+export const foldMapDefaultR: PartialHelper<'foldr'>['foldMap'] =
+  <f extends Generic1>({ foldr }: Pick<Foldable_1<f>, 'foldr'>) =>
+  <b>({ append, mempty }: Anon<Monoid_0<b>>) =>
+  <a>(f: (_: a) => b) =>
+    foldr<a, b>(compose(append)(f))(mempty());
 
-export const fold: HelperMonoid['fold'] = <f extends Generic1>({
-  foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => <a>(monoid: Anon<Monoid_0<a>>) =>
-  foldMap(monoid as Monoid_0<a>)<a>(identity);
+export const fold: HelperMonoid['fold'] =
+  <f extends Generic1>({ foldMap }: Anon<Foldable_1<f>, 'foldMap'>) =>
+  <a>(monoid: Anon<Monoid_0<a>>) =>
+    foldMap(monoid as Monoid_0<a>)<a>(identity);
 
-export const oneOfMap: HelperPlus['oneOfMap'] = <f extends Generic1>({
-  foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => <g extends Generic1>(
-  plus: Anon<Plus_1<g>>
-): (<a, b>(f: (_: a) => Type1<g, b>) => (fa: Type1<f, a>) => Type1<g, b>) =>
-  foldMap(makeMonoidAlternate(plus as Plus_1<g>));
+export const oneOfMap: HelperPlus['oneOfMap'] =
+  <f extends Generic1>({ foldMap }: Anon<Foldable_1<f>, 'foldMap'>) =>
+  <g extends Generic1>(
+    plus: Anon<Plus_1<g>>
+  ): (<a, b>(f: (_: a) => Type1<g, b>) => (fa: Type1<f, a>) => Type1<g, b>) =>
+    foldMap(makeMonoidAlternate(plus as Plus_1<g>));
 
-export const oneOf: HelperPlus['oneOf'] = <f extends Generic1>(
-  foldable: Anon<Foldable_1<f>, 'foldMap'>
-) => <g extends Generic1>(
-  plus: Anon<Plus_1<g>>
-): (<a>(fga: Type1<f, Type1<g, a>>) => Type1<g, a>) =>
-  oneOfMap(foldable as Foldable_1<f>)(plus as Plus_1<g>)(identity);
+export const oneOf: HelperPlus['oneOf'] =
+  <f extends Generic1>(foldable: Anon<Foldable_1<f>, 'foldMap'>) =>
+  <g extends Generic1>(plus: Anon<Plus_1<g>>): (<a>(fga: Type1<f, Type1<g, a>>) => Type1<g, a>) =>
+    oneOfMap(foldable as Foldable_1<f>)(plus as Plus_1<g>)(identity);
 
-export const intercalate: HelperMonoidL['intercalate'] = <f extends Generic1>({
-  foldl,
-}: Anon<Foldable_1<f>, 'foldl'>) => <a>({
-  append,
-  mempty,
-}: Anon<Monoid_0<a>, 'append' | 'mempty'>) => (sep: a) => (xs: Type1<f, a>): a => {
-  type Result = { init: true; acc: a } | { init: false; acc: a };
-  const go = (result: Result) => (x: a): Result =>
-    result.init
-      ? { init: false, acc: x }
-      : { init: false, acc: append(append(result.acc)(sep))(x) };
-  return foldl(go)({ init: true, acc: mempty() })(xs).acc;
-};
+export const intercalate: HelperMonoidL['intercalate'] =
+  <f extends Generic1>({ foldl }: Anon<Foldable_1<f>, 'foldl'>) =>
+  <a>({ append, mempty }: Anon<Monoid_0<a>, 'append' | 'mempty'>) =>
+  (sep: a) =>
+  (xs: Type1<f, a>): a => {
+    type Result = { init: true; acc: a } | { init: false; acc: a };
+    const go =
+      (result: Result) =>
+      (x: a): Result =>
+        result.init
+          ? { init: false, acc: x }
+          : { init: false, acc: append(append(result.acc)(sep))(x) };
+    return foldl(go)({ init: true, acc: mempty() })(xs).acc;
+  };
 
-export const surroundMap: HelperSemigroup['surroundMap'] = <f extends Generic1>({
-  foldMap,
-}: Anon<Foldable_1<f>, 'foldMap'>) => <m>({ append }: Anon<Semigroup_0<m>, 'append'>) => (d: m) => <
-  a
->(
-  t: (_: a) => m
-) => (f: Type1<f, a>): m => {
-  const joined = (a: a) => (m: m) => append(append(d)(t(a)))(m);
-  return foldMap(monoidEndo)(joined)(f)(d);
-};
+export const surroundMap: HelperSemigroup['surroundMap'] =
+  <f extends Generic1>({ foldMap }: Anon<Foldable_1<f>, 'foldMap'>) =>
+  <m>({ append }: Anon<Semigroup_0<m>, 'append'>) =>
+  (d: m) =>
+  <a>(t: (_: a) => m) =>
+  (f: Type1<f, a>): m => {
+    const joined = (a: a) => (m: m) => append(append(d)(t(a)))(m);
+    return foldMap(monoidEndo)(joined)(f)(d);
+  };
 
-export const surround: HelperSemigroup['surround'] = <f extends Generic1>(
-  foldable: Anon<Foldable_1<f>, 'foldMap'>
-) => <m>(semigroup: Anon<Semigroup_0<m>>) => (d: m): ((f: Type1<f, m>) => m) =>
-  surroundMap(foldable as Foldable_1<f>)(semigroup as Semigroup_0<m>)(d)(identity);
+export const surround: HelperSemigroup['surround'] =
+  <f extends Generic1>(foldable: Anon<Foldable_1<f>, 'foldMap'>) =>
+  <m>(semigroup: Anon<Semigroup_0<m>>) =>
+  (d: m): ((f: Type1<f, m>) => m) =>
+    surroundMap(foldable as Foldable_1<f>)(semigroup as Semigroup_0<m>)(d)(identity);
 
 export const all: PartialHelper<'foldMap'>['allAny'] = <f extends Generic1>({
   foldMap,
@@ -403,20 +404,16 @@ export const product: PartialHelper<'foldMap'>['sumProduct'] = <f extends Generi
   foldMap,
 }: Anon<Foldable_1<f>, 'foldMap'>) => /*#__PURE__*/ foldMap(monoidMultiplicative)<number>(identity);
 
-export const maximumBy: PartialHelper<'foldl'>['maxMin'] = <f extends Generic1>({
-  foldl,
-}: Anon<Foldable_1<f>, 'foldl'>) => <a>(
-  compare: (_: a) => (_: a) => Ordering
-): ((fa: Type1<f, a>) => Maybe<a>) =>
-  foldl<a, Maybe<a>>(acc => x =>
-    acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.LT ? Just(x) : acc
-  )(Nothing);
+export const maximumBy: PartialHelper<'foldl'>['maxMin'] =
+  <f extends Generic1>({ foldl }: Anon<Foldable_1<f>, 'foldl'>) =>
+  <a>(compare: (_: a) => (_: a) => Ordering): ((fa: Type1<f, a>) => Maybe<a>) =>
+    foldl<a, Maybe<a>>(
+      acc => x => acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.LT ? Just(x) : acc
+    )(Nothing);
 
-export const minimumBy: PartialHelper<'foldl'>['maxMin'] = <f extends Generic1>({
-  foldl,
-}: Anon<Foldable_1<f>, 'foldl'>) => <a>(
-  compare: (_: a) => (_: a) => Ordering
-): ((fa: Type1<f, a>) => Maybe<a>) =>
-  foldl<a, Maybe<a>>(acc => x =>
-    acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.GT ? Just(x) : acc
-  )(Nothing);
+export const minimumBy: PartialHelper<'foldl'>['maxMin'] =
+  <f extends Generic1>({ foldl }: Anon<Foldable_1<f>, 'foldl'>) =>
+  <a>(compare: (_: a) => (_: a) => Ordering): ((fa: Type1<f, a>) => Maybe<a>) =>
+    foldl<a, Maybe<a>>(
+      acc => x => acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.GT ? Just(x) : acc
+    )(Nothing);

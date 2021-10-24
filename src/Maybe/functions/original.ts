@@ -36,8 +36,11 @@ import { Just, Maybe, Nothing } from '../definitions';
 import { TMaybe } from '../internal';
 import { maybeBool } from '../../typeclasses/Filterable';
 
-export const maybe = <b>(b: b) => <a>(f: (_: a) => b) => (fa: Maybe<a>): b =>
-  fa.isNothing ? b : f(fa.value);
+export const maybe =
+  <b>(b: b) =>
+  <a>(f: (_: a) => b) =>
+  (fa: Maybe<a>): b =>
+    fa.isNothing ? b : f(fa.value);
 
 export const bind: Bind_1<TMaybe>['bind'] = maybe<Maybe<any>>(Nothing);
 
@@ -47,14 +50,17 @@ export const map = liftM1({ bind, pure } as Monad_1<TMaybe>);
 
 export const apply = ap({ bind, pure } as Monad_1<TMaybe>);
 
-export const maybeL = <b>(f: () => b) => <a>(g: (_: a) => b) => (fa: Maybe<a>): b =>
-  fa.isNothing ? f() : g(fa.value);
+export const maybeL =
+  <b>(f: (_?: void) => b) =>
+  <a>(g: (_: a) => b) =>
+  (fa: Maybe<a>): b =>
+    fa.isNothing ? f(undefined) : g(fa.value);
 
 export const fromMaybe = <a>(a: a): ((fa: Maybe<a>) => a) => maybe(a)(x => x);
 
 export const fromMaybeL = <a>(thunk: () => a): ((fa: Maybe<a>) => a) => maybeL(thunk)(x => x);
 
-export const alt: Alt_1<TMaybe>['alt'] = fx => fy => (fx.isNothing ? fy : fx);
+export const alt: Alt_1<TMaybe>['alt'] = fx => fy => fx.isNothing ? fy : fx;
 
 export const empty: Plus_1<TMaybe>['empty'] = () => Nothing;
 
@@ -76,33 +82,30 @@ export const filter = filterDefault({ filterMap } as FilterMapOnly_1<TMaybe>);
 
 export const compact = compactByFilterMap({ filterMap } as FilterMapOnly_1<TMaybe>);
 
-export const traverse: Traversable_1<TMaybe>['traverse'] = <m extends Generic1>({
-  map,
-  pure,
-}: Anon<Applicative_1<m>>) => <a, b>(
-  f: (_: a) => Type1<m, b>
-): ((ta: Maybe<a>) => Type1<m, Maybe<b>>) =>
-  maybe<Type1<m, Maybe<b>>>(pure(Nothing))<a>(a => map(Just)(f(a)));
+export const traverse: Traversable_1<TMaybe>['traverse'] =
+  <m extends Generic1>({ map, pure }: Anon<Applicative_1<m>>) =>
+  <a, b>(f: (_: a) => Type1<m, b>): ((ta: Maybe<a>) => Type1<m, Maybe<b>>) =>
+    maybe<Type1<m, Maybe<b>>>(pure(Nothing))<a>(a => map(Just)(f(a)));
 
 export const sequence = sequenceDefault({ traverse } as TraverseOnly_1<TMaybe>);
 
 export const wither = witherDefault({ compact, traverse } as CompactOnly_1<TMaybe> &
   TraverseOnly_1<TMaybe>);
 
-export const partitionMap: Filterable_1<TMaybe>['partitionMap'] = <a, b, c>(
-  p: (_: a) => Either<b, c>
-) => (
-  fa: Maybe<a>
-): {
-  left: Maybe<b>;
-  right: Maybe<c>;
-} =>
-  fa.isNothing
-    ? { left: Nothing, right: Nothing }
-    : (result =>
-        result.isLeft
-          ? { left: Just(result.leftValue), right: Nothing }
-          : { left: Nothing, right: Just(result.rightValue) })(p(fa.value));
+export const partitionMap: Filterable_1<TMaybe>['partitionMap'] =
+  <a, b, c>(p: (_: a) => Either<b, c>) =>
+  (
+    fa: Maybe<a>
+  ): {
+    left: Maybe<b>;
+    right: Maybe<c>;
+  } =>
+    fa.isNothing
+      ? { left: Nothing, right: Nothing }
+      : (result =>
+          result.isLeft
+            ? { left: Just(result.leftValue), right: Nothing }
+            : { left: Nothing, right: Just(result.rightValue) })(p(fa.value));
 
 export const partition = partitionDefault({ partitionMap } as PartitionMapOnly_1<TMaybe>);
 
@@ -115,8 +118,10 @@ export const fromNullable: <a>(x: a | null | undefined) => Maybe<a> = maybeBool(
   <a>(x: a | null | undefined): x is a => x != null
 );
 
-export const liftNullable = <a, b>(f: (_: a) => b | null | undefined): ((_: a) => Maybe<b>) => a =>
-  fromNullable(f(a));
+export const liftNullable =
+  <a, b>(f: (_: a) => b | null | undefined): ((_: a) => Maybe<b>) =>
+  a =>
+    fromNullable(f(a));
 
 export const bindNullable = <a, b>(
   f: (_: a) => b | null | undefined

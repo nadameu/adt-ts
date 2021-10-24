@@ -18,6 +18,7 @@ export interface PureOnly_2<f extends Generic2>
 export const liftA1: {
   <f extends Generic1>({ apply, pure }: ApplyOnly_1<f> & PureOnly_1<f>): Applicative_1<f>['map'];
   <f extends Generic2>({ apply, pure }: ApplyOnly_2<f> & PureOnly_2<f>): Applicative_2<f>['map'];
-} = <f extends Generic1>({ apply, pure }: Anon<ApplyOnly_1<f> & PureOnly_1<f>>) => <a, b>(
-  f: (_: a) => b
-): ((fa: Type1<f, a>) => Type1<f, b>) => apply(pure(f));
+} =
+  <f extends Generic1>({ apply, pure }: Anon<ApplyOnly_1<f> & PureOnly_1<f>>) =>
+  <a, b>(f: (_: a) => b): ((fa: Type1<f, a>) => Type1<f, b>) =>
+    apply(pure(f));

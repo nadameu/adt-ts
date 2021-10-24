@@ -8,7 +8,11 @@ import {
   Semigroup_2,
 } from '../typeclasses';
 
-const makeAppend = <a>({ append }: Anon<Semigroup_0<a>>) => (x: a) => (y: a): a => append(y)(x);
+const makeAppend =
+  <a>({ append }: Anon<Semigroup_0<a>>) =>
+  (x: a) =>
+  (y: a): a =>
+    append(y)(x);
 
 export const makeSemigroupDual: {
   <f extends Generic1>(semigroup: Semigroup_1<f>): Semigroup_1<f>;

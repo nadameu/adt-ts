@@ -16,18 +16,20 @@ export interface CompactOnly_1<f extends Generic1>
 export interface SeparateOnly_1<f extends Generic1>
   extends Pick<Compactable_1<f>, Generic1Type | 'separate'> {}
 
-export const compactDefault = <f extends Generic1>({
-  map,
-  separate,
-}: Functor_1<f> & SeparateOnly_1<f>): Compactable_1<f>['compact'] => fma =>
-  separate(map(note(undefined))(fma)).right;
+export const compactDefault =
+  <f extends Generic1>({
+    map,
+    separate,
+  }: Functor_1<f> & SeparateOnly_1<f>): Compactable_1<f>['compact'] =>
+  fma =>
+    separate(map(note(undefined))(fma)).right;
 
-export const separateDefault = <f extends Generic1>({
-  map,
-  compact,
-}: CompactOnly_1<f> & Functor_1<f>): Compactable_1<f>['separate'] => <a, b>(
-  feab: Type1<f, Either<a, b>>
-) => ({
-  left: compact(map(compose<Either<b, a>, Maybe<a>>(hush)<Either<a, b>>(swap))(feab)),
-  right: compact(map(hush)(feab)),
-});
+export const separateDefault =
+  <f extends Generic1>({
+    map,
+    compact,
+  }: CompactOnly_1<f> & Functor_1<f>): Compactable_1<f>['separate'] =>
+  <a, b>(feab: Type1<f, Either<a, b>>) => ({
+    left: compact(map(compose<Either<b, a>, Maybe<a>>(hush)<Either<a, b>>(swap))(feab)),
+    right: compact(map(hush)(feab)),
+  });

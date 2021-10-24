@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import {
   functorConst,
   identity,
@@ -14,7 +14,7 @@ import { makeFunctor2Laws } from './laws/Functor';
 
 const makeEqConst = identity;
 const makeArb = identity;
-const makeArbArray = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<a[]> => jsc.array(arb);
+const makeArbArray = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<a[]> => fc.array(arb);
 
 describe('Functor', () => {
   const functorLaws = makeFunctor2Laws(functorConst)(makeEqConst)(makeArb);

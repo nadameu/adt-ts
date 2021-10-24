@@ -14,9 +14,12 @@ import { TStar1, TStar2 } from './internal';
 const makeCompose: {
   <f extends Generic1>(bind: Bind_1<f>): Semigroupoid_2<TStar1<f>>['compose'];
   <f extends Generic2>(bind: Bind_2<f>): Semigroupoid_3<TStar2<f>>['compose'];
-} = <f extends Generic1>({ bind }: Anon<Bind_1<f>>) => <b, c>(f: (_: b) => Type1<f, c>) => <a>(
-  g: (_: a) => Type1<f, b>
-) => (a: a): Type1<f, c> => bind(f)(g(a));
+} =
+  <f extends Generic1>({ bind }: Anon<Bind_1<f>>) =>
+  <b, c>(f: (_: b) => Type1<f, c>) =>
+  <a>(g: (_: a) => Type1<f, b>) =>
+  (a: a): Type1<f, c> =>
+    bind(f)(g(a));
 
 export const makeSemigroupoidStar: {
   <f extends Generic1>(bind: Bind_1<f>): Semigroupoid_2<TStar1<f>>;

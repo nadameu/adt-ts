@@ -1,13 +1,11 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import { alternativeMaybe, Just, makeEqMaybe, Maybe, Nothing } from '../src';
 import { makeMonoidAlternate, makeSemigroupAlternate } from '../src/Alternate';
 import { makeMonoid1Laws } from './laws/Monoid';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Maybe<a>> => {
-  const newArb = jsc.oneof([jsc.constant(Nothing), arb.smap(Just, x => x.value)]);
-  newArb.show = x => (x.isNothing ? `Nothing` : `Just(${(arb.show || String)(x.value)})`);
-  return newArb;
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<Maybe<a>> => {
+  return fc.oneof(fc.constant(Nothing), arb.map(Just));
 };
 
 describe('Semigroup', () => {

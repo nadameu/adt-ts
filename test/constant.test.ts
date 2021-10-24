@@ -1,6 +1,6 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import { constant } from '../src/helpers';
 
 test('constant', () => {
-  jsc.assertForall(jsc.number, jsc.number, (x, y) => constant(x)(y) === x);
+  fc.assert(fc.property(fc.double(), fc.double(), (x, y) => constant(x)(y) === x));
 });

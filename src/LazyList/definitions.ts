@@ -16,16 +16,20 @@ export interface ConsResult<a> {
   head: a;
   tail: LazyList<a>;
 }
-export const ConsResult = <a>(head: a) => (tail: LazyList<a>): ConsResult<a> => ({
-  isCons: true,
-  isNil: false,
-  head,
-  tail,
-});
-export const LazyCons = <a>(head: a) => (tail: LazyList<a>): LazyCons<a> => {
-  const result = ConsResult(head)(tail);
-  return () => result;
-};
+export const ConsResult =
+  <a>(head: a) =>
+  (tail: LazyList<a>): ConsResult<a> => ({
+    isCons: true,
+    isNil: false,
+    head,
+    tail,
+  });
+export const LazyCons =
+  <a>(head: a) =>
+  (tail: LazyList<a>): LazyCons<a> => {
+    const result = ConsResult(head)(tail);
+    return () => result;
+  };
 export const isLazyCons = <a>(list: LazyList<a>): list is LazyCons<a> => list().isCons;
 
 export interface NilResult {

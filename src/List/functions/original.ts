@@ -31,12 +31,12 @@ export const foldMap = foldMapDefaultL({ foldl } as Foldable_1<TList>);
 export const map: Monad_1<TList>['map'] = <a, b>(f: (_: a) => b) =>
   foldr<a, List<b>>(x => cons(f(x)))(nil);
 export const pure: Monad_1<TList>['pure'] = a => cons(a)(nil);
-export const bind: Monad_1<TList>['bind'] = <a, b>(f: (_: a) => List<b>) => (
-  xs: List<a>
-): List<b> => {
-  const ryss = foldl<a, List<List<b>>>(yss => a => cons(f(a))(yss))(nil)(xs);
-  return foldl<List<b>, List<b>>(flip(append))(nil)(ryss);
-};
+export const bind: Monad_1<TList>['bind'] =
+  <a, b>(f: (_: a) => List<b>) =>
+  (xs: List<a>): List<b> => {
+    const ryss = foldl<a, List<List<b>>>(yss => a => cons(f(a))(yss))(nil)(xs);
+    return foldl<List<b>, List<b>>(flip(append))(nil)(ryss);
+  };
 export const apply = applyDefault({ bind, map } as Monad_1<TList>);
 export const traverse = traverseDefaultCons({ cons, foldr, nil: mempty } as GenericCons_1<TList> &
   FoldROnly_1<TList>);

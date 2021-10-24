@@ -81,17 +81,17 @@ type HelperSemigroup = {
   };
 };
 
-export const fold1Default: PartialHelper<'foldMap1'>['fold1'] = <f extends Generic1>({
-  foldMap1,
-}: Anon<Foldable1_1<f>, 'foldMap1'>) => <m>(
-  semigroup: Anon<Semigroup_0<m>>
-): ((fm: Type1<f, m>) => m) => foldMap1(semigroup as Semigroup_0<m>)(identity);
+export const fold1Default: PartialHelper<'foldMap1'>['fold1'] =
+  <f extends Generic1>({ foldMap1 }: Anon<Foldable1_1<f>, 'foldMap1'>) =>
+  <m>(semigroup: Anon<Semigroup_0<m>>): ((fm: Type1<f, m>) => m) =>
+    foldMap1(semigroup as Semigroup_0<m>)(identity);
 
 export const foldMap1Default: {
   <f extends Generic1>({ fold1, map }: Fold1Only_1<f> & Functor_1<f>): Foldable1_1<f>['foldMap1'];
   <f extends Generic2>({ fold1, map }: Fold1Only_2<f> & Functor_2<f>): Foldable1_2<f>['foldMap1'];
-} = <f extends Generic1>({ fold1, map }: Anon<Fold1Only_1<f> & Functor_1<f>, 'fold1' | 'map'>) => <
-  m
->(
-  semigroup: Anon<Semigroup_0<m>>
-) => <a>(f: (_: a) => m) => (fa: Type1<f, a>): m => fold1(semigroup as Semigroup_0<m>)(map(f)(fa));
+} =
+  <f extends Generic1>({ fold1, map }: Anon<Fold1Only_1<f> & Functor_1<f>, 'fold1' | 'map'>) =>
+  <m>(semigroup: Anon<Semigroup_0<m>>) =>
+  <a>(f: (_: a) => m) =>
+  (fa: Type1<f, a>): m =>
+    fold1(semigroup as Semigroup_0<m>)(map(f)(fa));

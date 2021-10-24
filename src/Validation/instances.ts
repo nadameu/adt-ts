@@ -23,16 +23,17 @@ interface TEither1<a> extends Generic1 {
 const makeApplyFunctionValidation: {
   <f extends Generic1>(semigroup: Semigroup_1<f>): Apply_2<TEitherF<f>>['apply'];
   <s>(semigroup: Semigroup_0<s>): Apply_1<TEither1<s>>['apply'];
-} = <s>({ append }: Anon<Semigroup_0<s>>) => <a, b>(ff: Either<s, (_: a) => b>) => (
-  fa: Either<s, a>
-): Either<s, b> =>
-  ff.isLeft
-    ? fa.isLeft
-      ? Left(append(ff.leftValue)(fa.leftValue))
-      : ff
-    : fa.isLeft
-    ? fa
-    : Right(ff.rightValue(fa.rightValue));
+} =
+  <s>({ append }: Anon<Semigroup_0<s>>) =>
+  <a, b>(ff: Either<s, (_: a) => b>) =>
+  (fa: Either<s, a>): Either<s, b> =>
+    ff.isLeft
+      ? fa.isLeft
+        ? Left(append(ff.leftValue)(fa.leftValue))
+        : ff
+      : fa.isLeft
+      ? fa
+      : Right(ff.rightValue(fa.rightValue));
 
 export const makeApplyValidation: {
   <f extends Generic1>(semigroup: Semigroup_1<f>): Apply_2<TEitherF<f>>;
@@ -58,6 +59,8 @@ export const makeAltValidation: {
 } = <s>({ append }: Anon<Semigroup_0<s>>) =>
   ({
     ...functorEither,
-    alt: <a>(fx: Either<s, a>) => (fy: Either<s, a>) =>
-      fx.isLeft ? (fy.isLeft ? Left(append(fx.leftValue)(fy.leftValue)) : fy) : fx,
+    alt:
+      <a>(fx: Either<s, a>) =>
+      (fy: Either<s, a>) =>
+        fx.isLeft ? (fy.isLeft ? Left(append(fx.leftValue)(fy.leftValue)) : fy) : fx,
   } as Alt_1<TEither1<unknown>> & Alt_2<TEitherF<Generic1>>);

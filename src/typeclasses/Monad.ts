@@ -30,12 +30,10 @@ type BindPureHelper = {
   };
 };
 
-export const liftM1: BindPureHelper['liftM1'] = <f extends Generic1>({
-  bind,
-  pure,
-}: Anon<BindOnly_1<f> & PureOnly_1<f>>) => <a, b>(
-  f: (_: a) => b
-): ((fa: Type1<f, a>) => Type1<f, b>) => bind(compose(pure)(f));
+export const liftM1: BindPureHelper['liftM1'] =
+  <f extends Generic1>({ bind, pure }: Anon<BindOnly_1<f> & PureOnly_1<f>>) =>
+  <a, b>(f: (_: a) => b): ((fa: Type1<f, a>) => Type1<f, b>) =>
+    bind(compose(pure)(f));
 
 export const ap: BindPureHelper['ap'] = <f extends Generic1>({
   bind,

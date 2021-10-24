@@ -15,7 +15,7 @@ test('Simple', async () => {
 
     const compose = (f) => (g) => (a) => f(g(a));
 
-    const lift2 = ({ apply, map }) => (f) => compose(apply)(map(f));
+    const lift2$1 = ({ apply, map }) => (f) => compose(apply)(map(f));
 
     const Nothing = { isJust: false, isNothing: true };
     const Just = (value) => ({ isJust: true, isNothing: false, value });
@@ -29,9 +29,9 @@ test('Simple', async () => {
     const map = liftM1({ bind, pure });
     const apply = ap({ bind, pure });
 
-    const lift2$1 = lift2({ apply, map });
+    const lift2 = lift2$1({ apply, map });
 
-    console.log(lift2$1(x => y => x > y)(Nothing)(Just(40)));
+    console.log(lift2(x => y => x > y)(Nothing)(Just(40)));
     "
   `);
 });

@@ -61,6 +61,11 @@ export const plusList = { alt, empty, map } as Plus_1<TList>;
 export const alternativeList = { alt, apply, empty, map, pure } as Alternative_1<TList>;
 
 export const foldableList = { foldMap, foldl, foldr } as Foldable_1<TList>;
-export const traversableList = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable_1<
-  TList
->;
+export const traversableList = {
+  foldMap,
+  foldl,
+  foldr,
+  map,
+  sequence,
+  traverse,
+} as Traversable_1<TList>;

@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import { Generic1 } from '../src/Generic';
 import {
   altObject,
@@ -26,8 +26,8 @@ import { makeFunctor1Laws } from './laws/Functor';
 import { makePlusLaws } from './laws/Plus';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<Record<'a' | 'b' | 'c', a>> =>
-  jsc.record({ a: arb, b: arb, c: arb });
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<Record<'a' | 'b' | 'c', a>> =>
+  fc.record({ a: arb, b: arb, c: arb });
 
 const makeEq = <a>(eq: Eq<a>): Eq<Record<'a' | 'b' | 'c', a>> =>
   makeEqObject({ a: eq, b: eq, c: eq });
@@ -43,7 +43,7 @@ interface TTestDict extends Generic1 {
 }
 
 describe('Functor', () => {
-  const functorLaws = makeFunctor1Laws((functorObject as any) as Functor_1<TTestObject>)(makeEq)(
+  const functorLaws = makeFunctor1Laws(functorObject as any as Functor_1<TTestObject>)(makeEq)(
     makeArb
   );
   test('Functor - identity', functorLaws.identity);
@@ -51,26 +51,30 @@ describe('Functor', () => {
 });
 
 describe('Apply', () => {
-  const applyLaws = makeApply1Laws((applyObject as any) as Apply_1<TTestObject>)(makeEq)(makeArb);
+  const applyLaws = makeApply1Laws(applyObject as any as Apply_1<TTestObject>)(makeEq)(makeArb);
   test('Apply - composition', applyLaws.composition);
 });
 
 describe('Alt', () => {
-  const altLaws = makeAlt1Laws((altObject as any) as Alt_1<TTestDict>)(makeEqDict)(jsc.dict);
+  const altLaws = makeAlt1Laws(altObject as any as Alt_1<TTestDict>)(makeEqDict)(a =>
+    fc.dictionary(fc.string(), a)
+  );
   test('Alt - associativity', altLaws.associativity);
   test('Alt - distributivity', altLaws.distributivity);
 });
 
 describe('Plus', () => {
-  const plusLaws = makePlusLaws((plusObject as any) as Plus_1<TTestDict>)(makeEqDict)(jsc.dict);
+  const plusLaws = makePlusLaws(plusObject as any as Plus_1<TTestDict>)(makeEqDict)(a =>
+    fc.dictionary(fc.string(), a)
+  );
   test('Plus - left identity', plusLaws.leftIdentity);
   test('Plus - right identity', plusLaws.rightIdentity);
   test('Plus - annihilation', plusLaws.annihilation);
 });
 
 describe('Foldable', () => {
-  const foldableLaws = makeFoldable1Laws((foldableObject as any) as Foldable_1<TTestDict>)(
-    jsc.dict
+  const foldableLaws = makeFoldable1Laws(foldableObject as any as Foldable_1<TTestDict>)(a =>
+    fc.dictionary(fc.string(), a)
   );
   test('Foldable - foldl', foldableLaws.foldl);
   test('Foldable - foldr', foldableLaws.foldr);
@@ -78,16 +82,16 @@ describe('Foldable', () => {
 });
 
 describe('Eq', () => {
-  const eqLaws = makeEq1Laws<TTestDict>(makeEqDict)(jsc.dict);
+  const eqLaws = makeEq1Laws<TTestDict>(makeEqDict)(a => fc.dictionary(fc.string(), a));
   test('Eq - reflexivity', eqLaws.reflexivity);
   test('Eq - symmetry', eqLaws.symmetry);
   test('Eq - transitivity', eqLaws.transitivity);
 });
 
 describe('Traversable', () => {
-  const traversableLaws = makeTraversableLaws(
-    (traversableObject as any) as Traversable_1<TTestDict>
-  )(makeEqDict)(jsc.dict);
+  const traversableLaws = makeTraversableLaws(traversableObject as any as Traversable_1<TTestDict>)(
+    makeEqDict
+  )(a => fc.dictionary(fc.string(), a));
   test('Traversable - naturality', traversableLaws.naturality);
   test('Traversable - identity', traversableLaws.identity);
   test('Traversable - composition', traversableLaws.composition);

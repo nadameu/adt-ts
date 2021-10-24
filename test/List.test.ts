@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import {
   alternativeList,
   altList,
@@ -13,6 +13,7 @@ import {
   makeEqList,
   monadList,
   monoidList,
+  pipeValue,
   plusList,
   semigroupList,
   traversableList,
@@ -32,17 +33,10 @@ import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const listToArray: <a>(list: List<a>) => a[] = list.foldl<unknown, any[]>(xs => x => (
-  xs.push(x), xs
-))([]);
-const arrayToList: <a>(array: a[]) => List<a> = array.foldr<unknown, List<any>>(list.cons)(
-  list.nil
-);
+const arrayToList: <a>(xs: a[]) => List<a> = array.foldr(list.cons)(list.nil);
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<List<a>> => {
-  const base = jsc.array(arb);
-  return base.smap(arrayToList, listToArray, xs => (base.show || String)(listToArray(xs)));
-};
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<List<a>> =>
+  fc.array(arb, { maxLength: 5 }).map(arrayToList);
 
 describe('Functor', () => {
   const functorLaws = makeFunctor1Laws(functorList)(makeEqList)(makeArb);

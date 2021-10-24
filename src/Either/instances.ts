@@ -42,9 +42,14 @@ export const bindEither = { apply, bind, map } as Bind_2<TEither>;
 export const applicativeEither = { apply, map, pure } as Applicative_2<TEither>;
 export const monadEither = { apply, bind, map, pure } as Monad_2<TEither>;
 export const monadThrowEither = { apply, bind, map, pure, throwError } as MonadThrow_2<TEither>;
-export const monadErrorEither = { apply, bind, catchError, map, pure, throwError } as MonadError_2<
-  TEither
->;
+export const monadErrorEither = {
+  apply,
+  bind,
+  catchError,
+  map,
+  pure,
+  throwError,
+} as MonadError_2<TEither>;
 export const foldableEither = { foldl, foldMap, foldr } as Foldable_2<TEither>;
 export const altEither = { map, alt } as Alt_2<TEither>;
 export const traversableEither = {

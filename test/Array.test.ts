@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import { applicativeIdentity, constant } from '../src';
 import {
   altArray,
@@ -31,7 +31,7 @@ import { makePlusLaws } from './laws/Plus';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 import { makeTraversableLaws } from './laws/Traversable';
 
-const makeArb = <a>(arb: jsc.Arbitrary<a>): jsc.Arbitrary<a[]> => jsc.array(arb);
+const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<a[]> => fc.array(arb);
 
 describe('Functor', () => {
   const functorLaws = makeFunctor1Laws(functorArray)(makeEqArray)(makeArb);
@@ -52,7 +52,7 @@ describe('Applicative', () => {
 });
 
 describe('Alt', () => {
-  const altLaws = makeAlt1Laws(altArray)(makeEqArray)(makeArb);
+  const altLaws = makeAlt1Laws(altArray)(makeEqArray)(a => fc.array(a));
   test('Alt - associativity', altLaws.associativity);
   test('Alt - distributivity', altLaws.distributivity);
 });

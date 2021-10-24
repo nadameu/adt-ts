@@ -1,4 +1,4 @@
-import * as jsc from 'jsverify';
+import * as fc from 'fast-check';
 import { applicativeFn, applyFn, bindFn, functorFn, monadFn } from '../src/Fn';
 import { Eq } from '../src/typeclasses';
 import { makeApplicative2Laws } from './laws/Applicative';
@@ -6,20 +6,18 @@ import { makeApply2Laws } from './laws/Apply';
 import { makeBind2Laws } from './laws/Bind';
 import { makeFunctor2Laws } from './laws/Functor';
 import { makeMonad2Laws } from './laws/Monad';
+import { fn } from '../src';
 
-let currentArb: jsc.Arbitrary<unknown>;
+let currentArb: fc.Arbitrary<unknown>;
 
-const makeArb = <a, b>(
-  arbA: jsc.Arbitrary<a>,
-  arbB: jsc.Arbitrary<b>
-): jsc.Arbitrary<(_: a) => b> => {
+const makeArb = <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>): fc.Arbitrary<(_: a) => b> => {
   currentArb = arbA as any;
-  return jsc.fn(arbB);
+  return fc.func(arbB);
 };
 
 const makeEqFn = <a, b>(eqA: Eq<a>, eqB: Eq<b>) =>
   ({
-    eq: f => g => (jsc.assertForall(currentArb as jsc.Arbitrary<a>, a => eqB.eq(f(a))(g(a))), true),
+    eq: f => g => fc.assert(fc.property(currentArb as fc.Arbitrary<a>, a => eqB.eq(f(a))(g(a)))),
   } as Eq<(_: a) => b>);
 
 describe('Functor', () => {
@@ -49,4 +47,11 @@ describe('Monad', () => {
   const monadLaws = makeMonad2Laws(monadFn)(makeEqFn)(makeArb);
   test('Monad - left identity', monadLaws.leftIdentity);
   test('Monad - right identity', monadLaws.rightIdentity);
+});
+
+test('apply', () => {
+  const mult = (x: number) => (y: number) => x * y;
+  const inc = (x: number) => x + 1;
+  const f = fn.apply(mult)(inc);
+  expect(f(4)).toEqual(20);
 });

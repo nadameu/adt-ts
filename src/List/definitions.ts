@@ -6,12 +6,14 @@ export interface Cons<a> {
   head: a;
   tail: List<a>;
 }
-export const Cons = <a>(head: a) => (tail: List<a>): Cons<a> => ({
-  isCons: true,
-  isNil: false,
-  head,
-  tail,
-});
+export const Cons =
+  <a>(head: a) =>
+  (tail: List<a>): Cons<a> => ({
+    isCons: true,
+    isNil: false,
+    head,
+    tail,
+  });
 export interface Nil {
   isCons: false;
   isNil: true;

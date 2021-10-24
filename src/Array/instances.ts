@@ -64,9 +64,14 @@ export const plusArray = { alt, empty, map } as Plus_1<TArray>;
 export const alternativeArray = { alt, apply, empty, map, pure } as Alternative_1<TArray>;
 
 export const foldableArray = { foldMap, foldl, foldr } as Foldable_1<TArray>;
-export const traversableArray = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable_1<
-  TArray
->;
+export const traversableArray = {
+  foldMap,
+  foldl,
+  foldr,
+  map,
+  sequence,
+  traverse,
+} as Traversable_1<TArray>;
 
 export const semigroupArray = { append } as Semigroup_1<TArray>;
 export const monoidArray = { append, mempty } as Monoid_1<TArray>;

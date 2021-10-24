@@ -49,7 +49,7 @@ import { TMaybe, TMaybeF } from './internal';
 
 export const makeEqMaybe = <a>(eq: Eq<a>) =>
   ({
-    eq: fx => fy => (fx.isNothing ? fy.isNothing : fy.isJust && eq.eq(fx.value)(fy.value)),
+    eq: fx => fy => fx.isNothing ? fy.isNothing : fy.isJust && eq.eq(fx.value)(fy.value),
   } as Eq<Maybe<a>>);
 
 export const functorMaybe = { map } as Functor_1<TMaybe>;
@@ -66,9 +66,14 @@ export const foldableMaybe = { foldl, foldMap, foldr } as Foldable_1<TMaybe>;
 export const altMaybe = { map, alt } as Alt_1<TMaybe>;
 export const alternativeMaybe = { map, alt, apply, empty, pure } as Alternative_1<TMaybe>;
 export const plusMaybe = { alt, empty, map } as Plus_1<TMaybe>;
-export const traversableMaybe = { foldMap, foldl, foldr, map, sequence, traverse } as Traversable_1<
-  TMaybe
->;
+export const traversableMaybe = {
+  foldMap,
+  foldl,
+  foldr,
+  map,
+  sequence,
+  traverse,
+} as Traversable_1<TMaybe>;
 export const compactableMaybe = { compact, separate } as Compactable_1<TMaybe>;
 export const filterableMaybe = {
   compact,
@@ -99,8 +104,11 @@ export const witherableMaybe = {
 const makeAppend: {
   <m extends Generic1>(semigroup: Semigroup_1<m>): Semigroup_1<TMaybeF<m>>['append'];
   <m>(semigroup: Semigroup_0<m>): Semigroup_0<Maybe<m>>['append'];
-} = <m>({ append }: Anon<Semigroup_0<m>>): Semigroup_0<Maybe<m>>['append'] => x => y =>
-  x.isNothing ? y : y.isNothing ? x : Just(append(x.value)(y.value));
+} =
+  <m>({ append }: Anon<Semigroup_0<m>>): Semigroup_0<Maybe<m>>['append'] =>
+  x =>
+  y =>
+    x.isNothing ? y : y.isNothing ? x : Just(append(x.value)(y.value));
 
 export const makeSemigroupMaybe: {
   <m extends Generic1>(semigroup: Semigroup_1<m>): Semigroup_1<TMaybeF<m>>;
