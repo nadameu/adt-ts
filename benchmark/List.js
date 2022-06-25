@@ -1,5 +1,4 @@
 const Benchmark = require('benchmark');
-const { record } = require('jsverify');
 
 const suite = new Benchmark.Suite();
 
@@ -37,17 +36,17 @@ function setup() {
     },
   };
 
-  const range = (start) => (end) => {
+  const range = start => end => {
     let list = Nil;
     for (let current = end; current >= start; current--) list = new Cons(current, list);
     return list;
   };
 
-  const foldr_recursive = (f) => (z) => (xs) => {
+  const foldr_recursive = f => z => xs => {
     return xs.isNil ? z : f(xs.head)(foldr_recursive(f)(z)(xs.tail));
   };
 
-  const foldr_iterative = (f) => (z) => (xs) => {
+  const foldr_iterative = f => z => xs => {
     let reversed = Nil;
     for (let current = xs; current.isCons; current = current.tail)
       reversed = new Cons(current.head, reversed);
@@ -56,7 +55,7 @@ function setup() {
     return acc;
   };
 
-  const foldr_array = (f) => (z) => (xs) => {
+  const foldr_array = f => z => xs => {
     let array = [];
     for (let current = xs; current.isCons; current = current.tail) array.push(current.head);
     let acc = z;
@@ -71,25 +70,25 @@ suite
   .add('Original foldr', {
     setup,
     fn() {
-      foldr_iterative((a) => (b) => a + b)(0)(list);
+      foldr_iterative(a => b => a + b)(0)(list);
     },
   })
   .add('Recursive foldr', {
     setup,
     fn() {
-      foldr_recursive((a) => (b) => a + b)(0)(list);
+      foldr_recursive(a => b => a + b)(0)(list);
     },
   })
   .add('Array reduceRight', {
     setup,
     fn() {
-      foldr_array((a) => (b) => a + b)(0)(list);
+      foldr_array(a => b => a + b)(0)(list);
     },
   })
   .on('start', () => {
     console.log('Start');
   })
-  .on('cycle', (evt) => {
+  .on('cycle', evt => {
     console.log(String(evt.target));
   })
   .on('complete', () => {
@@ -101,7 +100,7 @@ suite
     const pct = Benchmark.formatNumber((stats[0].hz / stats[1].hz - 1) * 100);
     console.log(`${stats[0].name} is ${pct}% faster than ${stats[1].name}.`);
   })
-  .on('error', (evt) => {
+  .on('error', evt => {
     console.error(evt.target.error);
   })
   .run();
