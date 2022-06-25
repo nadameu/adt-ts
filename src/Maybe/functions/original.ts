@@ -147,7 +147,7 @@ export const safeMethod = <
 ) =>
   liftNullable<
     obj,
-    obj[key] extends (...args: args) => infer out | null | undefined ? out : unknown
+    obj[key] extends (...args: args) => infer ret | null | undefined ? ret : unknown
   >(method<any, key, args, null | undefined>(key, ...args));
 
 export const bindMethod = <
@@ -160,5 +160,5 @@ export const bindMethod = <
 ) =>
   bindNullable<
     obj,
-    obj[key] extends (...args: args) => infer out | null | undefined ? out : unknown
+    obj[key] extends (...args: args) => infer ret | null | undefined ? ret : unknown
   >(method<any, key, args, null | undefined>(key, ...args));
