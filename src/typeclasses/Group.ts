@@ -1,8 +1,7 @@
-import { NotGenericType } from '../Generic';
+import { Identified0 } from '../Generic';
 import { Monoid_0 } from './Monoid';
 
-export interface Group_0<a> extends Monoid_0<a> {
+export interface GInverseOnly_0<a> extends Identified0<a> {
   ginverse: (_: a) => a;
 }
-
-export interface GInverseOnly_0<a> extends Pick<Group_0<a>, NotGenericType | 'ginverse'> {}
+export interface Group_0<a> extends Monoid_0<a>, GInverseOnly_0<a> {}

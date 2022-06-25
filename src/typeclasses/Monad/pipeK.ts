@@ -1,6 +1,5 @@
-import { Generic1, Generic2, Type1, Type2, Anon } from '../../Generic';
-import { PureOnly_1, PureOnly_2 } from '../Applicative';
-import { BindOnly_1, BindOnly_2 } from '../Bind';
+import { Anon, Generic1, Generic2, Type1, Type2 } from '../../Generic';
+import { BindPureOnly_1, BindPureOnly_2 } from '../Monad';
 
 export interface PipeKleisli_1<f extends Generic1> {
   (): <a>(_: a) => Type1<f, a>;
@@ -51,9 +50,9 @@ export interface PipeKleisli_2<f extends Generic2> {
 }
 
 export const pipeK: {
-  <f extends Generic1>({ bind, pure }: BindOnly_1<f> & PureOnly_1<f>): PipeKleisli_1<f>;
-  <f extends Generic2>({ bind, pure }: BindOnly_2<f> & PureOnly_2<f>): PipeKleisli_2<f>;
-} = <f extends Generic1>({ bind, pure }: Anon<BindOnly_1<f> & PureOnly_1<f>>): PipeKleisli_1<f> =>
+  <f extends Generic1>({ bind, pure }: BindPureOnly_1<f>): PipeKleisli_1<f>;
+  <f extends Generic2>({ bind, pure }: BindPureOnly_2<f>): PipeKleisli_2<f>;
+} = <f extends Generic1>({ bind, pure }: Anon<BindPureOnly_1<f>>): PipeKleisli_1<f> =>
   function <a>(_: (_: a) => Type1<f, a> = pure) {
     const [f, ...fs]: Iterable<(_: a) => Type1<f, a>> = arguments;
     return (a: a) => fs.reduce((fa, f) => bind(f)(fa), f(a));

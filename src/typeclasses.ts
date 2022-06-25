@@ -3,17 +3,36 @@ export { Alternative_1, Alternative_2 } from './typeclasses/Alternative';
 export {
   Applicative_1,
   Applicative_2,
+  ApplyPureOnly_1,
+  ApplyPureOnly_2,
   liftA1,
   PureOnly_1,
   PureOnly_2,
 } from './typeclasses/Applicative';
-export { ApplyOnly_1, ApplyOnly_2, Apply_1, Apply_2, Apply_O } from './typeclasses/Apply';
-export { applyDefault, BindOnly_1, BindOnly_2, Bind_1, Bind_2 } from './typeclasses/Bind';
+export {
+  ApplyOnly_1,
+  ApplyOnly_2,
+  ApplyOnly_O,
+  Apply_1,
+  Apply_2,
+  Apply_O,
+} from './typeclasses/Apply';
+export {
+  applyDefault,
+  BindMapOnly_1,
+  BindMapOnly_2,
+  BindOnly_1,
+  BindOnly_2,
+  Bind_1,
+  Bind_2,
+} from './typeclasses/Bind';
 export { Category_2, Category_3, IdentityOnly_2, IdentityOnly_3 } from './typeclasses/Category';
 export {
   Compactable_1,
   compactDefault,
   CompactOnly_1,
+  MapCompactOnly_1,
+  MapSeparateOnly_1,
   separateDefault,
   SeparateOnly_1,
 } from './typeclasses/Compactable';
@@ -55,6 +74,8 @@ export {
 } from './typeclasses/Foldable';
 export {
   fold1Default,
+  Fold1MapOnly_1,
+  Fold1MapOnly_2,
   Fold1Only_1,
   Fold1Only_2,
   Foldable1_1,
@@ -65,7 +86,7 @@ export {
 } from './typeclasses/Foldable1';
 export { Functor_1, Functor_2, Functor_O } from './typeclasses/Functor';
 export { GInverseOnly_0, Group_0 } from './typeclasses/Group';
-export { ap, liftM1, Monad_1, Monad_2 } from './typeclasses/Monad';
+export { ap, BindPureOnly_1, BindPureOnly_2, liftM1, Monad_1, Monad_2 } from './typeclasses/Monad';
 export { PipeKleisli_1, PipeKleisli_2 } from './typeclasses/Monad/pipeK';
 export {
   CatchErrorOnly_1,

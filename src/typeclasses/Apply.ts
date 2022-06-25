@@ -1,38 +1,35 @@
-import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, GenericOType, Type1, Type2 } from '../Generic';
-import { compose } from '../helpers/compose';
+import * as G from '../Generic';
+import { compose } from '../helpers';
 import { Functor_1, Functor_2, Functor_O } from './Functor';
 
-export interface Apply_1<f extends Generic1> extends Functor_1<f> {
+export interface ApplyOnly_1<f extends G.Generic1> extends G.Identified1<f> {
   apply: Helpers1<f>['apply'];
 }
+export interface Apply_1<f extends G.Generic1> extends Functor_1<f>, ApplyOnly_1<f> {}
 
-export interface Apply_2<f extends Generic2> extends Functor_2<f> {
+export interface ApplyOnly_2<f extends G.Generic2> extends G.Identified2<f> {
   apply: Helpers2<f>['apply'];
 }
+export interface Apply_2<f extends G.Generic2> extends Functor_2<f>, ApplyOnly_2<f> {}
 
-export interface Apply_O extends Functor_O {
+export interface ApplyOnly_O extends G.IdentifiedO {
   apply: HelpersO['apply'];
 }
+export interface Apply_O extends Functor_O, ApplyOnly_O {}
 
-export interface ApplyOnly_1<f extends Generic1> extends Pick<Apply_1<f>, Generic1Type | 'apply'> {}
-
-export interface ApplyOnly_2<f extends Generic2> extends Pick<Apply_2<f>, Generic2Type | 'apply'> {}
-
-export interface ApplyOnly_O extends Pick<Apply_O, GenericOType | 'apply'> {}
-
-interface Helpers1<f extends Generic1> {
-  apply: <a, b>(ff: Type1<f, (_: a) => b>) => (fa: Type1<f, a>) => Type1<f, b>;
-  lift2: <a, b, c>(f: (_: a) => (_: b) => c) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => Type1<f, c>;
-  lift3: <a, b, c, d>(f: (_: a) => (_: b) => (_: c) => d) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => (fc: Type1<f, c>) => Type1<f, d>;
-  lift4: <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => (fc: Type1<f, c>) => (fd: Type1<f, d>) => Type1<f, e>;
-  lift5: <a, b, c, d, e, g>(f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => g) => (fa: Type1<f, a>) => (fb: Type1<f, b>) => (fc: Type1<f, c>) => (fd: Type1<f, d>) => (fe: Type1<f, e>) => Type1<f, g>;
+interface Helpers1<f extends G.Generic1> {
+  apply: <a, b>(ff: G.Type1<f, (_: a) => b>) => (fa: G.Type1<f, a>) => G.Type1<f, b>;
+  lift2: <a, b, c>(f: (_: a) => (_: b) => c) => (fa: G.Type1<f, a>) => (fb: G.Type1<f, b>) => G.Type1<f, c>;
+  lift3: <a, b, c, d>(f: (_: a) => (_: b) => (_: c) => d) => (fa: G.Type1<f, a>) => (fb: G.Type1<f, b>) => (fc: G.Type1<f, c>) => G.Type1<f, d>;
+  lift4: <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) => (fa: G.Type1<f, a>) => (fb: G.Type1<f, b>) => (fc: G.Type1<f, c>) => (fd: G.Type1<f, d>) => G.Type1<f, e>;
+  lift5: <a, b, c, d, e, g>(f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => g) => (fa: G.Type1<f, a>) => (fb: G.Type1<f, b>) => (fc: G.Type1<f, c>) => (fd: G.Type1<f, d>) => (fe: G.Type1<f, e>) => G.Type1<f, g>;
 }
-interface Helpers2<f extends Generic2> {
-  apply: <a, b, c>(faf: Type2<f, a, (_: b) => c>) => (fab: Type2<f, a, b>) => Type2<f, a, c>;
-  lift2: <b, c, d>(f: (_: b) => (_: c) => d) => <a>(fab: Type2<f, a, b>) => (fac: Type2<f, a, c>) => Type2<f, a, d>;
-  lift3: <b, c, d, e>(f: (_: b) => (_: c) => (_: d) => e) => <a>(fab: Type2<f, a, b>) => (fac: Type2<f, a, c>) => (fad: Type2<f, a, d>) => Type2<f, a, e>;
-  lift4: <b, c, d, e, g>(f: (_: b) => (_: c) => (_: d) => (_: e) => g) => <a>(fab: Type2<f, a, b>) => (fac: Type2<f, a, c>) => (fad: Type2<f, a, d>) => (fae: Type2<f, a, e>) => Type2<f, a, g>;
-  lift5: <b, c, d, e, g, h>(f: (_: b) => (_: c) => (_: d) => (_: e) => (_: g) => h) => <a>(fab: Type2<f, a, b>) => (fac: Type2<f, a, c>) => (fad: Type2<f, a, d>) => (fae: Type2<f, a, e>) => (faf: Type2<f, a, g>) => Type2<f, a, h>;
+interface Helpers2<f extends G.Generic2> {
+  apply: <a, b, c>(faf: G.Type2<f, a, (_: b) => c>) => (fab: G.Type2<f, a, b>) => G.Type2<f, a, c>;
+  lift2: <b, c, d>(f: (_: b) => (_: c) => d) => <a>(fab: G.Type2<f, a, b>) => (fac: G.Type2<f, a, c>) => G.Type2<f, a, d>;
+  lift3: <b, c, d, e>(f: (_: b) => (_: c) => (_: d) => e) => <a>(fab: G.Type2<f, a, b>) => (fac: G.Type2<f, a, c>) => (fad: G.Type2<f, a, d>) => G.Type2<f, a, e>;
+  lift4: <b, c, d, e, g>(f: (_: b) => (_: c) => (_: d) => (_: e) => g) => <a>(fab: G.Type2<f, a, b>) => (fac: G.Type2<f, a, c>) => (fad: G.Type2<f, a, d>) => (fae: G.Type2<f, a, e>) => G.Type2<f, a, g>;
+  lift5: <b, c, d, e, g, h>(f: (_: b) => (_: c) => (_: d) => (_: e) => (_: g) => h) => <a>(fab: G.Type2<f, a, b>) => (fac: G.Type2<f, a, c>) => (fad: G.Type2<f, a, d>) => (fae: G.Type2<f, a, e>) => (faf: G.Type2<f, a, g>) => G.Type2<f, a, h>;
 }
 interface HelpersO {
   apply: <T extends Record<keyof T, (_: any) => unknown>>(ff: T) => <U extends { [k in keyof T]: T[k] extends (_: infer a) => unknown ? a : never }>(fa: U) => { [k in keyof T]: T[k] extends (_: any) => infer b ? b : never };
@@ -45,34 +42,34 @@ interface HelpersO {
 }
 type Helper = {
   [k in keyof Helpers1<never>]: {
-    <f extends Generic1>({ apply, map }: Apply_1<f>): Helpers1<f>[k];
-    <f extends Generic2>({ apply, map }: Apply_2<f>): Helpers2<f>[k];
+    <f extends G.Generic1>({ apply, map }: Apply_1<f>): Helpers1<f>[k];
+    <f extends G.Generic2>({ apply, map }: Apply_2<f>): Helpers2<f>[k];
     ({ apply, map }: Apply_O): HelpersO[k];
   };
 };
 
 export const lift2: Helper['lift2'] =
-  <f extends Generic1>({ apply, map }: Anon<Apply_1<f>>) =>
+  <f extends G.Generic1>({ apply, map }: G.Anon<Apply_1<f>>) =>
   <a, b, c>(f: (_: a) => (_: b) => c) =>
-    compose<Type1<f, (_: b) => c>, (fa: Type1<f, a>) => Type1<f, b>>(apply)(map(f));
+    compose<G.Type1<f, (_: b) => c>, (fa: G.Type1<f, a>) => G.Type1<f, b>>(apply)(map(f));
 
 export const lift3: Helper['lift3'] =
-  <f extends Generic1>(apply: Anon<Apply_1<f>>) =>
+  <f extends G.Generic1>(apply: G.Anon<Apply_1<f>>) =>
   <a, b, c, d>(f: (_: a) => (_: b) => (_: c) => d) =>
-  (fa: Type1<f, a>) =>
-    compose<Type1<f, (_: c) => d>, (fa: Type1<f, c>) => Type1<f, d>>(apply.apply)(lift2(apply as Apply_1<f>)(f)(fa));
+  (fa: G.Type1<f, a>) =>
+    compose<G.Type1<f, (_: c) => d>, (fa: G.Type1<f, c>) => G.Type1<f, d>>(apply.apply)(lift2(apply as Apply_1<f>)(f)(fa));
 
 export const lift4: Helper['lift4'] =
-  <f extends Generic1>(apply: Anon<Apply_1<f>>) =>
+  <f extends G.Generic1>(apply: G.Anon<Apply_1<f>>) =>
   <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) =>
-  (fa: Type1<f, a>) =>
-  (fb: Type1<f, b>) =>
-    compose<Type1<f, (_: d) => e>, (fa: Type1<f, d>) => Type1<f, e>>(apply.apply)(lift3(apply as Apply_1<f>)(f)(fa)(fb));
+  (fa: G.Type1<f, a>) =>
+  (fb: G.Type1<f, b>) =>
+    compose<G.Type1<f, (_: d) => e>, (fa: G.Type1<f, d>) => G.Type1<f, e>>(apply.apply)(lift3(apply as Apply_1<f>)(f)(fa)(fb));
 
 export const lift5: Helper['lift5'] =
-  <f extends Generic1>(apply: Anon<Apply_1<f>>) =>
+  <f extends G.Generic1>(apply: G.Anon<Apply_1<f>>) =>
   <a, b, c, d, e, g>(f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => g) =>
-  (fa: Type1<f, a>) =>
-  (fb: Type1<f, b>) =>
-  (fc: Type1<f, c>) =>
-    compose<Type1<f, (_: e) => g>, (fa: Type1<f, e>) => Type1<f, g>>(apply.apply)(lift4(apply as Apply_1<f>)(f)(fa)(fb)(fc));
+  (fa: G.Type1<f, a>) =>
+  (fb: G.Type1<f, b>) =>
+  (fc: G.Type1<f, c>) =>
+    compose<G.Type1<f, (_: e) => g>, (fa: G.Type1<f, e>) => G.Type1<f, g>>(apply.apply)(lift4(apply as Apply_1<f>)(f)(fa)(fb)(fc));

@@ -1,16 +1,14 @@
-import { Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
+import * as G from '../Generic';
 import { MonadThrow_1, MonadThrow_2 } from './MonadThrow';
 
-export interface MonadError_1<f extends Generic1, e> extends MonadThrow_1<f, e> {
-  catchError: <a>(f: (_: e) => Type1<f, a>) => (fa: Type1<f, a>) => Type1<f, a>;
+export interface CatchErrorOnly_1<f extends G.Generic1, e> extends G.Identified1<f> {
+  catchError: <a>(f: (_: e) => G.Type1<f, a>) => (fa: G.Type1<f, a>) => G.Type1<f, a>;
 }
+export interface MonadError_1<f extends G.Generic1, e>
+  extends MonadThrow_1<f, e>,
+    CatchErrorOnly_1<f, e> {}
 
-export interface MonadError_2<f extends Generic2> extends MonadThrow_2<f> {
-  catchError: <e, a>(f: (_: e) => Type2<f, e, a>) => (fea: Type2<f, e, a>) => Type2<f, e, a>;
+export interface CatchErrorOnly_2<f extends G.Generic2> extends G.Identified2<f> {
+  catchError: <e, a>(f: (_: e) => G.Type2<f, e, a>) => (fea: G.Type2<f, e, a>) => G.Type2<f, e, a>;
 }
-
-export interface CatchErrorOnly_1<f extends Generic1, e>
-  extends Pick<MonadError_1<f, e>, Generic1Type | 'catchError'> {}
-
-export interface CatchErrorOnly_2<f extends Generic2>
-  extends Pick<MonadError_2<f>, Generic2Type | 'catchError'> {}
+export interface MonadError_2<f extends G.Generic2> extends MonadThrow_2<f>, CatchErrorOnly_2<f> {}
