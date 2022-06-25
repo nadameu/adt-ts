@@ -1,24 +1,23 @@
-import { Anon, Generic1, Generic1Type, Generic2, Generic2Type, Type1, Type2 } from '../Generic';
+import * as G from '../Generic';
 import { ApplyOnly_1, ApplyOnly_2, Apply_1, Apply_2 } from './Apply';
 
-export interface Applicative_1<f extends Generic1> extends Apply_1<f> {
-  pure: <a>(a: a) => Type1<f, a>;
+export interface PureOnly_1<f extends G.Generic1> extends G.Identified1<f> {
+  pure: <a>(a: a) => G.Type1<f, a>;
 }
+export interface Applicative_1<f extends G.Generic1> extends Apply_1<f>, PureOnly_1<f> {}
 
-export interface Applicative_2<f extends Generic2> extends Apply_2<f> {
-  pure: <a, b>(b: b) => Type2<f, a, b>;
+export interface PureOnly_2<f extends G.Generic2> extends G.Identified2<f> {
+  pure: <a, b>(b: b) => G.Type2<f, a, b>;
 }
+export interface Applicative_2<f extends G.Generic2> extends Apply_2<f>, PureOnly_2<f> {}
 
-export interface PureOnly_1<f extends Generic1>
-  extends Pick<Applicative_1<f>, Generic1Type | 'pure'> {}
-
-export interface PureOnly_2<f extends Generic2>
-  extends Pick<Applicative_2<f>, Generic2Type | 'pure'> {}
+export interface ApplyPureOnly_1<f extends G.Generic1> extends ApplyOnly_1<f>, PureOnly_1<f> {}
+export interface ApplyPureOnly_2<f extends G.Generic2> extends ApplyOnly_2<f>, PureOnly_2<f> {}
 
 export const liftA1: {
-  <f extends Generic1>({ apply, pure }: ApplyOnly_1<f> & PureOnly_1<f>): Applicative_1<f>['map'];
-  <f extends Generic2>({ apply, pure }: ApplyOnly_2<f> & PureOnly_2<f>): Applicative_2<f>['map'];
+  <f extends G.Generic1>({ apply, pure }: ApplyPureOnly_1<f>): Applicative_1<f>['map'];
+  <f extends G.Generic2>({ apply, pure }: ApplyPureOnly_2<f>): Applicative_2<f>['map'];
 } =
-  <f extends Generic1>({ apply, pure }: Anon<ApplyOnly_1<f> & PureOnly_1<f>>) =>
-  <a, b>(f: (_: a) => b): ((fa: Type1<f, a>) => Type1<f, b>) =>
+  <f extends G.Generic1>({ apply, pure }: G.Anon<ApplyPureOnly_1<f>>) =>
+  <a, b>(f: (_: a) => b): ((fa: G.Type1<f, a>) => G.Type1<f, b>) =>
     apply(pure(f));
