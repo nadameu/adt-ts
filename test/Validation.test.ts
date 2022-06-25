@@ -59,7 +59,8 @@ describe('Alt', () => {
 });
 
 test('traverse', () => {
-  const d = pipeValue([Left(['a']), Left(['b']), Right(42)]).pipe(
+  const d = pipeValue(
+    [Left(['a']), Left(['b']), Right(42)],
     A.sequence(makeApplicativeValidation(semigroupArray))
   );
   expect(makeEqEither(makeEqArray(eqString), makeEqArray(eqNumber)).eq(d)(Left(['a', 'b']))).toBe(

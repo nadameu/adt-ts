@@ -102,14 +102,19 @@ describe('Traversable', () => {
     const a: Either<string, number> = Right(42);
     const b: Either<string, number> = Left('Error');
 
-    expect(pipeValue(a).pipe(either.traverse(applicativeArray)(x => [x, x + 1]))).toEqual([
-      Right(42),
-      Right(43),
-    ]);
+    expect(
+      pipeValue(
+        a,
+        either.traverse(applicativeArray)(x => [x, x + 1])
+      )
+    ).toEqual([Right(42), Right(43)]);
 
-    expect(pipeValue(b).pipe(either.traverse(applicativeArray)((x: number) => [x, x + 1]))).toEqual(
-      [Left('Error')]
-    );
+    expect(
+      pipeValue(
+        b,
+        either.traverse(applicativeArray)((x: number) => [x, x + 1])
+      )
+    ).toEqual([Left('Error')]);
   });
 });
 
@@ -130,22 +135,32 @@ test('choose', () => {
 
 describe('Helper functions', () => {
   test('note', () => {
-    expect(pipeValue(Just(42)).pipe(either.note('Error'))).toEqual(Right(42));
-    expect(pipeValue(Nothing).pipe(either.note('Error'))).toEqual(Left('Error'));
+    expect(pipeValue(Just(42), either.note('Error'))).toEqual(Right(42));
+    expect(pipeValue(Nothing, either.note('Error'))).toEqual(Left('Error'));
   });
 
   test('noteL', () => {
-    expect(pipeValue(Just(42)).pipe(either.noteL(() => 'Error'))).toEqual(Right(42));
-    expect(pipeValue(Nothing).pipe(either.noteL(() => 'Error'))).toEqual(Left('Error'));
+    expect(
+      pipeValue(
+        Just(42),
+        either.noteL(() => 'Error')
+      )
+    ).toEqual(Right(42));
+    expect(
+      pipeValue(
+        Nothing,
+        either.noteL(() => 'Error')
+      )
+    ).toEqual(Left('Error'));
   });
 
   test('hush', () => {
-    expect(pipeValue(Right(42)).pipe(either.hush)).toEqual(Just(42));
-    expect(pipeValue(Left('Error')).pipe(either.hush)).toEqual(Nothing);
+    expect(pipeValue(Right(42), either.hush)).toEqual(Just(42));
+    expect(pipeValue(Left('Error'), either.hush)).toEqual(Nothing);
   });
 
   test('swap', () => {
-    expect(pipeValue(Right('Error')).pipe(either.swap)).toEqual(Left('Error'));
-    expect(pipeValue(Left(42)).pipe(either.swap)).toEqual(Right(42));
+    expect(pipeValue(Right('Error'), either.swap)).toEqual(Left('Error'));
+    expect(pipeValue(Left(42), either.swap)).toEqual(Right(42));
   });
 });

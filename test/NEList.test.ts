@@ -105,7 +105,8 @@ describe('Traversable', () => {
 
 test('foldMap1', () => {
   expect(
-    pipeValue(nelist.cons(1)(list.cons(2)(list.cons(3)(list.nil)))).pipe(
+    pipeValue(
+      nelist.cons(1)(list.cons(2)(list.cons(3)(list.nil))),
       nelist.foldMap1(semigroupArray)(x => [x, x + 1])
     )
   ).toEqual([1, 2, 2, 3, 3, 4]);

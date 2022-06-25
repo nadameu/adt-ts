@@ -167,10 +167,10 @@ test('partitionMap', () => {
   const a = Just(42);
   const b = Just(2);
   const c = Nothing;
-  expect(pipeValue(a).pipe(maybe.partitionMap(f))).toEqual({ left: Nothing, right: Just(14) });
-  expect(pipeValue(b).pipe(maybe.partitionMap(f))).toEqual({
+  expect(pipeValue(a, maybe.partitionMap(f))).toEqual({ left: Nothing, right: Just(14) });
+  expect(pipeValue(b, maybe.partitionMap(f))).toEqual({
     left: Just('Not great.'),
     right: Nothing,
   });
-  expect(pipeValue(c).pipe(maybe.partitionMap(f))).toEqual({ left: Nothing, right: Nothing });
+  expect(pipeValue(c, maybe.partitionMap(f))).toEqual({ left: Nothing, right: Nothing });
 });
