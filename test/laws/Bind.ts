@@ -24,7 +24,12 @@ export const makeBind1Laws =
   <f extends Generic1>(bind: Bind_1<f>) =>
   (makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>) =>
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
-    laws<f, number>(bind, makeArb(fc.double()), fc.func(makeArb(fc.double())), makeEq(eqNumber).eq);
+    laws<f, number>(
+      bind,
+      makeArb(fc.double({ noNaN: true })),
+      fc.func(makeArb(fc.double({ noNaN: true }))),
+      makeEq(eqNumber).eq
+    );
 
 export const makeBind2Laws =
   <f extends Generic2>(bind: Bind_2<f>) =>
@@ -32,7 +37,7 @@ export const makeBind2Laws =
   (makeArb: <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>) => fc.Arbitrary<Type2<f, a, b>>) =>
     laws<Generic2as1<f>, number>(
       bind,
-      makeArb(fc.string(), fc.double()),
-      fc.func(makeArb(fc.string(), fc.double())),
+      makeArb(fc.string(), fc.double({ noNaN: true })),
+      fc.func(makeArb(fc.string(), fc.double({ noNaN: true }))),
       makeEq(eqString, eqNumber).eq
     );

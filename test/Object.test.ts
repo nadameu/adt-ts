@@ -1,5 +1,5 @@
 import * as fc from 'fast-check';
-import { Generic1 } from '../src/Generic';
+import { describe, test } from 'vitest';
 import {
   altObject,
   applyObject,
@@ -8,7 +8,8 @@ import {
   makeEqObject,
   plusObject,
   traversableObject,
-} from '../src/Object';
+} from '../src';
+import { Generic1 } from '../src/Generic';
 import {
   Alt_1,
   Apply_1,

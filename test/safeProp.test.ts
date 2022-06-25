@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest';
 import { Just, M, Maybe, Nothing, pipe } from '../src';
 
 interface MightHaveA {

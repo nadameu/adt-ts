@@ -11,7 +11,9 @@ const laws = <f extends Generic1, a>(
   const { bind, pure } = monad as Monad_1<f>;
   return {
     leftIdentity: (): void =>
-      void fc.assert(fc.property(fc.double(), fc.func(fa), (x, f) => eq(bind(f)(pure(x)))(f(x)))),
+      void fc.assert(
+        fc.property(fc.double({ noNaN: true }), fc.func(fa), (x, f) => eq(bind(f)(pure(x)))(f(x)))
+      ),
     rightIdentity: (): void => void fc.assert(fc.property(fa, x => eq(bind(pure)(x))(x))),
   };
 };
@@ -20,7 +22,7 @@ export const makeMonad1Laws =
   <f extends Generic1>(monad: Monad_1<f>) =>
   (makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>) =>
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
-    laws<f, number>(monad, makeArb(fc.double()), makeEq(eqNumber).eq);
+    laws<f, number>(monad, makeArb(fc.double({ noNaN: true })), makeEq(eqNumber).eq);
 
 export const makeMonad2Laws =
   <f extends Generic2>(monad: Monad_2<f>) =>
@@ -28,6 +30,6 @@ export const makeMonad2Laws =
   (makeArb: <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>) => fc.Arbitrary<Type2<f, a, b>>) =>
     laws<Generic2as1<f>, number>(
       monad,
-      makeArb(fc.string(), fc.double()),
+      makeArb(fc.string(), fc.double({ noNaN: true })),
       makeEq(eqString, eqNumber).eq
     );

@@ -1,4 +1,5 @@
-import { semigroupLast } from '../src/Last';
+import { describe, test } from 'vitest';
+import { semigroupLast } from '../src';
 import { makeSemigroup1Laws } from './laws/Semigroup';
 
 describe('Semigroup', () => {

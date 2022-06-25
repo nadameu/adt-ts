@@ -1,31 +1,18 @@
+import { expect, test } from 'vitest';
 import {
+  AL,
   applicativeIterable,
   eitherBool,
+  eqNumber,
   Just,
   Left,
+  makeEqArrayLike,
   makeEqIterable,
   maybeBool,
   monoidString,
   Nothing,
   Right,
 } from '../src';
-import {
-  filter,
-  filterMap,
-  foldlWithIndex,
-  foldrWithIndex,
-  forEach,
-  forEachRight,
-  forEachWithIndex,
-  intercalate,
-  mapWithIndex,
-  partitionMap,
-  range,
-  wilt,
-  wither,
-} from '../src/ArrayLike/functions';
-import { makeEqArrayLike } from '../src/ArrayLike/instances';
-import { eqNumber } from '../src/Number/instances';
 import { Eq } from '../src/typeclasses';
 
 const empty: ArrayLike<number> = { length: 0 };
@@ -39,7 +26,7 @@ const expectEqNumber = makeExpectEq(eqNumber);
 
 test('forEach', () => {
   const newArray: ArrayLike<number> = { length: 0 };
-  const push = forEach<number>(x => {
+  const push = AL.forEach<number>(x => {
     (newArray as any)[(newArray.length as any)++] = x;
   });
   push(empty);
@@ -50,7 +37,7 @@ test('forEach', () => {
 
 test('forEachRight', () => {
   const newArray: ArrayLike<number> = { length: 0 };
-  const unshift = forEachRight<number>(x => {
+  const unshift = AL.forEachRight<number>(x => {
     (newArray as any)[(newArray.length as any)++] = x;
   });
   unshift(empty);
@@ -62,7 +49,7 @@ test('forEachRight', () => {
 test('forEachWithIndex', () => {
   const expectEq = makeExpectEq(makeEqArrayLike(eqNumber));
   const newArray: ArrayLike<[number, number]> = { length: 0 };
-  const push = forEachWithIndex<number>(i => x => {
+  const push = AL.forEachWithIndex<number>(i => x => {
     (newArray as any)[(newArray.length as any)++] = [i, x];
   });
   push(empty);
@@ -75,7 +62,7 @@ test('forEachWithIndex', () => {
 });
 
 test('mapWithIndex', () => {
-  const mapF = mapWithIndex<number, number>(i => x => x * x + i);
+  const mapF = AL.mapWithIndex<number, number>(i => x => x * x + i);
   const xs = mapF(empty);
   expectEqNumber(xs, empty);
   const ys = mapF(populated);
@@ -86,7 +73,7 @@ test('mapWithIndex', () => {
 });
 
 test('foldlWithIndex', () => {
-  const foldF = foldlWithIndex<number, number>(i => acc => x => acc + i * x)(8);
+  const foldF = AL.foldlWithIndex<number, number>(i => acc => x => acc + i * x)(8);
   const x = foldF(empty);
   expect(x).toBe(8);
   const y = foldF(populated);
@@ -94,7 +81,7 @@ test('foldlWithIndex', () => {
 });
 
 test('foldrWithIndex', () => {
-  const foldF = foldrWithIndex<number, number>(i => x => acc => acc + i * x)(8);
+  const foldF = AL.foldrWithIndex<number, number>(i => x => acc => acc + i * x)(8);
   const x = foldF(empty);
   expect(x).toBe(8);
   const y = foldF(populated);
@@ -102,7 +89,7 @@ test('foldrWithIndex', () => {
 });
 
 test('filter', () => {
-  const filterP = filter((x: number) => x > 2);
+  const filterP = AL.filter((x: number) => x > 2);
   const xs = filterP(empty);
   expectEqNumber(xs, empty);
   const ys = filterP(populated);
@@ -113,7 +100,7 @@ test('filter', () => {
 });
 
 test('filterMap', () => {
-  const filterMapP = filterMap(maybeBool((x: number) => x > 2));
+  const filterMapP = AL.filterMap(maybeBool((x: number) => x > 2));
   const xs = filterMapP(empty);
   expectEqNumber(xs, []);
   const ys = filterMapP(populated);
@@ -121,7 +108,7 @@ test('filterMap', () => {
 });
 
 test('partitionMap', () => {
-  const partitionMapP = partitionMap(eitherBool((x: number) => x > 2));
+  const partitionMapP = AL.partitionMap(eitherBool((x: number) => x > 2));
   const xs = partitionMapP(empty);
   expectEqNumber(xs.left, empty);
   expectEqNumber(xs.right, empty);
@@ -132,7 +119,7 @@ test('partitionMap', () => {
 
 test('wither', () => {
   const eq = makeEqIterable(makeEqArrayLike(eqNumber)).eq;
-  const witherF = wither(applicativeIterable)((x: number) =>
+  const witherF = AL.wither(applicativeIterable)((x: number) =>
     x > 1 ? [x < 3 ? Just(x) : Nothing] : [Just(x - 3)]
   );
   const x = witherF(empty);
@@ -149,7 +136,7 @@ test('wilt', () => {
     left: ArrayLike<number>;
     right: ArrayLike<number>;
   }>).eq;
-  const wiltF = wilt(applicativeIterable)((x: number) =>
+  const wiltF = AL.wilt(applicativeIterable)((x: number) =>
     x > 1 ? [x < 3 ? Right(x) : Left(x)] : [Left(x - 3)]
   );
   const x = wiltF(empty);
@@ -159,15 +146,15 @@ test('wilt', () => {
 });
 
 test('range', () => {
-  expect(() => range(1.5)(2)).toThrow();
-  expect(() => range(1)(2.5)).toThrow();
-  expect(range(1)(1)).toEqual([1]);
-  expect(range(2)(5)).toEqual([2, 3, 4, 5]);
-  expect(range(2)(-2)).toEqual([2, 1, 0, -1, -2]);
+  expect(() => AL.range(1.5)(2)).toThrow();
+  expect(() => AL.range(1)(2.5)).toThrow();
+  expect(AL.range(1)(1)).toEqual([1]);
+  expect(AL.range(2)(5)).toEqual([2, 3, 4, 5]);
+  expect(AL.range(2)(-2)).toEqual([2, 1, 0, -1, -2]);
 });
 
 test('intercalate', () => {
-  const intComma = intercalate(monoidString)(', ');
+  const intComma = AL.intercalate(monoidString)(', ');
   expect(intComma([])).toEqual('');
   expect(intComma({ '0': 'a', length: 1 })).toEqual('a');
   expect(intComma({ '0': 'a', '1': 'b', length: 2 })).toEqual('a, b');

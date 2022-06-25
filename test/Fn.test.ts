@@ -1,12 +1,12 @@
 import * as fc from 'fast-check';
-import { applicativeFn, applyFn, bindFn, functorFn, monadFn } from '../src/Fn';
+import { describe, expect, test } from 'vitest';
+import { applicativeFn, applyFn, bindFn, fn, functorFn, monadFn } from '../src';
 import { Eq } from '../src/typeclasses';
 import { makeApplicative2Laws } from './laws/Applicative';
 import { makeApply2Laws } from './laws/Apply';
 import { makeBind2Laws } from './laws/Bind';
 import { makeFunctor2Laws } from './laws/Functor';
 import { makeMonad2Laws } from './laws/Monad';
-import { fn } from '../src';
 
 let currentArb: fc.Arbitrary<unknown>;
 

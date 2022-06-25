@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { describe, expect, test } from 'vitest';
 import {
   altNEList,
   applicativeNEList,
@@ -7,15 +8,15 @@ import {
   bindNEList,
   foldableNEList,
   functorNEList,
-  nelist,
+  list,
   makeEqNEList,
   monadNEList,
+  nelist,
   NEList,
+  pipeValue,
+  semigroupArray,
   semigroupNEList,
   traversableNEList,
-  semigroupArray,
-  pipeValue,
-  list,
 } from '../src';
 import { TNEList } from '../src/NEList/internal';
 import { makeAlt1Laws } from './laws/Alt';

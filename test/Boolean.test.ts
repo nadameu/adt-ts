@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { eqBoolean } from '../src/Boolean';
+import { describe, test } from 'vitest';
+import { eqBoolean } from '../src';
 import { makeEqLaws } from './laws/Eq';
 
 describe('Eq', () => {

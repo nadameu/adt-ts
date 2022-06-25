@@ -1,12 +1,14 @@
 import * as fc from 'fast-check';
-import { applicativeIdentity, constant } from '../src';
+import { describe, expect, test } from 'vitest';
 import {
   altArray,
   alternativeArray,
   applicativeArray,
+  applicativeIdentity,
   applyArray,
   array,
   bindArray,
+  constant,
   foldableArray,
   functorArray,
   makeEqArray,
@@ -15,7 +17,7 @@ import {
   plusArray,
   semigroupArray,
   traversableArray,
-} from '../src/Array';
+} from '../src';
 import { TArray } from '../src/Array/internal';
 import { makeAlt1Laws } from './laws/Alt';
 import { makeAlternativeLaws } from './laws/Alternative';

@@ -22,10 +22,10 @@ export const makeMonoid1Laws =
   <f extends Generic1>(monoid: Monoid_1<f>) =>
   (makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>) =>
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
-    laws(monoid, makeArb(fc.double()), makeEq(eqNumber).eq);
+    laws(monoid, makeArb(fc.double({ noNaN: true })), makeEq(eqNumber).eq);
 
 export const makeMonoid2Laws =
   <f extends Generic2>(monoid: Monoid_2<f>) =>
   (makeEq: <a, b>(eqA: Eq<a>, eqB: Eq<b>) => Eq<Type2<f, a, b>>) =>
   (makeArb: <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>) => fc.Arbitrary<Type2<f, a, b>>) =>
-    laws(monoid, makeArb(fc.string(), fc.double()), makeEq(eqString, eqNumber).eq);
+    laws(monoid, makeArb(fc.string(), fc.double({ noNaN: true })), makeEq(eqString, eqNumber).eq);

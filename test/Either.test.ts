@@ -1,26 +1,26 @@
 import * as fc from 'fast-check';
+import { describe, expect, test } from 'vitest';
 import {
+  altArray,
   altEither,
+  altMaybe,
+  applicativeArray,
   applicativeEither,
   applyEither,
   bindEither,
   Either,
+  either,
   foldableEither,
   functorEither,
+  Just,
   Left,
   makeEqEither,
   monadEither,
   monadErrorEither,
   monadThrowEither,
-  either,
-  Right,
-  pipeValue,
-  Just,
   Nothing,
-  altArray,
-  altObject,
-  altMaybe,
-  applicativeArray,
+  pipeValue,
+  Right,
 } from '../src';
 import { TEither } from '../src/Either/internal';
 import { makeAlt2Laws } from './laws/Alt';

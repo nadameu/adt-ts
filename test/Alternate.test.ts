@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { describe, test } from 'vitest';
 import { alternativeMaybe, Just, makeEqMaybe, Maybe, Nothing } from '../src';
 import { makeMonoidAlternate, makeSemigroupAlternate } from '../src/Alternate';
 import { makeMonoid1Laws } from './laws/Monoid';

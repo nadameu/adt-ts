@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { describe, expect, test } from 'vitest';
 import {
   A,
   Either,
@@ -10,7 +11,6 @@ import {
   makeApplicativeValidation,
   makeApplyValidation,
   makeEqArray,
-  makeEqArrayLike,
   makeEqEither,
   pipeValue,
   Right,

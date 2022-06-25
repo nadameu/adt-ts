@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { describe, test } from 'vitest';
 import { groupAdditive, monoidAdditive, semigroupAdditive } from '../src/Additive';
 import { eqNumber } from '../src/Number';
 import { makeGroupLaws } from './laws/Group';

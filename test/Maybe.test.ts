@@ -1,36 +1,35 @@
 import * as fc from 'fast-check';
-import {
-  array,
-  maybe,
-  makeEqNEList,
-  nelist,
-  NEList,
-  semigroupNEList,
-  pipeValue,
-  Right,
-  Left,
-  Either,
-} from '../src';
+import { describe, expect, test } from 'vitest';
 import {
   alternativeMaybe,
   altMaybe,
   applicativeMaybe,
   applyMaybe,
+  array,
   bindMaybe,
+  Either,
   foldableMaybe,
   functorMaybe,
   Just,
+  Left,
   makeEqMaybe,
+  makeEqNEList,
   makeMonoidMaybe,
   makeSemigroupMaybe,
+  maybe,
   Maybe,
   monadErrorMaybe,
   monadMaybe,
   monadThrowMaybe,
+  nelist,
+  NEList,
   Nothing,
+  pipeValue,
   plusMaybe,
+  Right,
+  semigroupNEList,
   traversableMaybe,
-} from '../src/Maybe';
+} from '../src';
 import { TMaybe } from '../src/Maybe/internal';
 import { Eq } from '../src/typeclasses';
 import { makeAlt1Laws } from './laws/Alt';

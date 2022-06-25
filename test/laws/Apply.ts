@@ -26,8 +26,8 @@ export const makeApply1Laws =
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
     laws<f, number>(
       apply,
-      makeArb(fc.double()),
-      makeArb(fc.func(fc.double())),
+      makeArb(fc.double({ noNaN: true })),
+      makeArb(fc.func(fc.double({ noNaN: true }))),
       makeEq(eqNumber).eq
     );
 
@@ -37,7 +37,7 @@ export const makeApply2Laws =
   (makeArb: <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>) => fc.Arbitrary<Type2<f, a, b>>) =>
     laws<Generic2as1<f>, number>(
       apply,
-      makeArb(fc.string(), fc.double()),
-      makeArb(fc.string(), fc.func(fc.double())),
+      makeArb(fc.string(), fc.double({ noNaN: true })),
+      makeArb(fc.string(), fc.func(fc.double({ noNaN: true }))),
       makeEq(eqString, eqNumber).eq
     );

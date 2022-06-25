@@ -1,12 +1,15 @@
 import * as fc from 'fast-check';
-import { applicativeIdentity, constant } from '../src';
+import { describe, expect, test } from 'vitest';
 import {
+  AL,
   altArrayLike,
   alternativeArrayLike,
   applicativeArrayLike,
+  applicativeIdentity,
   applyArrayLike,
   arrayLike,
   bindArrayLike,
+  constant,
   foldableArrayLike,
   functorArrayLike,
   makeEqArrayLike,
@@ -15,8 +18,7 @@ import {
   plusArrayLike,
   semigroupArrayLike,
   traversableArrayLike,
-} from '../src/ArrayLike';
-import { forEachWithIndex } from '../src/ArrayLike/functions';
+} from '../src';
 import { TArrayLike } from '../src/ArrayLike/internal';
 import { makeAlt1Laws } from './laws/Alt';
 import { makeAlternativeLaws } from './laws/Alternative';
@@ -36,7 +38,7 @@ const makeArb = <a>(arb: fc.Arbitrary<a>): fc.Arbitrary<ArrayLike<a>> => {
   const base = fc.array(arb);
   return base.map(xs => {
     const ys: { [index: number]: a; length: number } = { length: xs.length };
-    forEachWithIndex<a>(i => x => {
+    AL.forEachWithIndex<a>(i => x => {
       ys[i] = x;
     })(xs);
     return ys;

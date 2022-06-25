@@ -25,7 +25,12 @@ export const makeAlt1Laws =
   <f extends Generic1>(alt: Alt_1<f>) =>
   (makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>) =>
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
-    laws(alt, makeArb(fc.double()), fc.func(fc.double()), makeEq(eqNumber).eq);
+    laws(
+      alt,
+      makeArb(fc.double({ noNaN: true })),
+      fc.func(fc.double({ noNaN: true })),
+      makeEq(eqNumber).eq
+    );
 
 export const makeAlt2Laws =
   <f extends Generic2>(alt: Alt_2<f>) =>
@@ -33,7 +38,7 @@ export const makeAlt2Laws =
   (makeArb: <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>) => fc.Arbitrary<Type2<f, a, b>>) =>
     laws<Generic2as1<f>, number>(
       alt,
-      makeArb(fc.string(), fc.double()),
-      fc.func(fc.double()),
+      makeArb(fc.string(), fc.double({ noNaN: true })),
+      fc.func(fc.double({ noNaN: true })),
       makeEq(eqString, eqNumber).eq
     );

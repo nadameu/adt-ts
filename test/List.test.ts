@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { describe, test } from 'vitest';
 import {
   alternativeList,
   altList,
@@ -13,7 +14,6 @@ import {
   makeEqList,
   monadList,
   monoidList,
-  pipeValue,
   plusList,
   semigroupList,
   traversableList,

@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest';
 import { generate } from './type-generator';
 
 test('Generate type description', () => {

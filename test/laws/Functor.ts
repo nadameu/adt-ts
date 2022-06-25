@@ -26,7 +26,12 @@ export const makeFunctor1Laws =
   <f extends Generic1>(functor: Functor_1<f>) =>
   (makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>) =>
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
-    laws<f, number>(functor, fc.double(), makeArb(fc.double()), makeEq(eqNumber).eq);
+    laws<f, number>(
+      functor,
+      fc.double({ noNaN: true }),
+      makeArb(fc.double({ noNaN: true })),
+      makeEq(eqNumber).eq
+    );
 
 export const makeFunctor2Laws =
   <f extends Generic2>(functor: Functor_2<f>) =>
@@ -34,7 +39,7 @@ export const makeFunctor2Laws =
   (makeArb: <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>) => fc.Arbitrary<Type2<f, a, b>>) =>
     laws<Generic2as1<f>, number>(
       functor,
-      fc.double(),
-      makeArb(fc.string(), fc.double()),
+      fc.double({ noNaN: true }),
+      makeArb(fc.string(), fc.double({ noNaN: true })),
       makeEq(eqString, eqNumber).eq
     );

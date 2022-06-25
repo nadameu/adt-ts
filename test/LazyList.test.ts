@@ -1,7 +1,9 @@
 import * as fc from 'fast-check';
+import { describe, expect, test } from 'vitest';
 import {
   alternativeLazyList,
   altLazyList,
+  applicativeIdentity,
   applicativeLazyList,
   applyLazyList,
   bindLazyList,
@@ -9,6 +11,7 @@ import {
   constant,
   foldableLazyList,
   functorLazyList,
+  identity,
   LazyList,
   lazyList,
   makeEqLazyList,
@@ -18,8 +21,6 @@ import {
   plusLazyList,
   semigroupLazyList,
   traversableLazyList,
-  identity,
-  applicativeIdentity,
 } from '../src';
 import { TLazyList } from '../src/LazyList/internal';
 import { makeAlt1Laws } from './laws/Alt';

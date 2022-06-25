@@ -24,4 +24,4 @@ export const makePlusLaws =
   <f extends Generic1>(plus: Plus_1<f>) =>
   (makeEq: <a>(_: Eq<a>) => Eq<Type1<f, a>>) =>
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
-    laws<f, number>(plus, makeArb(fc.double()), makeEq(eqNumber).eq);
+    laws<f, number>(plus, makeArb(fc.double({ noNaN: true })), makeEq(eqNumber).eq);

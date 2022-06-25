@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
-import { eqBoolean } from '../src/Boolean';
-import { monoidConj, semigroupConj } from '../src/Conj';
+import { describe, test } from 'vitest';
+import { eqBoolean, monoidConj, semigroupConj } from '../src';
 import { makeMonoidLaws } from './laws/Monoid';
 import { makeSemigroupLaws } from './laws/Semigroup';
 

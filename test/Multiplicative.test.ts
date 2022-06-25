@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
-import { monoidMultiplicative, semigroupMultiplicative } from '../src/Multiplicative';
-import { eqNumber } from '../src/Number';
+import { describe, test } from 'vitest';
+import { eqNumber, monoidMultiplicative, semigroupMultiplicative } from '../src';
 import { makeMonoidLaws } from './laws/Monoid';
 import { makeSemigroupLaws } from './laws/Semigroup';
 

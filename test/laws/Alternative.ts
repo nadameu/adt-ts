@@ -24,7 +24,7 @@ export const makeAlternativeLaws =
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
     laws<f, number>(
       alternative,
-      makeArb(fc.func(fc.double())),
-      makeArb(fc.double()),
+      makeArb(fc.func(fc.double({ noNaN: true }))),
+      makeArb(fc.double({ noNaN: true })),
       makeEq(eqNumber).eq
     );

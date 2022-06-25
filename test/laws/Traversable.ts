@@ -80,4 +80,9 @@ export const makeTraversableLaws =
   <t extends Generic1>(traversable: Traversable_1<t>) =>
   (makeEq: <a>(_: Eq<a>) => Eq<Type1<t, a>>) =>
   (makeArb: <a>(_: fc.Arbitrary<a>) => fc.Arbitrary<Type1<t, a>>) =>
-    laws<t, number>(traversable, makeArb(fc.double()), fc.double(), makeEq(eqNumber).eq);
+    laws<t, number>(
+      traversable,
+      makeArb(fc.double({ noNaN: true })),
+      fc.double({ noNaN: true }),
+      makeEq(eqNumber).eq
+    );

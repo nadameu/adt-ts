@@ -1,6 +1,13 @@
 import * as fc from 'fast-check';
-import { thrush } from '../src/helpers';
+import { test } from 'vitest';
+import { thrush } from '../src';
 
 test('thrush', () => {
-  fc.assert(fc.property(fc.func(fc.double()), fc.double(), (f, x) => thrush(x)(f) === f(x)));
+  fc.assert(
+    fc.property(
+      fc.func(fc.double({ noNaN: true })),
+      fc.double({ noNaN: true }),
+      (f, x) => thrush(x)(f) === f(x)
+    )
+  );
 });

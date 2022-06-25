@@ -26,9 +26,9 @@ export const makeMonadError0Laws =
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
     laws<Generic1as2<f>, e, number>(
       monadError as unknown as MonadError_2<Generic1as2<f>>,
-      makeArb(fc.double()),
+      makeArb(fc.double({ noNaN: true })),
       arbError,
-      fc.double(),
+      fc.double({ noNaN: true }),
       makeEq(eqNumber).eq
     );
 
@@ -39,9 +39,9 @@ export const makeMonadError1Laws =
   (makeArb: <a>(arb: fc.Arbitrary<a>) => fc.Arbitrary<Type1<f, a>>) =>
     laws<Generic1as2<f>, e, number>(
       monadError as unknown as MonadError_2<Generic1as2<f>>,
-      makeArb(fc.double()),
+      makeArb(fc.double({ noNaN: true })),
       arbError,
-      fc.double(),
+      fc.double({ noNaN: true }),
       makeEq(eqNumber).eq
     );
 
@@ -51,8 +51,8 @@ export const makeMonadError2Laws =
   (makeArb: <a, b>(arbA: fc.Arbitrary<a>, arbB: fc.Arbitrary<b>) => fc.Arbitrary<Type2<f, a, b>>) =>
     laws<f, string, number>(
       monadError,
-      makeArb(fc.string(), fc.double()),
+      makeArb(fc.string(), fc.double({ noNaN: true })),
       fc.string(),
-      fc.double(),
+      fc.double({ noNaN: true }),
       makeEq(eqString, eqNumber).eq
     );

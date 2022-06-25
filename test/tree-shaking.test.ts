@@ -1,5 +1,6 @@
-import { rollup } from 'rollup';
 import * as path from 'path';
+import { rollup } from 'rollup';
+import { expect, test } from 'vitest';
 
 test('Simple', async () => {
   const bundle = await rollup({
@@ -20,7 +21,7 @@ test('Simple', async () => {
     const Nothing = { isJust: false, isNothing: true };
     const Just = (value) => ({ isJust: true, isNothing: false, value });
 
-    const liftM1 = ({ bind, pure, }) => (f) => bind(compose(pure)(f));
+    const liftM1 = ({ bind, pure }) => (f) => bind(compose(pure)(f));
     const ap = ({ bind, pure, }) => flip((fa) => bind(f => liftM1({ bind, pure })(f)(fa)));
 
     const maybe = (b) => (f) => (fa) => fa.isNothing ? b : f(fa.value);

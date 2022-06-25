@@ -26,7 +26,7 @@ export const makeMonadThrow1Laws =
     laws<Generic1as2<f>, e, number>(
       monadThrow as unknown as MonadThrow_2<Generic1as2<f>>,
       arbError,
-      makeArb(fc.double()),
+      makeArb(fc.double({ noNaN: true })),
       makeEq(eqNumber).eq
     );
 
@@ -37,6 +37,6 @@ export const makeMonadThrow2Laws =
     laws<f, string, number>(
       monadThrow,
       fc.string(),
-      makeArb(fc.string(), fc.double()),
+      makeArb(fc.string(), fc.double({ noNaN: true })),
       makeEq(eqString, eqNumber).eq
     );
