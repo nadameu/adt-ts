@@ -1,3 +1,4 @@
+import { Done, Loop, Step, tailRec } from '../helpers';
 import {
   Alt_2,
   Applicative_2,
@@ -11,7 +12,8 @@ import {
   Monad_2,
   Traversable_2,
 } from '../typeclasses';
-import { Either } from './definitions';
+import { makeMonadRec } from '../typeclasses/MonadRec';
+import { Either, Left, Right } from './definitions';
 import {
   alt,
   apply,
@@ -60,3 +62,18 @@ export const traversableEither = {
   sequence,
   traverse,
 } as Traversable_2<TEither>;
+export const monadRecEither = makeMonadRec<TEither>({
+  apply,
+  bind,
+  map,
+  pure,
+  tailRecM: <a, b, c>(f: (_: b) => Either<a, Step<b, c>>) =>
+    /* #__PURE__ */
+    tailRec<b, Either<a, c>>(x => {
+      const fy = f(x);
+      if (fy.isLeft) return Done(Left(fy.leftValue));
+      const r = fy.rightValue;
+      if (r.done) return Done(Right(r.value));
+      return Loop(r.value);
+    }),
+});

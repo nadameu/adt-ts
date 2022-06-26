@@ -6,4 +6,5 @@ export { method } from './helpers/method';
 export { pipe } from './helpers/pipe';
 export { pipeValue } from './helpers/pipeValue';
 export { prop } from './helpers/prop';
+export { Done, Loop, Step, tailRec } from './helpers/tailRec';
 export { thrush } from './helpers/thrush';

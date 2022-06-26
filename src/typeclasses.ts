@@ -94,6 +94,7 @@ export {
   MonadError_1,
   MonadError_2,
 } from './typeclasses/MonadError';
+export { MonadRec_1, MonadRec_2, TailRecMOnly_1, TailRecMOnly_2 } from './typeclasses/MonadRec';
 export {
   MonadThrow_1,
   MonadThrow_2,

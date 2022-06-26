@@ -1,5 +1,5 @@
 import * as G from '../Generic';
-import { compose } from '../helpers';
+import { compose, identity } from '../helpers';
 import { Functor_1, Functor_2, Functor_O } from './Functor';
 
 export interface ApplyOnly_1<f extends G.Generic1> extends G.Identified1<f> {
@@ -16,6 +16,12 @@ export interface ApplyOnly_O extends G.IdentifiedO {
   apply: HelpersO['apply'];
 }
 export interface Apply_O extends Functor_O, ApplyOnly_O {}
+
+export const makeApply: {
+  <f extends G.Generic1>({ apply, map }: G.Anon<Apply_1<f>>): Apply_1<f>;
+  <f extends G.Generic2>({ apply, map }: G.Anon<Apply_2<f>>): Apply_2<f>;
+  ({ apply, map }: G.Anon<Apply_O>): Apply_O;
+} = identity;
 
 interface Helpers1<f extends G.Generic1> {
   apply: <a, b>(ff: G.Type1<f, (_: a) => b>) => (fa: G.Type1<f, a>) => G.Type1<f, b>;

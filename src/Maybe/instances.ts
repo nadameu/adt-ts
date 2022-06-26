@@ -1,4 +1,6 @@
 import { Anon, Generic1 } from '../Generic';
+import { Done, Step, tailRec } from '../helpers';
+import { Loop } from '../helpers/tailRec';
 import {
   Alternative_1,
   Alt_1,
@@ -21,7 +23,8 @@ import {
   Traversable_1,
   Witherable_1,
 } from '../typeclasses';
-import { Just, Maybe } from './definitions';
+import { makeMonadRec } from '../typeclasses/MonadRec';
+import { Just, Maybe, Nothing } from './definitions';
 import {
   alt,
   apply,
@@ -126,3 +129,17 @@ export const makeMonoidMaybe: {
     append: makeAppend(semigroup as Semigroup_0<m>),
     mempty: empty,
   } as Monoid_0<Maybe<m>> & Monoid_1<TMaybe>);
+export const monadRecMaybe = makeMonadRec<TMaybe>({
+  apply,
+  bind,
+  map,
+  pure,
+  tailRecM: <a, b>(f: (_: a) => Maybe<Step<a, b>>) =>
+    tailRec<a, Maybe<b>>(x => {
+      const maybe = f(x);
+      if (maybe.isNothing) return Done(Nothing);
+      const result = maybe.value;
+      if (result.done) return Done(Just(result.value));
+      return Loop(result.value);
+    }),
+});
