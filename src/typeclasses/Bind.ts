@@ -1,5 +1,5 @@
 import * as G from '../Generic';
-import { flip } from '../helpers';
+import { flip, identity } from '../helpers';
 import { Apply_1, Apply_2 } from './Apply';
 import { Functor_1, Functor_2 } from './Functor';
 
@@ -14,6 +14,11 @@ export interface BindOnly_2<f extends G.Generic2> extends G.Identified2<f> {
 }
 export interface Bind_2<f extends G.Generic2> extends Apply_2<f>, BindOnly_2<f> {}
 export interface BindMapOnly_2<f extends G.Generic2> extends Functor_2<f>, BindOnly_2<f> {}
+
+export const makeBind: {
+  <f extends G.Generic1>({ apply, bind, map }: G.Anon<Bind_1<f>>): Bind_1<f>;
+  <f extends G.Generic2>({ apply, bind, map }: G.Anon<Bind_2<f>>): Bind_2<f>;
+} = identity;
 
 interface Helpers1<f extends G.Generic1> {
   bind: <a, b>(f: (_: a) => G.Type1<f, b>) => (fa: G.Type1<f, a>) => G.Type1<f, b>;

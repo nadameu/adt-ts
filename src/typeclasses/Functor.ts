@@ -1,5 +1,5 @@
 import * as G from '../Generic';
-import { constant, flip, thrush } from '../helpers';
+import { constant, flip, identity, thrush } from '../helpers';
 
 export interface Functor_1<f extends G.Generic1> extends G.Identified1<f> {
   map: Helpers1<f>['map'];
@@ -12,6 +12,12 @@ export interface Functor_2<f extends G.Generic2> extends G.Identified2<f> {
 export interface Functor_O extends G.IdentifiedO {
   map: HelpersO['map'];
 }
+
+export const makeFunctor: {
+  <f extends G.Generic1>({ map }: G.Anon<Functor_1<f>>): Functor_1<f>;
+  <f extends G.Generic2>({ map }: G.Anon<Functor_2<f>>): Functor_2<f>;
+  ({ map }: G.Anon<Functor_O>): Functor_O;
+} = identity;
 
 interface Helpers1<f extends G.Generic1> {
   map: <a, b>(f: (_: a) => b) => (fa: G.Type1<f, a>) => G.Type1<f, b>;

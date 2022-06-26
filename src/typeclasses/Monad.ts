@@ -1,5 +1,5 @@
 import * as G from '../Generic';
-import { compose, flip } from '../helpers';
+import { compose, flip, identity } from '../helpers';
 import { Applicative_1, Applicative_2, PureOnly_1, PureOnly_2 } from './Applicative';
 import { BindOnly_1, BindOnly_2, Bind_1, Bind_2 } from './Bind';
 
@@ -8,6 +8,11 @@ export interface BindPureOnly_1<f extends G.Generic1> extends BindOnly_1<f>, Pur
 
 export interface Monad_2<f extends G.Generic2> extends Applicative_2<f>, Bind_2<f> {}
 export interface BindPureOnly_2<f extends G.Generic2> extends BindOnly_2<f>, PureOnly_2<f> {}
+
+export const makeMonad: {
+  <f extends G.Generic1>({ apply, bind, map, pure }: G.Anon<Monad_1<f>>): Monad_1<f>;
+  <f extends G.Generic2>({ apply, bind, map, pure }: G.Anon<Monad_2<f>>): Monad_2<f>;
+} = identity;
 
 interface Helpers1<f extends G.Generic1> {
   liftM1: Monad_1<f>['map'];

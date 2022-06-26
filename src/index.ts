@@ -12,6 +12,7 @@ export * from './Either';
 export * from './Endo';
 export * from './First';
 export * from './Fn';
+export * from './Free';
 export * from './helpers';
 export * from './Identity';
 export * from './Iterable';
