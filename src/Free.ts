@@ -1,2 +1,2 @@
 export { Free, Join, Pure } from './Free/definitions';
-export { makeBindFree, makeFunctorFree, makeMonadFree } from './Free/instances';
+export { makeBindFree, makeEqFree, makeFunctorFree, makeMonadFree } from './Free/instances';
