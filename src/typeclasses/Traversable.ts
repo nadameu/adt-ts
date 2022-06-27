@@ -53,6 +53,12 @@ export interface SequenceOnly_O extends G.IdentifiedO {
 }
 export interface Traversable_O extends Functor_O, Foldable_O, TraverseOnly_O, SequenceOnly_O {}
 
+export const makeTraversable: {
+  <f extends G.Generic1>({ foldMap, foldl, foldr }: G.Anon<Traversable_1<f>>): Traversable_1<f>;
+  <f extends G.Generic2>({ foldMap, foldl, foldr }: G.Anon<Traversable_2<f>>): Traversable_2<f>;
+  ({ foldMap, foldl, foldr }: G.Anon<Traversable_O>): Traversable_O;
+} = identity;
+
 interface Helpers1<t extends G.Generic1> {
   foldMap: Traversable_1<t>['foldMap'];
   map: Traversable_1<t>['map'];

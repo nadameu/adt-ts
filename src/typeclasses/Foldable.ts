@@ -56,6 +56,12 @@ export interface FoldMapOnly_O extends G.IdentifiedO {
 }
 export interface Foldable_O extends G.IdentifiedO, FoldLOnly_O, FoldROnly_O, FoldMapOnly_O {}
 
+export const makeFoldable: {
+  <f extends G.Generic1>({ foldMap, foldl, foldr }: G.Anon<Foldable_1<f>>): Foldable_1<f>;
+  <f extends G.Generic2>({ foldMap, foldl, foldr }: G.Anon<Foldable_2<f>>): Foldable_2<f>;
+  ({ foldMap, foldl, foldr }: G.Anon<Foldable_O>): Foldable_O;
+} = identity;
+
 interface Helpers1<f extends G.Generic1> {
   foldl: <a, b>(f: (_: b) => (_: a) => b) => (b: b) => (fa: G.Type1<f, a>) => b;
   foldr: <a, b>(f: (_: a) => (_: b) => b) => (b: b) => (fa: G.Type1<f, a>) => b;
