@@ -1,5 +1,6 @@
 import { Generic1, Type1 } from '../Generic';
-import { Applicative_1, Functor_1 } from '../typeclasses';
+import { Done, Loop } from '../helpers';
+import { Applicative_1, Functor_1, MonadRec_1 } from '../typeclasses';
 import { Free, Join, Pure } from './definitions';
 
 export const makeLiftF =
@@ -13,3 +14,13 @@ export const makeSuspendF =
   <f extends Generic1>(A: Applicative_1<f>) =>
   <a>(fa: Free<f, a>): Free<f, a> =>
     wrap(A.pure(fa));
+
+export const foldFree =
+  <m extends Generic1>(M: MonadRec_1<m>) =>
+  <f extends Generic1>(
+    f: <x>(_: Type1<f, x>) => Type1<m, x>
+  ): (<a>(fa: Free<f, a>) => Type1<m, a>) =>
+    M.tailRecM(fa => {
+      if (fa.isPure) return M.map(Done)(M.pure(fa.value));
+      return M.map(Loop)(f(fa.inner));
+    });
