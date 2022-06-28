@@ -1,31 +1,24 @@
-import { lift2 } from '../derivations';
-import { Anon, Generic1, Type1 } from '../Generic';
-import { pipeValue, thrush } from '../helpers';
-import { Cons, Nil } from '../List/definitions';
+import { Generic1, Type1 } from '../Generic';
+import { flip } from '../helpers';
+import { Cons, List, Nil } from '../List/definitions';
 import * as L from '../List/functions';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import {
   ap,
-  Applicative_1,
-  Apply_1,
   BindPureOnly_1,
   Bind_1,
-  Functor_1,
-  GenericSnoc_1,
-  Monoid_1,
-  sequenceDefault,
-  Traversable_1,
-  traverseDefaultSnoc,
-  TraverseOnly_1,
-} from '../typeclasses';
-import { makeApply } from '../typeclasses/Apply';
-import {
   Foldable_1,
   FoldLOnly_1,
   foldMapDefaultL,
   FoldMapOnly_1,
   foldrDefault,
-} from '../typeclasses/Foldable';
+  Functor_1,
+  GenericSnoc_1,
+  Monoid_1,
+  sequenceDefault,
+  traverseDefaultSnoc,
+  TraverseOnly_1,
+} from '../typeclasses';
 import { CatQueue } from './definitions';
 import { monoidCatQueue } from './instances';
 import { TCatQueue } from './internal';
@@ -62,17 +55,19 @@ export const foldl: Foldable_1<TCatQueue>['foldl'] =
   <a, b>(f: (_: b) => (_: a) => b) =>
   (b: b) =>
   (fa: CatQueue<a>): b => {
-    let acc = b,
-      r = uncons(fa);
-    while (true) {
-      if (r.isNothing) return acc;
-      const [hd, tl] = r.value;
-      acc = f(acc)(hd);
-      r = uncons(tl);
-    }
+    const acc = L.foldl(f)(b)(fa.left);
+    return L.foldr(flip(f))(acc)(fa.right);
   };
 export const mempty = empty;
-export const append = foldl(snoc);
+const _mergeCenters: <a>(dest: List<a>) => (src: List<a>) => List<a> = L.foldl(flip(L.cons));
+export const append =
+  <a>(a: CatQueue<a>) =>
+  (b: CatQueue<a>): CatQueue<a> => {
+    if (a.left.isNil) return CatQueue(_mergeCenters(b.left)(a.right))(b.right);
+    if (a.right.isNil && b.left.isNil) return CatQueue(a.left)(b.right);
+    return CatQueue(a.left)(_mergeCenters(_mergeCenters(a.right)(b.left))(L.reverse(b.right)));
+  };
+
 export const foldMap = foldMapDefaultL({ foldl } as FoldLOnly_1<TCatQueue>);
 export const foldr = foldrDefault({ foldMap } as FoldMapOnly_1<TCatQueue>);
 export const map: Functor_1<TCatQueue>['map'] = f => xs =>
