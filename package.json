@@ -1,6 +1,6 @@
 {
   "name": "adt-ts",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "TypeScript library inspired by PureScript",
   "keywords": [
     "adt",
