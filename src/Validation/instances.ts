@@ -42,7 +42,7 @@ export const makeApplyValidation: {
   ({
     ...functorEither,
     apply: makeApplyFunctionValidation({ append } as Semigroup_0<s>),
-  } as Apply_1<TEither1<unknown>> & Apply_2<TEitherF<Generic1>>);
+  }) as Apply_1<TEither1<unknown>> & Apply_2<TEitherF<Generic1>>;
 
 export const makeApplicativeValidation: {
   <f extends Generic1>(semigroup: Semigroup_1<f>): Applicative_2<TEitherF<f>>;
@@ -51,7 +51,7 @@ export const makeApplicativeValidation: {
   ({
     ...applicativeEither,
     apply: makeApplyFunctionValidation({ append } as Semigroup_0<s>),
-  } as Applicative_1<TEither1<unknown>> & Applicative_2<TEitherF<Generic1>>);
+  }) as Applicative_1<TEither1<unknown>> & Applicative_2<TEitherF<Generic1>>;
 
 export const makeAltValidation: {
   <f extends Generic1>(semigroup: Semigroup_1<f>): Alt_2<TEitherF<f>>;
@@ -63,4 +63,4 @@ export const makeAltValidation: {
       <a>(fx: Either<s, a>) =>
       (fy: Either<s, a>) =>
         fx.isLeft ? (fy.isLeft ? Left(append(fx.leftValue)(fy.leftValue)) : fy) : fx,
-  } as Alt_1<TEither1<unknown>> & Alt_2<TEitherF<Generic1>>);
+  }) as Alt_1<TEither1<unknown>> & Alt_2<TEitherF<Generic1>>;

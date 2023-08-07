@@ -36,7 +36,7 @@ export const makeEqEither = <a, b>(eqA: Eq<a>, eqB: Eq<b>) =>
       fx.isLeft
         ? fy.isLeft && eqA.eq(fx.leftValue)(fy.leftValue)
         : fy.isRight && eqB.eq(fx.rightValue)(fy.rightValue),
-  } as Eq<Either<a, b>>);
+  }) as Eq<Either<a, b>>;
 
 export const functorEither = { map } as Functor_2<TEither>;
 export const applyEither = { apply, map } as Apply_2<TEither>;

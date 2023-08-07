@@ -45,7 +45,7 @@ export const makeEqList = <a>(eq: Eq<a>) =>
       }
       return ix.isNil === iy.isNil;
     },
-  } as Eq<List<a>>);
+  }) as Eq<List<a>>;
 
 export const functorList = { map } as Functor_1<TList>;
 export const applyList = { apply, map } as Apply_1<TList>;

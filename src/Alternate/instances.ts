@@ -18,7 +18,7 @@ export const makeSemigroupAlternate: {
 } = <f extends Generic1>({ alt }: Anon<Alt_1<f>, 'alt'>) =>
   ({
     append: alt,
-  } as Semigroup_1<Generic1> & Semigroup_2<Generic2>);
+  }) as Semigroup_1<Generic1> & Semigroup_2<Generic2>;
 
 export const makeMonoidAlternate: {
   <f extends Generic1>({ alt, empty }: AltOnly_1<f> & EmptyOnly_1<f>): Monoid_1<f>;
@@ -27,4 +27,4 @@ export const makeMonoidAlternate: {
   ({
     append: alt,
     mempty: empty,
-  } as Monoid_1<Generic1> & Monoid_2<Generic2>);
+  }) as Monoid_1<Generic1> & Monoid_2<Generic2>;

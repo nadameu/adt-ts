@@ -26,7 +26,7 @@ export const makeEqFree = <f extends Generic1, a>(
 
 export const makeFunctorFree = <f extends Generic1>(F: Functor_1<f>) => {
   const functorFree: Functor_1<TFree<f>> = makeFunctor<TFree<f>>({
-    map: f => fx => fx.isPure ? Pure(f(fx.value)) : Join(F.map(functorFree.map(f))(fx.inner)),
+    map: f => fx => (fx.isPure ? Pure(f(fx.value)) : Join(F.map(functorFree.map(f))(fx.inner))),
   });
   return functorFree;
 };
@@ -34,7 +34,7 @@ export const makeFunctorFree = <f extends Generic1>(F: Functor_1<f>) => {
 export const makeBindFree = <f extends Generic1>(F: Functor_1<f>) => {
   const bindMapFree: BindMapOnly_1<TFree<f>> = {
     ...makeFunctorFree(F),
-    bind: f => fx => fx.isPure ? f(fx.value) : Join(F.map(bindMapFree.bind(f))(fx.inner)),
+    bind: f => fx => (fx.isPure ? f(fx.value) : Join(F.map(bindMapFree.bind(f))(fx.inner))),
   };
   return makeBind<TFree<f>>({ ...bindMapFree, apply: applyDefault(bindMapFree) });
 };

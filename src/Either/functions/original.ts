@@ -34,7 +34,7 @@ export const map = liftM1({ bind, pure } as Monad_2<TEither>);
 
 export const apply = ap({ bind, pure } as Monad_2<TEither>);
 
-export const alt: Alt_2<TEither>['alt'] = fx => fy => fx.isLeft ? fy : fx;
+export const alt: Alt_2<TEither>['alt'] = fx => fy => (fx.isLeft ? fy : fx);
 
 export const throwError: MonadThrow_2<TEither>['throwError'] = Left;
 

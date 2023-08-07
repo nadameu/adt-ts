@@ -43,7 +43,7 @@ export const makeEqLazyList = <a>(eq: Eq<a>) =>
       }
       return resultX.isCons === resultY.isCons;
     },
-  } as Eq<LazyList<a>>);
+  }) as Eq<LazyList<a>>;
 
 export const functorLazyList = { map } as Functor_1<TLazyList>;
 export const applyLazyList = { apply, map } as Apply_1<TLazyList>;

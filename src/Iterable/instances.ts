@@ -53,7 +53,7 @@ export const makeEqIterable = <a>(eq: Eq<a>) =>
         if (y.done || !eq.eq(x.value)(y.value)) return false;
       }
     },
-  } as Eq<Iterable<a>>);
+  }) as Eq<Iterable<a>>;
 
 export const functorIterable = { map } as Functor_1<TIterable>;
 export const applyIterable = { apply, map } as Apply_1<TIterable>;

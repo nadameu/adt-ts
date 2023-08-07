@@ -21,7 +21,7 @@ export const makeSemigroupDual: {
 } = <a>({ append }: Anon<Semigroup_0<a>>) =>
   ({
     append: makeAppend({ append }),
-  } as Semigroup_0<a> & Semigroup_1<Generic1> & Semigroup_2<Generic2>);
+  }) as Semigroup_0<a> & Semigroup_1<Generic1> & Semigroup_2<Generic2>;
 
 export const makeMonoidDual: {
   <f extends Generic1>(semigroup: Monoid_1<f>): Monoid_1<f>;
@@ -31,4 +31,4 @@ export const makeMonoidDual: {
   ({
     append: makeAppend({ append }),
     mempty,
-  } as Monoid_0<a> & Monoid_1<Generic1> & Monoid_2<Generic2>);
+  }) as Monoid_0<a> & Monoid_1<Generic1> & Monoid_2<Generic2>;

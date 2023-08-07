@@ -13,7 +13,7 @@ import {
   traverse,
 } from './functions/original';
 
-export const makeEqObject = <T>(eq: { [k in keyof T]: Eq<T[k]> }) =>
+export const makeEqObject = <T extends {}>(eq: { [k in keyof T]: Eq<T[k]> }) =>
   ({
     eq: xs => ys => {
       const xKeys = Object.keys(xs).sort();
@@ -21,7 +21,7 @@ export const makeEqObject = <T>(eq: { [k in keyof T]: Eq<T[k]> }) =>
       if (!makeEqArray(eqString).eq(xKeys)(yKeys)) return false;
       return (xKeys as (keyof T)[]).every(key => eq[key].eq(xs[key])(ys[key]));
     },
-  } as Eq<T>);
+  }) as Eq<T>;
 
 export const functorObject = { map } as Functor_O;
 export const applyObject = { apply, map } as Apply_O;

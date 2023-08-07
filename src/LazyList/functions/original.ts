@@ -74,12 +74,12 @@ export const foldrWithIndex =
           f(i)(a)(b)
     )(b)(mapWithIndex<a, [number, a]>(i => a => [i, a])(xs));
 export const foldMapWithIndex: {
-  <m extends Generic1>(monoid: Monoid_1<m>): <a, b>(
-    f: (_: number) => (_: a) => Type1<m, b>
-  ) => (fa: LazyList<a>) => Type1<m, b>;
-  <m extends Generic2>(monoid: Monoid_2<m>): <a, b, c>(
-    f: (_: number) => (_: b) => Type2<m, a, c>
-  ) => (fa: LazyList<b>) => Type2<m, a, c>;
+  <m extends Generic1>(
+    monoid: Monoid_1<m>
+  ): <a, b>(f: (_: number) => (_: a) => Type1<m, b>) => (fa: LazyList<a>) => Type1<m, b>;
+  <m extends Generic2>(
+    monoid: Monoid_2<m>
+  ): <a, b, c>(f: (_: number) => (_: b) => Type2<m, a, c>) => (fa: LazyList<b>) => Type2<m, a, c>;
   <m>(monoid: Monoid_0<m>): <a>(f: (_: number) => (_: a) => m) => (fa: LazyList<a>) => m;
 } =
   <m>({ append, mempty }: Anon<Monoid_0<m>>) =>

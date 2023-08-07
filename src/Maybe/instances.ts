@@ -52,8 +52,8 @@ import { TMaybe, TMaybeF } from './internal';
 
 export const makeEqMaybe = <a>(eq: Eq<a>) =>
   ({
-    eq: fx => fy => fx.isNothing ? fy.isNothing : fy.isJust && eq.eq(fx.value)(fy.value),
-  } as Eq<Maybe<a>>);
+    eq: fx => fy => (fx.isNothing ? fy.isNothing : fy.isJust && eq.eq(fx.value)(fy.value)),
+  }) as Eq<Maybe<a>>;
 
 export const functorMaybe = { map } as Functor_1<TMaybe>;
 export const applyMaybe = { apply, map } as Apply_1<TMaybe>;
@@ -119,7 +119,7 @@ export const makeSemigroupMaybe: {
 } = <m>(semigroup: Anon<Semigroup_0<m>>) =>
   ({
     append: makeAppend(semigroup as Semigroup_0<m>),
-  } as Semigroup_0<Maybe<m>> & Semigroup_1<TMaybe>);
+  }) as Semigroup_0<Maybe<m>> & Semigroup_1<TMaybe>;
 
 export const makeMonoidMaybe: {
   <m extends Generic1>(semigroup: Semigroup_1<m>): Monoid_1<TMaybeF<m>>;
@@ -128,7 +128,7 @@ export const makeMonoidMaybe: {
   ({
     append: makeAppend(semigroup as Semigroup_0<m>),
     mempty: empty,
-  } as Monoid_0<Maybe<m>> & Monoid_1<TMaybe>);
+  }) as Monoid_0<Maybe<m>> & Monoid_1<TMaybe>;
 export const monadRecMaybe = makeMonadRec<TMaybe>({
   apply,
   bind,

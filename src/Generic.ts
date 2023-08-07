@@ -79,7 +79,7 @@ export type Anon<
   > = Exclude<
     keyof obj,
     NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type | GenericOType
-  >
+  >,
 > = Pick<obj, keys>;
 
 export type Type1<f extends Generic1, a> = f extends never ? never : (f & { a: a })['type'];

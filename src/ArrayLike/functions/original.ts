@@ -31,7 +31,7 @@ const borrow =
     args extends unknown[] = Array<any>[key] extends (...args: infer args) => unknown
       ? args
       : unknown[],
-    b = Array<any>[key] extends (_: any) => infer b ? b : unknown
+    b = Array<any>[key] extends (_: any) => infer b ? b : unknown,
   >(
     key: key,
     ...args: args

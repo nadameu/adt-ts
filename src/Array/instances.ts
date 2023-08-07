@@ -51,7 +51,7 @@ export const makeEqArray = <a>(eq: Eq<a>) =>
       }
       return true;
     },
-  } as Eq<a[]>);
+  }) as Eq<a[]>;
 
 export const functorArray = { map } as Functor_1<TArray>;
 export const applyArray = { apply, map } as Apply_1<TArray>;

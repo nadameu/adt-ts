@@ -27,7 +27,7 @@ export const makeSemigroupoidStar: {
 } = <f extends Generic1>(bind: Anon<Bind_1<f>>) =>
   ({
     compose: makeCompose(bind as Bind_1<f>),
-  } as Semigroupoid_2<GenericFn2> & Semigroupoid_3<GenericFn3>);
+  }) as Semigroupoid_2<GenericFn2> & Semigroupoid_3<GenericFn3>;
 
 export const makeCategoryStar: {
   <f extends Generic1>(monad: Monad_1<f>): Category_2<TStar1<f>>;
@@ -36,4 +36,4 @@ export const makeCategoryStar: {
   ({
     compose: makeCompose(monad as Monad_1<f>),
     identity: monad.pure,
-  } as Category_2<GenericFn2> & Category_3<GenericFn3>);
+  }) as Category_2<GenericFn2> & Category_3<GenericFn3>;

@@ -78,7 +78,7 @@ interface HelpersO {
   sequence: HelperOApplicative['sequence'];
 }
 type PartialHelper<
-  keys extends keyof Traversable_1<never> & keyof Traversable_2<never> & keyof Traversable_O
+  keys extends keyof Traversable_1<never> & keyof Traversable_2<never> & keyof Traversable_O,
 > = {
   [k in keyof Helpers1<never>]: {
     <t extends G.Generic1>(_: Pick<Traversable_1<t>, G.Generic1Type | keys>): Helpers1<t>[k];

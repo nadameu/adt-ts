@@ -51,7 +51,7 @@ export const makeEqArrayLike = <a>(eq: Eq<a>) =>
       }
       return true;
     },
-  } as Eq<ArrayLike<a>>);
+  }) as Eq<ArrayLike<a>>;
 
 export const functorArrayLike = { map } as Functor_1<TArrayLike>;
 export const applyArrayLike = { apply, map } as Apply_1<TArrayLike>;

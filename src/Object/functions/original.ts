@@ -18,7 +18,7 @@ import {
 } from '../../typeclasses';
 import { lift2 } from '../../typeclasses/Apply';
 
-export const entries = <T>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][];
+export const entries = <T extends {}>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][];
 
 export const fromEntries = <K extends PropertyKey, V>(entries: Iterable<[K, V]>): { [k in K]: V } =>
   iterable.foldl((acc: Record<K, V>) => ([k, v]: [K, V]) => {

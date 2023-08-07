@@ -60,7 +60,7 @@ export const fromMaybe = <a>(a: a): ((fa: Maybe<a>) => a) => maybe(a)(x => x);
 
 export const fromMaybeL = <a>(thunk: () => a): ((fa: Maybe<a>) => a) => maybeL(thunk)(x => x);
 
-export const alt: Alt_1<TMaybe>['alt'] = fx => fy => fx.isNothing ? fy : fx;
+export const alt: Alt_1<TMaybe>['alt'] = fx => fy => (fx.isNothing ? fy : fx);
 
 export const empty: Plus_1<TMaybe>['empty'] = () => Nothing;
 
@@ -140,7 +140,7 @@ type CallableKeys<T> = {
 export const safeMethod = <
   obj,
   key extends CallableKeys<obj>,
-  args extends obj[key] extends (...args: infer x) => unknown ? x : unknown[]
+  args extends obj[key] extends (...args: infer x) => unknown ? x : unknown[],
 >(
   key: key,
   ...args: args
@@ -153,7 +153,7 @@ export const safeMethod = <
 export const bindMethod = <
   obj,
   key extends CallableKeys<obj>,
-  args extends obj[key] extends (...args: infer x) => unknown ? x : unknown[]
+  args extends obj[key] extends (...args: infer x) => unknown ? x : unknown[],
 >(
   key: key,
   ...args: args

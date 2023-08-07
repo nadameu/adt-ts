@@ -409,12 +409,12 @@ export const maximumBy: PartialHelper<'foldl'>['maxMin'] =
   <f extends G.Generic1>({ foldl }: G.Anon<Foldable_1<f>, 'foldl'>) =>
   <a>(compare: (_: a) => (_: a) => Ordering): ((fa: G.Type1<f, a>) => Maybe<a>) =>
     foldl<a, Maybe<a>>(
-      acc => x => acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.LT ? Just(x) : acc
+      acc => x => (acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.LT ? Just(x) : acc)
     )(Nothing);
 
 export const minimumBy: PartialHelper<'foldl'>['maxMin'] =
   <f extends G.Generic1>({ foldl }: G.Anon<Foldable_1<f>, 'foldl'>) =>
   <a>(compare: (_: a) => (_: a) => Ordering): ((fa: G.Type1<f, a>) => Maybe<a>) =>
     foldl<a, Maybe<a>>(
-      acc => x => acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.GT ? Just(x) : acc
+      acc => x => (acc.isNothing ? Just(x) : compare(acc.value)(x) === Ordering.GT ? Just(x) : acc)
     )(Nothing);

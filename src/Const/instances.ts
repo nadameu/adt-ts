@@ -22,7 +22,7 @@ export const makeApplyConst: {
   ({
     apply: append,
     map,
-  } as Apply_2<TConst0<unknown>>);
+  }) as Apply_2<TConst0<unknown>>;
 export const makeApplicativeConst: {
   <f extends Generic1>(monoid: Monoid_1<f>): Applicative_2<TConst1<f>>;
   <m>(monoid: Monoid_0<m>): Applicative_2<TConst0<m>>;
@@ -31,4 +31,4 @@ export const makeApplicativeConst: {
     apply: append,
     map,
     pure: _ => mempty(),
-  } as Applicative_2<TConst0<unknown>>);
+  }) as Applicative_2<TConst0<unknown>>;
