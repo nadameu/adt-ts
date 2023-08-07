@@ -1,14 +1,17 @@
 import { Either } from '../../Either/definitions';
+import { Generic1, Generic2, Type1, Type2 } from '../../Generic';
 import { unfoldr as unfoldIterable } from '../../Iterable/functions/original';
 import { Maybe } from '../../Maybe/definitions';
 import {
   Applicative_1,
+  Applicative_2,
   Apply_1,
   Bind_1,
   Filterable_1,
   FoldROnly_1,
   Foldable_1,
   Functor_1,
+  GenericCons_1,
   Monoid_1,
   Semigroup_1,
   Traversable_1,
@@ -112,7 +115,32 @@ export const traverse = traverseDefaultFoldableUnfoldable({
   unfoldr,
 } as FoldROnly_1<TArray> & UnfoldROnly_1<TArray>);
 
-export const sequence = sequenceDefault({ traverse } as Traversable_1<TArray>);
+type Sequenced_1<m extends Generic1, mas, as extends unknown[] = []> = mas extends []
+  ? Type1<m, as>
+  : mas extends [Type1<m, infer a>, ...infer rest]
+  ? Sequenced_1<m, rest, [...as, a]>
+  : mas extends Type1<m, infer a>[]
+  ? Sequenced_1<m, [], [...as, ...a[]]>
+  : never;
+type Sequenced_2<
+  m extends Generic2,
+  mabs extends Type2<m, unknown, unknown>[],
+> = mabs extends Type2<m, infer a, unknown>[] ? Sequenced_2a<m, mabs, a> : never;
+type Sequenced_2a<m extends Generic2, mabs, a, bs extends unknown[] = []> = mabs extends []
+  ? Type2<m, a, bs>
+  : mabs extends [Type2<m, a, infer b>, ...infer rest]
+  ? Sequenced_2a<m, rest, a, [...bs, b]>
+  : mabs extends Type2<m, a, infer b>[]
+  ? Sequenced_2a<m, [], a, [...bs, ...b[]]>
+  : never;
+export const sequence: {
+  <m extends Generic1>(
+    applicative: Applicative_1<m>
+  ): <tma extends Type1<m, unknown>[]>(tma: [...tma]) => Sequenced_1<m, tma>;
+  <m extends Generic2>(
+    applicative: Applicative_2<m>
+  ): <tmab extends Type2<m, unknown, unknown>[]>(tmab: [...tmab]) => Sequenced_2<m, tmab>;
+} = sequenceDefault({ traverse } as Traversable_1<TArray>);
 
 export const alt = append;
 
