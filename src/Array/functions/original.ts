@@ -5,36 +5,36 @@ import {
   Applicative_1,
   Apply_1,
   Bind_1,
-  compactByFilterMap,
   Filterable_1,
-  Foldable_1,
-  foldMapDefaultR,
   FoldROnly_1,
+  Foldable_1,
   Functor_1,
   Monoid_1,
-  partitionDefault,
   Semigroup_1,
+  Traversable_1,
+  UnfoldROnly_1,
+  Witherable_1,
+  compactByFilterMap,
+  foldMapDefaultR,
+  partitionDefault,
   separateByPartitionMap,
   sequenceDefault,
-  Traversable_1,
   traverseDefaultFoldableUnfoldable,
-  UnfoldROnly_1,
   wiltDefault,
-  Witherable_1,
   witherDefault,
 } from '../../typeclasses';
 import { TArray } from '../internal';
 
 const borrow =
   <
-  key extends keyof Array<any>,
-  args extends unknown[] = Array<any>[key] extends (...args: infer args) => unknown
-    ? args
-    : unknown[],
+    key extends keyof Array<any>,
+    args extends unknown[] = Array<any>[key] extends (...args: infer args) => unknown
+      ? args
+      : unknown[],
     b = Array<any>[key] extends (_: any) => infer b ? b : unknown,
->(
-  key: key,
-  ...args: args
+  >(
+    key: key,
+    ...args: args
   ) =>
   (xs: unknown[]): b =>
     (Array.prototype[key] as any).apply(xs, args);
@@ -42,17 +42,17 @@ const borrow =
 const snocArray =
   <a>(xs: a[]) =>
   (x: a) => {
-  xs.push(x);
-  return xs;
-};
+    xs.push(x);
+    return xs;
+  };
 
 export const forEach = <a>(f: (_: a) => void): ((xs: a[]) => void) => borrow('forEach', x => f(x));
 
 export const forEachRight =
   <a>(f: (_: a) => void) =>
   (xs: a[]) => {
-  for (let i = xs.length - 1; i > -1; i--) f(xs[i]);
-};
+    for (let i = xs.length - 1; i > -1; i--) f(xs[i]);
+  };
 
 export const forEachWithIndex = <a>(f: (_: number) => (_: a) => void): ((xs: a[]) => void) =>
   borrow('forEach', (x, i) => f(i)(x));
@@ -105,7 +105,7 @@ export const mempty: Monoid_1<TArray>['mempty'] = () => [];
 export const unfoldr =
   <a, b>(f: (_: b) => Maybe<[a, b]>) =>
   (b: b): a[] =>
-  Array.from(unfoldIterable(f)(b));
+    Array.from(unfoldIterable(f)(b));
 
 export const traverse = traverseDefaultFoldableUnfoldable({
   foldr,
@@ -128,15 +128,15 @@ export const compact = compactByFilterMap({ filterMap } as Filterable_1<TArray>)
 export const partitionMap: Filterable_1<TArray>['partitionMap'] =
   <a, b, c>(f: (_: a) => Either<b, c>) =>
   (as: a[]) => {
-  const left: b[] = [];
-  const right: c[] = [];
-  forEach<a>(a => {
-    const either = f(a);
-    if (either.isLeft) left.push(either.leftValue);
-    else right.push(either.rightValue);
-  })(as);
-  return { left, right };
-};
+    const left: b[] = [];
+    const right: c[] = [];
+    forEach<a>(a => {
+      const either = f(a);
+      if (either.isLeft) left.push(either.leftValue);
+      else right.push(either.rightValue);
+    })(as);
+    return { left, right };
+  };
 export const partition = partitionDefault({ partitionMap } as Filterable_1<TArray>);
 export const separate = separateByPartitionMap({ partitionMap } as Filterable_1<TArray>);
 
@@ -147,13 +147,13 @@ export const wilt = wiltDefault({ separate, traverse } as Witherable_1<TArray>);
 export const range =
   (start: number) =>
   (end: number): number[] => {
-  if (!Number.isInteger(start) || !Number.isInteger(end))
-    throw new TypeError('Start and end must be integers.');
-  let x = start;
-  const diff = end - start;
-  return diff < 0
-    ? Array.from({ length: 1 - diff }, _ => x--)
-    : Array.from({ length: diff + 1 }, _ => x++);
-};
+    if (!Number.isInteger(start) || !Number.isInteger(end))
+      throw new TypeError('Start and end must be integers.');
+    let x = start;
+    const diff = end - start;
+    return diff < 0
+      ? Array.from({ length: 1 - diff }, _ => x--)
+      : Array.from({ length: diff + 1 }, _ => x++);
+  };
 
 export const toArray = <a>(xs: ArrayLike<a>): a[] => Array.from(xs);
