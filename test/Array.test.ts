@@ -1,10 +1,18 @@
 import * as fc from 'fast-check';
 import { describe, expect, test } from 'vitest';
 import {
+  Either,
+  Just,
+  Left,
+  Maybe,
+  Nothing,
+  Right,
   altArray,
   alternativeArray,
   applicativeArray,
+  applicativeEither,
   applicativeIdentity,
+  applicativeMaybe,
   applyArray,
   array,
   bindArray,
