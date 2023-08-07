@@ -1,26 +1,28 @@
 import { Either } from '../../Either/definitions';
+import { Generic1, Generic2, Type1, Type2 } from '../../Generic';
 import { unfoldr as unfoldIterable } from '../../Iterable/functions/original';
 import { Maybe } from '../../Maybe/definitions';
 import {
   Applicative_1,
+  Applicative_2,
   Apply_1,
   Bind_1,
-  compactByFilterMap,
   Filterable_1,
-  Foldable_1,
-  foldMapDefaultR,
   FoldROnly_1,
+  Foldable_1,
   Functor_1,
   Monoid_1,
-  partitionDefault,
   Semigroup_1,
+  Traversable_1,
+  UnfoldROnly_1,
+  Witherable_1,
+  compactByFilterMap,
+  foldMapDefaultR,
+  partitionDefault,
   separateByPartitionMap,
   sequenceDefault,
-  Traversable_1,
   traverseDefaultFoldableUnfoldable,
-  UnfoldROnly_1,
   wiltDefault,
-  Witherable_1,
   witherDefault,
 } from '../../typeclasses';
 import { TArrayLike } from '../internal';
@@ -66,20 +68,18 @@ export const foldl: Foldable_1<TArrayLike>['foldl'] =
 
 export const bind: Bind_1<TArrayLike>['bind'] = <a, b>(
   f: (_: a) => ArrayLike<b>
-): ((xs: ArrayLike<a>) => ArrayLike<b>) =>
-  foldl<a, b[]>(ys => x => foldl<b, b[]>(snocArray)(ys)(f(x)))([]);
+): ((xs: ArrayLike<a>) => b[]) => foldl<a, b[]>(ys => x => foldl<b, b[]>(snocArray)(ys)(f(x)))([]);
 
 export const map: Functor_1<TArrayLike>['map'] = <a, b>(
   f: (_: a) => b
-): ((xs: ArrayLike<a>) => ArrayLike<b>) => borrow('map', x => f(x));
+): ((xs: ArrayLike<a>) => b[]) => borrow('map', x => f(x));
 
-export const mapWithIndex = <a, b>(
-  f: (_: number) => (_: a) => b
-): ((xs: ArrayLike<a>) => ArrayLike<b>) => borrow('map', (x, i) => f(i)(x));
+export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b): ((xs: ArrayLike<a>) => b[]) =>
+  borrow('map', (x, i) => f(i)(x));
 
 export const apply: Apply_1<TArrayLike>['apply'] =
   <a, b>(fs: ArrayLike<(_: a) => b>) =>
-  (xs: ArrayLike<a>): ArrayLike<b> =>
+  (xs: ArrayLike<a>): b[] =>
     foldl<(_: a) => b, b[]>(ys => f => foldl<a, b[]>(ys => x => snocArray(ys)(f(x)))(ys)(xs))([])(
       fs
     );
@@ -105,7 +105,7 @@ export const foldMap = foldMapDefaultR({ foldr } as Foldable_1<TArrayLike>);
 
 export const append: Semigroup_1<TArrayLike>['append'] = <a>(
   xs: ArrayLike<a>
-): ((ys: ArrayLike<a>) => ArrayLike<a>) => foldl<a, a[]>(snocArray)(Array.from(xs));
+): ((ys: ArrayLike<a>) => a[]) => foldl<a, a[]>(snocArray)(Array.from(xs));
 
 export const mempty: Monoid_1<TArrayLike>['mempty'] = () => [];
 
@@ -114,7 +114,16 @@ export const unfoldr =
   (b: b): ArrayLike<a> =>
     Array.from(unfoldIterable(f)(b));
 
-export const traverse = traverseDefaultFoldableUnfoldable({
+export const traverse: {
+  <m extends Generic1>(
+    applicative: Applicative_1<m>
+  ): <a, b>(f: (_: a) => Type1<m, b>) => (ta: ArrayLike<a>) => Type1<m, b[]>;
+  <m_1 extends Generic2>(
+    applicative: Applicative_2<m_1>
+  ): <a_1, b_1, c>(
+    f: (_: a_1) => Type2<m_1, b_1, c>
+  ) => (ta: ArrayLike<a_1>) => Type2<m_1, b_1, c[]>;
+} = traverseDefaultFoldableUnfoldable({
   foldr,
   unfoldr,
 } as FoldROnly_1<TArrayLike> & UnfoldROnly_1<TArrayLike>);
