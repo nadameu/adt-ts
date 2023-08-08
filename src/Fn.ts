@@ -1,3 +1,3 @@
 export * from './Fn/instances';
-import * as fn from './Fn/functions';
-export { fn, fn as F };
+export * as fn from './Fn/functions';
+export * as F from './Fn/functions';

@@ -1,23 +1,24 @@
 import * as fc from 'fast-check';
 import { describe, test } from 'vitest';
-import { array } from '../src/Array';
-import { List, list } from '../src/List';
 import {
+  CatQueue,
+  List,
   altCatQueue,
   alternativeCatQueue,
   applicativeCatQueue,
   applyCatQueue,
+  array,
   bindCatQueue,
-  CatQueue,
   foldableCatQueue,
   functorCatQueue,
+  list,
   makeEqCatQueue,
   monadCatQueue,
   monoidCatQueue,
   plusCatQueue,
   semigroupCatQueue,
   traversableCatQueue,
-} from '../src/CatQueue';
+} from '../src';
 import { TCatQueue } from '../src/CatQueue/internal';
 import { makeAlt1Laws } from './laws/Alt';
 import { makeAlternativeLaws } from './laws/Alternative';

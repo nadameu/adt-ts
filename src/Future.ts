@@ -1,4 +1,4 @@
-export { Future } from './Future/definitions';
+export * from './Future/definitions';
 export * from './Future/instances';
-import * as future from './Future/functions';
-export { future, future as Fut };
+export * as future from './Future/functions';
+export * as Fut from './Future/functions';

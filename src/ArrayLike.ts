@@ -1,3 +1,3 @@
-import * as arrayLike from './ArrayLike/functions';
 export * from './ArrayLike/instances';
-export { arrayLike, arrayLike as AL };
+export * as arrayLike from './ArrayLike/functions';
+export * as AL from './ArrayLike/functions';

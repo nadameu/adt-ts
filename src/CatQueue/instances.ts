@@ -1,15 +1,18 @@
-import { Eq, Monoid_1, Semigroup_1 } from '../typeclasses';
-import { makeAlt } from '../typeclasses/Alt';
-import { makeAlternative } from '../typeclasses/Alternative';
-import { makeApplicative } from '../typeclasses/Applicative';
-import { makeApply } from '../typeclasses/Apply';
-import { makeBind } from '../typeclasses/Bind';
-import { makeEq } from '../typeclasses/Eq';
-import { makeFoldable } from '../typeclasses/Foldable';
-import { makeFunctor } from '../typeclasses/Functor';
-import { makeMonad } from '../typeclasses/Monad';
-import { makePlus } from '../typeclasses/Plus';
-import { makeTraversable } from '../typeclasses/Traversable';
+import {
+  Eq,
+  Monoid_1,
+  Semigroup_1,
+  makeAlt,
+  makeAlternative,
+  makeApplicative,
+  makeApply,
+  makeBind,
+  makeFoldable,
+  makeFunctor,
+  makeMonad,
+  makePlus,
+  makeTraversable,
+} from '../typeclasses';
 import { CatQueue } from './definitions';
 import {
   alt,
@@ -30,7 +33,7 @@ import {
 import { TCatQueue } from './internal';
 
 export const makeEqCatQueue = <a>(eqA: Eq<a>) =>
-  makeEq<CatQueue<a>>({
+  ({
     eq: xs => ys => {
       let [l, r] = [uncons(xs), uncons(ys)];
       while (true) {
@@ -43,7 +46,7 @@ export const makeEqCatQueue = <a>(eqA: Eq<a>) =>
         else return false;
       }
     },
-  });
+  }) as Eq<CatQueue<a>>;
 export const semigroupCatQueue = /* @__PURE__ */ { append } as Semigroup_1<TCatQueue>;
 export const monoidCatQueue = /* @__PURE__ */ {
   ...semigroupCatQueue,

@@ -1,4 +1,4 @@
-export { NEList } from './NEList/definitions';
+export * from './NEList/definitions';
 export * from './NEList/instances';
-import * as nelist from './NEList/functions';
-export { nelist, nelist as NEL };
+export * as nelist from './NEList/functions';
+export * as NEL from './NEList/functions';

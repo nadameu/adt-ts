@@ -1,3 +1,3 @@
-import * as string from './String/functions';
 export * from './String/instances';
-export { string, string as S };
+export * as string from './String/functions';
+export * as S from './String/functions';

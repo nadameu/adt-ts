@@ -1,4 +1,4 @@
 export * from './LazyList/definitions';
 export * from './LazyList/instances';
-import * as lazyList from './LazyList/functions';
-export { lazyList, lazyList as LL };
+export * as lazyList from './LazyList/functions';
+export * as LL from './LazyList/functions';

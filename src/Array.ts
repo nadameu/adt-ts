@@ -1,3 +1,3 @@
-import * as array from './Array/functions';
 export * from './Array/instances';
-export { array, array as A };
+export * as array from './Array/functions';
+export * as A from './Array/functions';

@@ -1,3 +1,3 @@
-import * as object from './Object/functions';
 export * from './Object/instances';
-export { object, object as O };
+export * as object from './Object/functions';
+export * as O from './Object/functions';
