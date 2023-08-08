@@ -58,7 +58,7 @@ describe('Apply', () => {
 
 describe('Alt', () => {
   const altLaws = makeAlt1Laws(altObject as any as Alt_1<TTestDict>)(makeEqDict)(a =>
-    fc.dictionary(fc.string(), a)
+    fc.dictionary(fc.string({ maxLength: 5 }), a)
   );
   test('Alt - associativity', altLaws.associativity);
   test('Alt - distributivity', altLaws.distributivity);
@@ -66,7 +66,7 @@ describe('Alt', () => {
 
 describe('Plus', () => {
   const plusLaws = makePlusLaws(plusObject as any as Plus_1<TTestDict>)(makeEqDict)(a =>
-    fc.dictionary(fc.string(), a)
+    fc.dictionary(fc.string({ maxLength: 5 }), a)
   );
   test('Plus - left identity', plusLaws.leftIdentity);
   test('Plus - right identity', plusLaws.rightIdentity);
@@ -75,7 +75,7 @@ describe('Plus', () => {
 
 describe('Foldable', () => {
   const foldableLaws = makeFoldable1Laws(foldableObject as any as Foldable_1<TTestDict>)(a =>
-    fc.dictionary(fc.string(), a)
+    fc.dictionary(fc.string({ maxLength: 5 }), a)
   );
   test('Foldable - foldl', foldableLaws.foldl);
   test('Foldable - foldr', foldableLaws.foldr);
@@ -83,7 +83,9 @@ describe('Foldable', () => {
 });
 
 describe('Eq', () => {
-  const eqLaws = makeEq1Laws<TTestDict>(makeEqDict)(a => fc.dictionary(fc.string(), a));
+  const eqLaws = makeEq1Laws<TTestDict>(makeEqDict)(a =>
+    fc.dictionary(fc.string({ maxLength: 5 }), a)
+  );
   test('Eq - reflexivity', eqLaws.reflexivity);
   test('Eq - symmetry', eqLaws.symmetry);
   test('Eq - transitivity', eqLaws.transitivity);
@@ -92,7 +94,7 @@ describe('Eq', () => {
 describe('Traversable', () => {
   const traversableLaws = makeTraversableLaws(traversableObject as any as Traversable_1<TTestDict>)(
     makeEqDict
-  )(a => fc.dictionary(fc.string(), a));
+  )(a => fc.dictionary(fc.string({ maxLength: 5 }), a));
   test('Traversable - naturality', traversableLaws.naturality);
   test('Traversable - identity', traversableLaws.identity);
   test('Traversable - composition', traversableLaws.composition);
