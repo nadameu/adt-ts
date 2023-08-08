@@ -1,6 +1,6 @@
 import * as G from '../Generic';
 import { compose, identity } from '../helpers';
-import { Functor_1, Functor_2, Functor_O } from './Functor';
+import { Functor_1, Functor_2, Functor_A, Functor_O } from './Functor';
 
 export interface ApplyOnly_1<f extends G.Generic1> extends G.Identified1<f> {
   apply: Helpers1<f>['apply'];
@@ -17,10 +17,16 @@ export interface ApplyOnly_O extends G.IdentifiedO {
 }
 export interface Apply_O extends Functor_O, ApplyOnly_O {}
 
+export interface ApplyOnly_A extends G.IdentifiedA {
+  apply: HelpersA['apply'];
+}
+export interface Apply_A extends Functor_A, ApplyOnly_A {}
+
 export const makeApplyInstance: {
   <f extends G.Generic1>({ apply, map }: G.Anon<Apply_1<f>>): Apply_1<f>;
   <f extends G.Generic2>({ apply, map }: G.Anon<Apply_2<f>>): Apply_2<f>;
   ({ apply, map }: G.Anon<Apply_O>): Apply_O;
+  ({ apply, map }: G.Anon<Apply_A>): Apply_A;
 } = identity;
 
 interface Helpers1<f extends G.Generic1> {
@@ -46,11 +52,19 @@ interface HelpersO {
     f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => f
   ) => <T extends Record<keyof T, a>>(fa: T) => <U extends Record<keyof T, b>>(fb: U) => <V extends Record<keyof T, c>>(fc: V) => <W extends Record<keyof T, d>>(fd: W) => <X extends Record<keyof T, e>>(fe: X) => { [k in keyof T]: f };
 }
+interface HelpersA {
+  apply: <a, b>(ff: ArrayLike<(_: a) => b>) => (fa: ArrayLike<a>) => b[];
+  lift2: <a, b, c>(f: (_: a) => (_: b) => c) => (fa: ArrayLike<a>) => (fb: ArrayLike<b>) => c[];
+  lift3: <a, b, c, d>(f: (_: a) => (_: b) => (_: c) => d) => (fa: ArrayLike<a>) => (fb: ArrayLike<b>) => (fc: ArrayLike<c>) => d[];
+  lift4: <a, b, c, d, e>(f: (_: a) => (_: b) => (_: c) => (_: d) => e) => (fa: ArrayLike<a>) => (fb: ArrayLike<b>) => (fc: ArrayLike<c>) => (fd: ArrayLike<d>) => e[];
+  lift5: <a, b, c, d, e, g>(f: (_: a) => (_: b) => (_: c) => (_: d) => (_: e) => g) => (fa: ArrayLike<a>) => (fb: ArrayLike<b>) => (fc: ArrayLike<c>) => (fd: ArrayLike<d>) => (fe: ArrayLike<e>) => g[];
+}
 type Helper = {
   [k in keyof Helpers1<never>]: {
     <f extends G.Generic1>({ apply, map }: Apply_1<f>): Helpers1<f>[k];
     <f extends G.Generic2>({ apply, map }: Apply_2<f>): Helpers2<f>[k];
     ({ apply, map }: Apply_O): HelpersO[k];
+    ({ apply, map }: Apply_A): HelpersA[k];
   };
 };
 

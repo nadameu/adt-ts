@@ -1,7 +1,7 @@
 import * as G from '../Generic';
 import { flip, identity } from '../helpers';
-import { Apply_1, Apply_2 } from './Apply';
-import { Functor_1, Functor_2 } from './Functor';
+import { Apply_1, Apply_2, Apply_A } from './Apply';
+import { Functor_1, Functor_2, Functor_A } from './Functor';
 
 export interface BindOnly_1<f extends G.Generic1> extends G.Identified1<f> {
   bind: Helpers1<f>['bind'];
@@ -15,9 +15,16 @@ export interface BindOnly_2<f extends G.Generic2> extends G.Identified2<f> {
 export interface Bind_2<f extends G.Generic2> extends Apply_2<f>, BindOnly_2<f> {}
 export interface BindMapOnly_2<f extends G.Generic2> extends Functor_2<f>, BindOnly_2<f> {}
 
+export interface BindOnly_A extends G.IdentifiedA {
+  bind: HelpersA['bind'];
+}
+export interface Bind_A extends Apply_A, BindOnly_A {}
+export interface BindMapOnly_A extends Functor_A, BindOnly_A {}
+
 export const makeBindInstance: {
   <f extends G.Generic1>({ apply, bind, map }: G.Anon<Bind_1<f>>): Bind_1<f>;
   <f extends G.Generic2>({ apply, bind, map }: G.Anon<Bind_2<f>>): Bind_2<f>;
+  ({ apply, bind, map }: G.Anon<Bind_A>): Bind_A;
 } = identity;
 
 interface Helpers1<f extends G.Generic1> {
@@ -40,10 +47,21 @@ interface Helpers2<f extends G.Generic2> {
     f: (_: b) => G.Type2<f, a, c>
   ) => <d>(g: (_: c) => G.Type2<f, a, d>) => (_: b) => G.Type2<f, a, d>;
 }
+interface HelpersA {
+  bind: <a, b>(f: (_: a) => ArrayLike<b>) => (fa: ArrayLike<a>) => b[];
+  join: <a>(ffa: ArrayLike<ArrayLike<a>>) => a[];
+  composeKleisli: <b, c>(
+    f: (_: b) => ArrayLike<c>
+  ) => <a>(g: (_: a) => ArrayLike<b>) => (_: a) => c[];
+  composeKleisliFlipped: <a, b>(
+    f: (_: a) => ArrayLike<b>
+  ) => <c>(g: (_: b) => ArrayLike<c>) => (_: a) => c[];
+}
 type Helper = {
   [k in keyof Helpers1<never>]: {
     <f extends G.Generic1>({ bind }: BindOnly_1<f>): Helpers1<f>[k];
     <f extends G.Generic2>({ bind }: BindOnly_2<f>): Helpers2<f>[k];
+    ({ bind }: BindOnly_A): HelpersA[k];
   };
 };
 
@@ -65,11 +83,9 @@ export const composeKleisli: Helper['composeKleisli'] =
   (a: a): G.Type1<f, c> =>
     bind(f)(g(a));
 
-export const composeKleisliFlipped: Helper['composeKleisliFlipped'] = <f extends G.Generic1>({
-  bind,
-}: G.Anon<Bind_1<f>, 'bind'>) =>
-  flip(
-    composeKleisli({ bind } as Bind_1<f>) as <a, b, c>(
-      f: (_: b) => G.Type1<f, c>
-    ) => (g: (_: a) => G.Type1<f, b>) => (_: a) => G.Type1<f, c>
-  );
+export const composeKleisliFlipped: Helper['composeKleisliFlipped'] =
+  <f extends G.Generic1>({ bind }: G.Anon<Bind_1<f>, 'bind'>) =>
+  <a, b>(f: (_: a) => G.Type1<f, b>) =>
+  <c>(g: (_: b) => G.Type1<f, c>) =>
+  (a: a): G.Type1<f, c> =>
+    bind(g)(f(a));

@@ -1,19 +1,19 @@
 import {
-  Alternative_1,
-  Alt_1,
-  Applicative_1,
-  Apply_1,
-  Bind_1,
-  Compactable_1,
+  Alt_A,
+  Alternative_A,
+  Applicative_A,
+  Apply_A,
+  Bind_A,
+  Compactable_A,
   Eq,
   Filterable_1,
-  Foldable_1,
-  Functor_1,
-  Monad_1,
-  Monoid_1,
-  Plus_1,
-  Semigroup_1,
-  Traversable_1,
+  Foldable_A,
+  Functor_A,
+  Monad_A,
+  Monoid_A,
+  Plus_A,
+  Semigroup_A,
+  Traversable_A,
   Witherable_1,
 } from '../typeclasses';
 import {
@@ -25,8 +25,8 @@ import {
   empty,
   filter,
   filterMap,
-  foldl,
   foldMap,
+  foldl,
   foldr,
   map,
   mempty,
@@ -53,17 +53,17 @@ export const makeEqArray = <a>(eq: Eq<a>) =>
     },
   }) as Eq<a[]>;
 
-export const functorArray = { map } as Functor_1<TArray>;
-export const applyArray = { apply, map } as Apply_1<TArray>;
-export const bindArray = { apply, bind, map } as Bind_1<TArray>;
-export const applicativeArray = { apply, map, pure } as Applicative_1<TArray>;
-export const monadArray = { apply, bind, map, pure } as Monad_1<TArray>;
+export const functorArray = { map } as Functor_A;
+export const applyArray = { apply, map } as Apply_A;
+export const bindArray = { apply, bind, map } as Bind_A;
+export const applicativeArray = { apply, map, pure } as Applicative_A;
+export const monadArray = { apply, bind, map, pure } as Monad_A;
 
-export const altArray = { alt, map } as Alt_1<TArray>;
-export const plusArray = { alt, empty, map } as Plus_1<TArray>;
-export const alternativeArray = { alt, apply, empty, map, pure } as Alternative_1<TArray>;
+export const altArray = { alt, map } as Alt_A;
+export const plusArray = { alt, empty, map } as Plus_A;
+export const alternativeArray = { alt, apply, empty, map, pure } as Alternative_A;
 
-export const foldableArray = { foldMap, foldl, foldr } as Foldable_1<TArray>;
+export const foldableArray = { foldMap, foldl, foldr } as Foldable_A;
 export const traversableArray = {
   foldMap,
   foldl,
@@ -71,12 +71,12 @@ export const traversableArray = {
   map,
   sequence,
   traverse,
-} as Traversable_1<TArray>;
+} as Traversable_A;
 
-export const semigroupArray = { append } as Semigroup_1<TArray>;
-export const monoidArray = { append, mempty } as Monoid_1<TArray>;
+export const semigroupArray = { append } as Semigroup_A;
+export const monoidArray = { append, mempty } as Monoid_A;
 
-export const compactableArray = { compact, separate } as Compactable_1<TArray>;
+export const compactableArray = { compact, separate } as Compactable_A;
 export const filterableArray = {
   compact,
   filter,

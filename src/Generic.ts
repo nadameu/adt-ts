@@ -65,6 +65,12 @@ export interface IdentifiedO {
   [GenericOType]: unknown;
 }
 
+export declare const GenericAType: unique symbol;
+export type GenericAType = typeof GenericAType;
+export interface IdentifiedA {
+  [GenericAType]: unknown;
+}
+
 export type Anon<
   obj extends
     | Identified0<any>
@@ -72,13 +78,26 @@ export type Anon<
     | Identified2<any>
     | IdentifiedFn<any>
     | IdentifiedFn3<any>
-    | IdentifiedO,
+    | IdentifiedO
+    | IdentifiedA,
   keys extends Exclude<
     keyof obj,
-    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type | GenericOType
+    | NotGenericType
+    | Generic1Type
+    | Generic2Type
+    | GenericFn2Type
+    | GenericFn3Type
+    | GenericOType
+    | GenericAType
   > = Exclude<
     keyof obj,
-    NotGenericType | Generic1Type | Generic2Type | GenericFn2Type | GenericFn3Type | GenericOType
+    | NotGenericType
+    | Generic1Type
+    | Generic2Type
+    | GenericFn2Type
+    | GenericFn3Type
+    | GenericOType
+    | GenericAType
   >,
 > = Pick<obj, keys>;
 

@@ -1,6 +1,6 @@
 import * as G from '../Generic';
 import { identity } from '../helpers';
-import { Functor_1, Functor_2, Functor_O } from './Functor';
+import { Functor_1, Functor_2, Functor_A, Functor_O } from './Functor';
 
 export interface AltOnly_1<f extends G.Generic1> extends G.Identified1<f> {
   alt: <a>(fx: G.Type1<f, a>) => (fy: G.Type1<f, a>) => G.Type1<f, a>;
@@ -19,8 +19,14 @@ export interface AltOnly_O extends G.IdentifiedO {
 }
 export interface Alt_O extends Functor_O, AltOnly_O {}
 
+export interface AltOnly_A extends G.IdentifiedA {
+  alt: <a>(fx: ArrayLike<a>) => (fy: ArrayLike<a>) => a[];
+}
+export interface Alt_A extends Functor_A, AltOnly_A {}
+
 export const makeAltInstance: {
   <f extends G.Generic1>({ alt, map }: G.Anon<Alt_1<f>>): Alt_1<f>;
   <f extends G.Generic2>({ alt, map }: G.Anon<Alt_2<f>>): Alt_2<f>;
   ({ alt, map }: G.Anon<Alt_O>): Alt_O;
+  ({ alt, map }: G.Anon<Alt_A>): Alt_A;
 } = identity;

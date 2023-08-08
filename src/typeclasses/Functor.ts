@@ -16,10 +16,15 @@ export interface Functor_O extends G.IdentifiedO {
   map: HelpersO['map'];
 }
 
+export interface Functor_A extends G.IdentifiedA {
+  map: HelpersA['map'];
+}
+
 export const makeFunctorInstance: {
   <f extends G.Generic1>({ map }: G.Anon<Functor_1<f>>): Functor_1<f>;
   <f extends G.Generic2>({ map }: G.Anon<Functor_2<f>>): Functor_2<f>;
   ({ map }: G.Anon<Functor_O>): Functor_O;
+  ({ map }: G.Anon<Functor_A>): Functor_A;
 } = identity;
 
 interface Helpers1<f extends G.Generic1> {
@@ -43,11 +48,19 @@ interface HelpersO {
   $$void: <T>(obj: T) => { [k in keyof T]: void };
   flap: <a>(a: a) => <b, T extends Record<keyof T, (_: a) => b>>(obj: T) => { [k in keyof T]: b };
 }
+interface HelpersA {
+  map: <a, b>(f: (_: a) => b) => (fa: ArrayLike<a>) => b[];
+  voidLeft: <a>(fa: ArrayLike<a>) => <b>(b: b) => b[];
+  voidRight: <b>(b: b) => <a>(fa: ArrayLike<a>) => b[];
+  $$void: <a>(fa: ArrayLike<a>) => void[];
+  flap: <a>(a: a) => <b>(ff: ArrayLike<(_: a) => b>) => b[];
+}
 type Helper = {
   [k in keyof Helpers1<never>]: {
     <f extends G.Generic1>(functor: Functor_1<f>): Helpers1<f>[k];
     <f extends G.Generic2>(functor: Functor_2<f>): Helpers2<f>[k];
     (functor: Functor_O): HelpersO[k];
+    (functor: Functor_A): HelpersA[k];
   };
 };
 
