@@ -19,7 +19,7 @@ export interface AltOnly_O extends G.IdentifiedO {
 }
 export interface Alt_O extends Functor_O, AltOnly_O {}
 
-export const makeAlt: {
+export const makeAltInstance: {
   <f extends G.Generic1>({ alt, map }: G.Anon<Alt_1<f>>): Alt_1<f>;
   <f extends G.Generic2>({ alt, map }: G.Anon<Alt_2<f>>): Alt_2<f>;
   ({ alt, map }: G.Anon<Alt_O>): Alt_O;

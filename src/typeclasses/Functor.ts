@@ -16,7 +16,7 @@ export interface Functor_O extends G.IdentifiedO {
   map: HelpersO['map'];
 }
 
-export const makeFunctor: {
+export const makeFunctorInstance: {
   <f extends G.Generic1>({ map }: G.Anon<Functor_1<f>>): Functor_1<f>;
   <f extends G.Generic2>({ map }: G.Anon<Functor_2<f>>): Functor_2<f>;
   ({ map }: G.Anon<Functor_O>): Functor_O;

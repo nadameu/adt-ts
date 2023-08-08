@@ -4,8 +4,8 @@ import { Free, Join, makeEqFree, makeFunctorFree, makeMonadFree, Pure } from '..
 import { TFree } from '../src/Free/internal';
 import { Generic1 } from '../src/Generic';
 import { Eq } from '../src/typeclasses';
-import { makeEq } from '../src/typeclasses/Eq';
-import { makeFunctor } from '../src/typeclasses/Functor';
+import { makeEqInstance } from '../src/typeclasses/Eq';
+import { makeFunctorInstance } from '../src/typeclasses/Functor';
 import { makeApplicative1Laws } from './laws/Applicative';
 import { makeApply1Laws } from './laws/Apply';
 import { makeEq1Laws } from './laws/Eq';
@@ -22,14 +22,14 @@ function MightFail<i, a>(initialValue: i | null, mapping: (_: i) => a): MightFai
 interface TMF extends Generic1 {
   type: MightFail<any, this['a']>;
 }
-const functorMightFail = makeFunctor<TMF>({
+const functorMightFail = makeFunctorInstance<TMF>({
   map: f => fx => MightFail(fx.initialValue, i => f(fx.mapping(i))),
 });
 
 const functorFreeMightFail = makeFunctorFree(functorMightFail);
 const monadFreeMightFail = makeMonadFree(functorMightFail);
 const makeEqMightFail = <a>(eqA: Eq<a>): Eq<MightFail<any, a>> =>
-  makeEq({
+  makeEqInstance({
     eq: x => y => {
       if (x.initialValue === null)
         if (y.initialValue === null) return true;

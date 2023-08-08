@@ -1,23 +1,23 @@
 import { Step, tailRec } from '../helpers';
 import { Category_2, Semigroupoid_2 } from '../typeclasses';
-import { makeApplicative } from '../typeclasses/Applicative';
-import { makeApply } from '../typeclasses/Apply';
-import { makeBind } from '../typeclasses/Bind';
-import { makeFunctor } from '../typeclasses/Functor';
-import { makeMonad } from '../typeclasses/Monad';
-import { makeMonadRec } from '../typeclasses/MonadRec';
+import { makeApplicativeInstance } from '../typeclasses/Applicative';
+import { makeApplyInstance } from '../typeclasses/Apply';
+import { makeBindInstance } from '../typeclasses/Bind';
+import { makeFunctorInstance } from '../typeclasses/Functor';
+import { makeMonadInstance } from '../typeclasses/Monad';
+import { makeMonadRecInstance } from '../typeclasses/MonadRec';
 import { apply, bind, compose, identity, map, pure } from './functions/original';
 import { TFn, TFn_ } from './internal';
 
 export const semigroupoidFn = { compose } as Semigroupoid_2<TFn>;
 export const categoryFn = { compose, identity } as Category_2<TFn>;
 
-export const functorFn = makeFunctor<TFn_>({ map });
-export const applyFn = makeApply<TFn_>({ apply, map });
-export const bindFn = makeBind<TFn_>({ apply, bind, map });
-export const applicativeFn = makeApplicative<TFn_>({ apply, map, pure });
-export const monadFn = makeMonad<TFn_>({ apply, bind, map, pure });
-export const monadRecFn = makeMonadRec<TFn_>({
+export const functorFn = makeFunctorInstance<TFn_>({ map });
+export const applyFn = makeApplyInstance<TFn_>({ apply, map });
+export const bindFn = makeBindInstance<TFn_>({ apply, bind, map });
+export const applicativeFn = makeApplicativeInstance<TFn_>({ apply, map, pure });
+export const monadFn = makeMonadInstance<TFn_>({ apply, bind, map, pure });
+export const monadRecFn = makeMonadRecInstance<TFn_>({
   apply,
   bind,
   map,

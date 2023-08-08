@@ -1,7 +1,7 @@
 import { Compose_1_1 } from '../Compose';
 import { makeApplicativeConst } from '../Const';
 import * as G from '../Generic';
-import { flip, identity } from '../helpers';
+import { compose, flip, identity } from '../helpers';
 import { applicativeIdentity } from '../Identity/instances';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { Alternative_1, Alternative_2 } from './Alternative';
@@ -20,6 +20,8 @@ import {
 } from './Foldable';
 import { Functor_1, Functor_2, Functor_O } from './Functor';
 import { Monoid_0 } from './Monoid';
+import { Cons, Nil, List } from '../List/definitions';
+import { cons, empty } from '../List/functions';
 
 export interface TraverseOnly_1<t extends G.Generic1> extends G.Identified1<t> {
   traverse: Helpers1<t>['traverse'];
@@ -53,7 +55,7 @@ export interface SequenceOnly_O extends G.IdentifiedO {
 }
 export interface Traversable_O extends Functor_O, Foldable_O, TraverseOnly_O, SequenceOnly_O {}
 
-export const makeTraversable: {
+export const makeTraversableInstance: {
   <f extends G.Generic1>({ foldMap, foldl, foldr }: G.Anon<Traversable_1<f>>): Traversable_1<f>;
   <f extends G.Generic2>({ foldMap, foldl, foldr }: G.Anon<Traversable_2<f>>): Traversable_2<f>;
   ({ foldMap, foldl, foldr }: G.Anon<Traversable_O>): Traversable_O;
@@ -269,16 +271,13 @@ export const traverseDefaultFoldableUnfoldable: {
   <m extends G.Generic1>(applicative: G.Anon<Applicative_1<m>>) =>
   <a, b>(f: (_: a) => G.Type1<m, b>) =>
   (ta: G.Type1<f, a>): G.Type1<m, G.Type1<f, b>> => {
-    interface Tuple<t> {
-      0: t;
-      1: List<t>;
-      length: 2;
-    }
-    type List<t> = Maybe<Tuple<t>>;
-    const liftedCons = lift2(applicative as Applicative_1<m>)<b, List<b>, List<b>>(
-      head => tail => Just([head, tail])
-    );
-    return applicative.map(unfoldr<b, List<b>>(x => x as Maybe<[b, List<b>]>))(
-      foldr<a, G.Type1<m, List<b>>>((a: a) => liftedCons(f(a)))(applicative.pure(Nothing))(ta)
+    type Tuple = [b, List];
+    type List = {} & Maybe<Tuple>;
+    return applicative.map(unfoldr<b, List>(x => x))(
+      foldr(
+        compose(lift2(applicative as Applicative_1<m>)<b, List, List>(hd => tl => Just([hd, tl])))(
+          f
+        )
+      )(applicative.pure(Nothing))(ta)
     );
   };

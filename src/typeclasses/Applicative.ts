@@ -12,7 +12,7 @@ export interface PureOnly_2<f extends G.Generic2> extends G.Identified2<f> {
 }
 export interface Applicative_2<f extends G.Generic2> extends Apply_2<f>, PureOnly_2<f> {}
 
-export const makeApplicative: {
+export const makeApplicativeInstance: {
   <f extends G.Generic1>({ apply, map, pure }: G.Anon<Applicative_1<f>>): Applicative_1<f>;
   <f extends G.Generic2>({ apply, map, pure }: G.Anon<Applicative_2<f>>): Applicative_2<f>;
 } = identity;

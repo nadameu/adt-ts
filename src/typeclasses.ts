@@ -1,5 +1,13 @@
-export { AltOnly_1, AltOnly_2, AltOnly_O, Alt_1, Alt_2, Alt_O, makeAlt } from './typeclasses/Alt';
-export { Alternative_1, Alternative_2, makeAlternative } from './typeclasses/Alternative';
+export {
+  AltOnly_1,
+  AltOnly_2,
+  AltOnly_O,
+  Alt_1,
+  Alt_2,
+  Alt_O,
+  makeAltInstance,
+} from './typeclasses/Alt';
+export { Alternative_1, Alternative_2, makeAlternativeInstance } from './typeclasses/Alternative';
 export {
   Applicative_1,
   Applicative_2,
@@ -8,7 +16,7 @@ export {
   PureOnly_1,
   PureOnly_2,
   liftA1,
-  makeApplicative,
+  makeApplicativeInstance,
 } from './typeclasses/Applicative';
 export {
   ApplyOnly_1,
@@ -17,7 +25,7 @@ export {
   Apply_1,
   Apply_2,
   Apply_O,
-  makeApply,
+  makeApplyInstance,
 } from './typeclasses/Apply';
 export {
   BindMapOnly_1,
@@ -27,7 +35,7 @@ export {
   Bind_1,
   Bind_2,
   applyDefault,
-  makeBind,
+  makeBindInstance,
 } from './typeclasses/Bind';
 export { Category_2, Category_3, IdentityOnly_2, IdentityOnly_3 } from './typeclasses/Category';
 export {
@@ -39,7 +47,7 @@ export {
   compactDefault,
   separateDefault,
 } from './typeclasses/Compactable';
-export { Eq, makeEq } from './typeclasses/Eq';
+export { Eq, makeEqInstance } from './typeclasses/Eq';
 export {
   FilterMapOnly_1,
   FilterOnly_1,
@@ -74,7 +82,7 @@ export {
   foldMapDefaultR,
   foldlDefault,
   foldrDefault,
-  makeFoldable,
+  makeFoldableInstance,
 } from './typeclasses/Foldable';
 export {
   Fold1MapOnly_1,
@@ -88,7 +96,7 @@ export {
   fold1Default,
   foldMap1Default,
 } from './typeclasses/Foldable1';
-export { Functor_1, Functor_2, Functor_O, makeFunctor } from './typeclasses/Functor';
+export { Functor_1, Functor_2, Functor_O, makeFunctorInstance } from './typeclasses/Functor';
 export { GInverseOnly_0, Group_0 } from './typeclasses/Group';
 export {
   BindPureOnly_1,
@@ -97,7 +105,7 @@ export {
   Monad_2,
   ap,
   liftM1,
-  makeMonad,
+  makeMonadInstance,
 } from './typeclasses/Monad';
 export { PipeKleisli_1, PipeKleisli_2 } from './typeclasses/Monad/pipeK';
 export {
@@ -111,7 +119,7 @@ export {
   MonadRec_2,
   TailRecMOnly_1,
   TailRecMOnly_2,
-  makeMonadRec,
+  makeMonadRecInstance,
 } from './typeclasses/MonadRec';
 export {
   MonadThrow_1,
@@ -126,7 +134,7 @@ export {
   Monoid_0,
   Monoid_1,
   Monoid_2,
-  makeMonoid,
+  makeMonoidInstance,
 } from './typeclasses/Monoid';
 export {
   EmptyOnly_1,
@@ -135,9 +143,14 @@ export {
   Plus_1,
   Plus_2,
   Plus_O,
-  makePlus,
+  makePlusInstance,
 } from './typeclasses/Plus';
-export { Semigroup_0, Semigroup_1, Semigroup_2, makeSemigroup } from './typeclasses/Semigroup';
+export {
+  Semigroup_0,
+  Semigroup_1,
+  Semigroup_2,
+  makeSemigroupInstance,
+} from './typeclasses/Semigroup';
 export { Semigroupoid_2, Semigroupoid_3 } from './typeclasses/Semigroupoid';
 export {
   GenericCons_1,
@@ -156,7 +169,7 @@ export {
   UnfoldROnly_1,
   UnfoldROnly_2,
   foldMapDefaultByTraverse,
-  makeTraversable,
+  makeTraversableInstance,
   mapDefaultByTraverse,
   sequenceDefault,
   traverseDefault,

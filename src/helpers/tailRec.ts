@@ -1,5 +1,5 @@
 import { Generic2 } from '../Generic';
-import { makeFunctor } from '../typeclasses/Functor';
+import { makeFunctorInstance } from '../typeclasses/Functor';
 
 export type Step<a, b> = Loop<a> | Done<b>;
 export interface Loop<a> {
@@ -15,7 +15,7 @@ export const Done = <b>(value: b): Done<b> => ({ done: true, value });
 export interface TStep extends Generic2 {
   type: Step<this['a'], this['b']>;
 }
-export const functorStep = makeFunctor<TStep>({
+export const functorStep = makeFunctorInstance<TStep>({
   map: f => fx => (fx.done ? Done(f(fx.value)) : fx),
 });
 

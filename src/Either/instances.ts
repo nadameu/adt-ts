@@ -12,7 +12,7 @@ import {
   Monad_2,
   Traversable_2,
 } from '../typeclasses';
-import { makeMonadRec } from '../typeclasses/MonadRec';
+import { makeMonadRecInstance } from '../typeclasses/MonadRec';
 import { Either, Left, Right } from './definitions';
 import {
   alt,
@@ -62,7 +62,7 @@ export const traversableEither = {
   sequence,
   traverse,
 } as Traversable_2<TEither>;
-export const monadRecEither = makeMonadRec<TEither>({
+export const monadRecEither = makeMonadRecInstance<TEither>({
   apply,
   bind,
   map,

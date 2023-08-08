@@ -1,29 +1,33 @@
 import { tailRec } from '../helpers';
 import { identity } from '../helpers/identity';
-import { makeApplicative } from '../typeclasses/Applicative';
-import { makeApply } from '../typeclasses/Apply';
-import { makeBind } from '../typeclasses/Bind';
-import { makeFunctor } from '../typeclasses/Functor';
-import { makeMonad } from '../typeclasses/Monad';
-import { makeMonadRec } from '../typeclasses/MonadRec';
+import { makeApplicativeInstance } from '../typeclasses/Applicative';
+import { makeApplyInstance } from '../typeclasses/Apply';
+import { makeBindInstance } from '../typeclasses/Bind';
+import { makeFunctorInstance } from '../typeclasses/Functor';
+import { makeMonadInstance } from '../typeclasses/Monad';
+import { makeMonadRecInstance } from '../typeclasses/MonadRec';
 import { TIdentity } from './internal';
 
-export const functorIdentity = makeFunctor<TIdentity>({ map: identity });
-export const applyIdentity = makeApply<TIdentity>({ map: identity, apply: identity });
+export const functorIdentity = makeFunctorInstance<TIdentity>({ map: identity });
+export const applyIdentity = makeApplyInstance<TIdentity>({ map: identity, apply: identity });
 
-export const applicativeIdentity = makeApplicative<TIdentity>({
+export const applicativeIdentity = makeApplicativeInstance<TIdentity>({
   apply: identity,
   map: identity,
   pure: identity,
 });
-export const bindIdentity = makeBind<TIdentity>({ apply: identity, bind: identity, map: identity });
-export const monadIdentity = makeMonad<TIdentity>({
+export const bindIdentity = makeBindInstance<TIdentity>({
+  apply: identity,
+  bind: identity,
+  map: identity,
+});
+export const monadIdentity = makeMonadInstance<TIdentity>({
   apply: identity,
   bind: identity,
   map: identity,
   pure: identity,
 });
-export const monadRecIdentity = makeMonadRec<TIdentity>({
+export const monadRecIdentity = makeMonadRecInstance<TIdentity>({
   apply: identity,
   bind: identity,
   map: identity,

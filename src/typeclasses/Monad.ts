@@ -9,7 +9,7 @@ export interface BindPureOnly_1<f extends G.Generic1> extends BindOnly_1<f>, Pur
 export interface Monad_2<f extends G.Generic2> extends Applicative_2<f>, Bind_2<f> {}
 export interface BindPureOnly_2<f extends G.Generic2> extends BindOnly_2<f>, PureOnly_2<f> {}
 
-export const makeMonad: {
+export const makeMonadInstance: {
   <f extends G.Generic1>({ apply, bind, map, pure }: G.Anon<Monad_1<f>>): Monad_1<f>;
   <f extends G.Generic2>({ apply, bind, map, pure }: G.Anon<Monad_2<f>>): Monad_2<f>;
 } = identity;

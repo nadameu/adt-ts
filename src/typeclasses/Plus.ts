@@ -17,7 +17,7 @@ export interface EmptyOnly_O extends G.IdentifiedO {
 }
 export interface Plus_O extends Alt_O, EmptyOnly_O {}
 
-export const makePlus: {
+export const makePlusInstance: {
   <f extends G.Generic1>({ alt, empty, map }: G.Anon<Plus_1<f>>): Plus_1<f>;
   <f extends G.Generic2>({ alt, empty, map }: G.Anon<Plus_2<f>>): Plus_2<f>;
   ({ alt, empty, map }: G.Anon<Plus_O>): Plus_O;

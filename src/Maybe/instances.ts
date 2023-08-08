@@ -23,7 +23,7 @@ import {
   Traversable_1,
   Witherable_1,
 } from '../typeclasses';
-import { makeMonadRec } from '../typeclasses/MonadRec';
+import { makeMonadRecInstance } from '../typeclasses/MonadRec';
 import { Just, Maybe, Nothing } from './definitions';
 import {
   alt,
@@ -129,7 +129,7 @@ export const makeMonoidMaybe: {
     append: makeAppend(semigroup as Semigroup_0<m>),
     mempty: empty,
   }) as Monoid_0<Maybe<m>> & Monoid_1<TMaybe>;
-export const monadRecMaybe = makeMonadRec<TMaybe>({
+export const monadRecMaybe = makeMonadRecInstance<TMaybe>({
   apply,
   bind,
   map,

@@ -7,7 +7,7 @@ export interface Alternative_1<f extends Generic1> extends Applicative_1<f>, Plu
 
 export interface Alternative_2<f extends Generic2> extends Applicative_2<f>, Plus_2<f> {}
 
-export const makeAlternative: {
+export const makeAlternativeInstance: {
   <f extends Generic1>({ alt, apply, empty, map, pure }: Anon<Alternative_1<f>>): Alternative_1<f>;
   <f extends Generic2>({ alt, apply, empty, map, pure }: Anon<Alternative_2<f>>): Alternative_2<f>;
 } = identity;

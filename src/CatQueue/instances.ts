@@ -2,16 +2,16 @@ import {
   Eq,
   Monoid_1,
   Semigroup_1,
-  makeAlt,
-  makeAlternative,
-  makeApplicative,
-  makeApply,
-  makeBind,
-  makeFoldable,
-  makeFunctor,
-  makeMonad,
-  makePlus,
-  makeTraversable,
+  makeAltInstance,
+  makeAlternativeInstance,
+  makeApplicativeInstance,
+  makeApplyInstance,
+  makeBindInstance,
+  makeFoldableInstance,
+  makeFunctorInstance,
+  makeMonadInstance,
+  makePlusInstance,
+  makeTraversableInstance,
 } from '../typeclasses';
 import { CatQueue } from './definitions';
 import {
@@ -52,8 +52,12 @@ export const monoidCatQueue = /* @__PURE__ */ {
   ...semigroupCatQueue,
   mempty,
 } as Monoid_1<TCatQueue>;
-export const foldableCatQueue = /* @__PURE__ */ makeFoldable<TCatQueue>({ foldl, foldMap, foldr });
-export const traversableCatQueue = /* @__PURE__ */ makeTraversable<TCatQueue>({
+export const foldableCatQueue = /* @__PURE__ */ makeFoldableInstance<TCatQueue>({
+  foldl,
+  foldMap,
+  foldr,
+});
+export const traversableCatQueue = /* @__PURE__ */ makeTraversableInstance<TCatQueue>({
   foldl,
   foldMap,
   foldr,
@@ -61,14 +65,23 @@ export const traversableCatQueue = /* @__PURE__ */ makeTraversable<TCatQueue>({
   sequence,
   traverse,
 });
-export const functorCatQueue = /* @__PURE__ */ makeFunctor<TCatQueue>({ map });
-export const applyCatQueue = /* @__PURE__ */ makeApply<TCatQueue>({ apply, map });
-export const applicativeCatQueue = /* @__PURE__ */ makeApplicative<TCatQueue>({ apply, map, pure });
-export const bindCatQueue = /* @__PURE__ */ makeBind<TCatQueue>({ apply, bind, map });
-export const monadCatQueue = /* @__PURE__ */ makeMonad<TCatQueue>({ apply, bind, map, pure });
-export const altCatQueue = /* @__PURE__ */ makeAlt<TCatQueue>({ alt, map });
-export const plusCatQueue = /* @__PURE__ */ makePlus<TCatQueue>({ alt, empty, map });
-export const alternativeCatQueue = /* @__PURE__ */ makeAlternative<TCatQueue>({
+export const functorCatQueue = /* @__PURE__ */ makeFunctorInstance<TCatQueue>({ map });
+export const applyCatQueue = /* @__PURE__ */ makeApplyInstance<TCatQueue>({ apply, map });
+export const applicativeCatQueue = /* @__PURE__ */ makeApplicativeInstance<TCatQueue>({
+  apply,
+  map,
+  pure,
+});
+export const bindCatQueue = /* @__PURE__ */ makeBindInstance<TCatQueue>({ apply, bind, map });
+export const monadCatQueue = /* @__PURE__ */ makeMonadInstance<TCatQueue>({
+  apply,
+  bind,
+  map,
+  pure,
+});
+export const altCatQueue = /* @__PURE__ */ makeAltInstance<TCatQueue>({ alt, map });
+export const plusCatQueue = /* @__PURE__ */ makePlusInstance<TCatQueue>({ alt, empty, map });
+export const alternativeCatQueue = /* @__PURE__ */ makeAlternativeInstance<TCatQueue>({
   alt,
   apply,
   empty,

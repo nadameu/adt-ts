@@ -13,7 +13,7 @@ export interface TailRecMOnly_2<f extends Generic2> extends Identified2<f> {
 }
 export interface MonadRec_2<f extends Generic2> extends Monad_2<f>, TailRecMOnly_2<f> {}
 
-export const makeMonadRec: {
+export const makeMonadRecInstance: {
   <f extends Generic1>({ apply, bind, map, pure, tailRecM }: Anon<MonadRec_1<f>>): MonadRec_1<f>;
   <f extends Generic2>({ apply, bind, map, pure, tailRecM }: Anon<MonadRec_2<f>>): MonadRec_2<f>;
 } = identity;

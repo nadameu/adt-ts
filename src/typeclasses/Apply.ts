@@ -17,7 +17,7 @@ export interface ApplyOnly_O extends G.IdentifiedO {
 }
 export interface Apply_O extends Functor_O, ApplyOnly_O {}
 
-export const makeApply: {
+export const makeApplyInstance: {
   <f extends G.Generic1>({ apply, map }: G.Anon<Apply_1<f>>): Apply_1<f>;
   <f extends G.Generic2>({ apply, map }: G.Anon<Apply_2<f>>): Apply_2<f>;
   ({ apply, map }: G.Anon<Apply_O>): Apply_O;

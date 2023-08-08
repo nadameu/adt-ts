@@ -15,7 +15,7 @@ export interface BindOnly_2<f extends G.Generic2> extends G.Identified2<f> {
 export interface Bind_2<f extends G.Generic2> extends Apply_2<f>, BindOnly_2<f> {}
 export interface BindMapOnly_2<f extends G.Generic2> extends Functor_2<f>, BindOnly_2<f> {}
 
-export const makeBind: {
+export const makeBindInstance: {
   <f extends G.Generic1>({ apply, bind, map }: G.Anon<Bind_1<f>>): Bind_1<f>;
   <f extends G.Generic2>({ apply, bind, map }: G.Anon<Bind_2<f>>): Bind_2<f>;
 } = identity;
