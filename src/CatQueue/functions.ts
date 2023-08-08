@@ -50,7 +50,7 @@ export const unsnoc = <a>(xs: CatQueue<a>): Maybe<[CatQueue<a>, a]> => {
 export const fromFoldable =
   <f extends Generic1>(F: Foldable_1<f>) =>
   <a>(fa: Type1<f, a>): CatQueue<a> =>
-    F.foldMap(monoidCatQueue)(singleton)(fa);
+    F.foldMap({ append, mempty } as Monoid_1<TCatQueue>)(singleton)(fa);
 export const foldl: Foldable_1<TCatQueue>['foldl'] =
   <a, b>(f: (_: b) => (_: a) => b) =>
   (b: b) =>
