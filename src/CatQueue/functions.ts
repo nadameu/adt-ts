@@ -59,7 +59,9 @@ export const foldl: Foldable_1<TCatQueue>['foldl'] =
     return L.foldr(flip(f))(acc)(fa.right);
   };
 export const mempty = empty;
-const _mergeCenters: <a>(dest: List<a>) => (src: List<a>) => List<a> = L.foldl(flip(L.cons));
+const _mergeCenters: <a>(dest: List<a>) => (src: List<a>) => List<a> = /* @__PURE__ */ L.foldl(
+  flip(L.cons)
+);
 export const append =
   <a>(a: CatQueue<a>) =>
   (b: CatQueue<a>): CatQueue<a> => {
@@ -68,17 +70,20 @@ export const append =
     return CatQueue(a.left)(_mergeCenters(_mergeCenters(a.right)(b.left))(L.reverse(b.right)));
   };
 
-export const foldMap = foldMapDefaultL({ foldl } as FoldLOnly_1<TCatQueue>);
-export const foldr = foldrDefault({ foldMap } as FoldMapOnly_1<TCatQueue>);
+export const foldMap = /* @__PURE__ */ foldMapDefaultL({ foldl } as FoldLOnly_1<TCatQueue>);
+export const foldr = /* @__PURE__ */ foldrDefault({ foldMap } as FoldMapOnly_1<TCatQueue>);
 export const map: Functor_1<TCatQueue>['map'] = f => xs =>
   CatQueue(L.map(f)(xs.left))(L.map(f)(xs.right));
-export const traverse = traverseDefaultSnoc({
+export const traverse = /* @__PURE__ */ traverseDefaultSnoc({
   foldl,
   nil: empty,
   snoc,
 } as GenericSnoc_1<TCatQueue> & FoldLOnly_1<TCatQueue>);
-export const sequence = sequenceDefault({ traverse } as TraverseOnly_1<TCatQueue>);
+export const sequence = /* @__PURE__ */ sequenceDefault({ traverse } as TraverseOnly_1<TCatQueue>);
 export const pure = singleton;
-export const bind: Bind_1<TCatQueue>['bind'] = foldMap({ append, mempty } as Monoid_1<TCatQueue>);
-export const apply = ap({ bind, pure } as BindPureOnly_1<TCatQueue>);
+export const bind: Bind_1<TCatQueue>['bind'] = /* @__PURE__ */ foldMap({
+  append,
+  mempty,
+} as Monoid_1<TCatQueue>);
+export const apply = /* @__PURE__ */ ap({ bind, pure } as BindPureOnly_1<TCatQueue>);
 export const alt = append;
