@@ -1,5 +1,8 @@
 import * as G from '../Generic';
-import { constant, flip, identity, thrush } from '../helpers';
+import { constant } from '../helpers/constant';
+import { flip } from '../helpers/flip';
+import { identity } from '../helpers/identity';
+import { thrush } from '../helpers/thrush';
 
 export interface Functor_1<f extends G.Generic1> extends G.Identified1<f> {
   map: Helpers1<f>['map'];
