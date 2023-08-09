@@ -2,18 +2,20 @@ import { Either } from '../../Either/definitions';
 import { unfoldr as unfoldIterable } from '../../Iterable/functions/original';
 import { Maybe } from '../../Maybe/definitions';
 import {
-  Applicative_1,
-  Apply_1,
-  Bind_1,
-  Filterable_1,
-  FoldROnly_1,
-  Foldable_1,
-  Functor_1,
-  Monoid_1,
-  Semigroup_1,
+  Applicative_A,
+  Apply_A,
+  Bind_A,
+  Filterable_A,
+  FoldROnly_A,
+  Foldable_A,
+  Functor_A,
+  Monoid_A,
+  Semigroup_A,
+  Traversable_A,
   TraverseOnly_A,
   UnfoldROnly_1,
-  Witherable_1,
+  UnfoldROnly_A,
+  Witherable_A,
   compactByFilterMap,
   foldMapDefaultR,
   partitionDefault,
@@ -23,7 +25,6 @@ import {
   wiltDefault,
   witherDefault,
 } from '../../typeclasses';
-import { TArray } from '../internal';
 
 const borrow =
   <
@@ -36,7 +37,7 @@ const borrow =
     key: key,
     ...args: args
   ) =>
-  (xs: unknown[]): b =>
+  (xs: ArrayLike<unknown>): b =>
     (Array.prototype[key] as any).apply(xs, args);
 
 const snocArray =
@@ -46,7 +47,8 @@ const snocArray =
     return xs;
   };
 
-export const forEach = <a>(f: (_: a) => void): ((xs: a[]) => void) => borrow('forEach', x => f(x));
+export const forEach = <a>(f: (_: a) => void): ((xs: ArrayLike<a>) => void) =>
+  borrow('forEach', x => f(x));
 
 export const forEachRight =
   <a>(f: (_: a) => void) =>
@@ -57,52 +59,53 @@ export const forEachRight =
 export const forEachWithIndex = <a>(f: (_: number) => (_: a) => void): ((xs: a[]) => void) =>
   borrow('forEach', (x, i) => f(i)(x));
 
-export const foldl: Foldable_1<TArray>['foldl'] =
+export const foldl: Foldable_A['foldl'] =
   <a, b>(f: (_: b) => (_: a) => b) =>
-  (b: b): ((xs: a[]) => b) =>
+  (b: b): ((xs: ArrayLike<a>) => b) =>
     borrow('reduce', (acc: b, x: a) => f(acc)(x), b);
 
-export const bind: Bind_1<TArray>['bind'] = <a, b>(f: (_: a) => b[]): ((xs: a[]) => b[]) =>
-  foldl<a, b[]>(ys => x => foldl<b, b[]>(snocArray)(ys)(f(x)))([]);
+export const bind: Bind_A['bind'] = <a, b>(
+  f: (_: a) => ArrayLike<b>
+): ((xs: ArrayLike<a>) => b[]) => foldl<a, b[]>(ys => x => foldl<b, b[]>(snocArray)(ys)(f(x)))([]);
 
-export const map: Functor_1<TArray>['map'] = <a, b>(f: (_: a) => b): ((xs: a[]) => b[]) =>
+export const map: Functor_A['map'] = <a, b>(f: (_: a) => b): ((xs: ArrayLike<a>) => b[]) =>
   borrow('map', x => f(x));
 
-export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b): ((xs: a[]) => b[]) =>
+export const mapWithIndex = <a, b>(f: (_: number) => (_: a) => b): ((xs: ArrayLike<a>) => b[]) =>
   borrow('map', (x, i) => f(i)(x));
 
-export const apply: Apply_1<TArray>['apply'] =
-  <a, b>(fs: Array<(_: a) => b>) =>
-  (xs: a[]): b[] =>
+export const apply: Apply_A['apply'] =
+  <a, b>(fs: ArrayLike<(_: a) => b>) =>
+  (xs: ArrayLike<a>): b[] =>
     foldl<(_: a) => b, b[]>(ys => f => foldl<a, b[]>(ys => x => snocArray(ys)(f(x)))(ys)(xs))([])(
       fs
     );
 
-export const pure: Applicative_1<TArray>['pure'] = x => [x];
+export const pure: Applicative_A['pure'] = x => [x];
 
 export const foldlWithIndex =
   <a, b>(f: (_: number) => (_: b) => (_: a) => b) =>
-  (b: b): ((xs: a[]) => b) =>
+  (b: b): ((xs: ArrayLike<a>) => b) =>
     borrow('reduce', (acc: b, x: a, i) => f(i)(acc)(x), b);
 
-export const foldr: Foldable_1<TArray>['foldr'] =
+export const foldr: Foldable_A['foldr'] =
   <a, b>(f: (_: a) => (_: b) => b) =>
-  (b: b): ((xs: a[]) => b) =>
+  (b: b): ((xs: ArrayLike<a>) => b) =>
     borrow('reduceRight', (acc: b, x: a) => f(x)(acc), b);
 
 export const foldrWithIndex =
   <a, b>(f: (_: number) => (_: a) => (_: b) => b) =>
-  (b: b): ((xs: a[]) => b) =>
+  (b: b): ((xs: ArrayLike<a>) => b) =>
     borrow('reduceRight', (acc: b, x: a, i) => f(i)(x)(acc), b);
 
-export const foldMap = foldMapDefaultR({ foldr } as Foldable_1<TArray>);
+export const foldMap = foldMapDefaultR({ foldr } as Foldable_A);
 
-export const append: Semigroup_1<TArray>['append'] = <a>(xs: a[]): ((ys: a[]) => a[]) =>
+export const append: Semigroup_A['append'] = <a>(xs: ArrayLike<a>): ((ys: ArrayLike<a>) => a[]) =>
   foldl<a, a[]>(snocArray)(Array.from(xs));
 
-export const mempty: Monoid_1<TArray>['mempty'] = () => [];
+export const mempty: Monoid_A['mempty'] = () => [];
 
-export const unfoldr =
+export const unfoldr: UnfoldROnly_A['unfoldr'] =
   <a, b>(f: (_: b) => Maybe<[a, b]>) =>
   (b: b): a[] =>
     Array.from(unfoldIterable(f)(b));
@@ -110,7 +113,7 @@ export const unfoldr =
 export const traverse = traverseDefaultFoldableUnfoldable({
   foldr,
   unfoldr,
-} as FoldROnly_1<TArray> & UnfoldROnly_1<TArray>);
+} as FoldROnly_A & UnfoldROnly_A);
 
 export const sequence = /* @__PURE__ */ sequenceDefault({ traverse } as TraverseOnly_A);
 
@@ -118,16 +121,17 @@ export const alt = append;
 
 export const empty = mempty;
 
-export const filter = <a>(p: (_: a) => boolean): ((fa: a[]) => a[]) => borrow('filter', x => p(x));
+export const filter = <a>(p: (_: a) => boolean): ((fa: ArrayLike<a>) => a[]) =>
+  borrow('filter', x => p(x));
 
-export const filterMap = <a, b>(p: (_: a) => Maybe<b>): ((fa: a[]) => b[]) =>
+export const filterMap = <a, b>(p: (_: a) => Maybe<b>): ((fa: ArrayLike<a>) => b[]) =>
   foldl<a, b[]>(ys => x => (y => (y.isJust && ys.push(y.value), ys))(p(x)))([]);
 
-export const compact = compactByFilterMap({ filterMap } as Filterable_1<TArray>);
+export const compact = compactByFilterMap({ filterMap } as Filterable_A);
 
-export const partitionMap: Filterable_1<TArray>['partitionMap'] =
+export const partitionMap: Filterable_A['partitionMap'] =
   <a, b, c>(f: (_: a) => Either<b, c>) =>
-  (as: a[]) => {
+  (as: ArrayLike<a>) => {
     const left: b[] = [];
     const right: c[] = [];
     forEach<a>(a => {
@@ -137,12 +141,12 @@ export const partitionMap: Filterable_1<TArray>['partitionMap'] =
     })(as);
     return { left, right };
   };
-export const partition = partitionDefault({ partitionMap } as Filterable_1<TArray>);
-export const separate = separateByPartitionMap({ partitionMap } as Filterable_1<TArray>);
+export const partition = partitionDefault({ partitionMap } as Filterable_A);
+export const separate = separateByPartitionMap({ partitionMap } as Filterable_A);
 
-export const wither = witherDefault({ compact, traverse } as Witherable_1<TArray>);
+export const wither = witherDefault({ compact, traverse } as Witherable_A);
 
-export const wilt = wiltDefault({ separate, traverse } as Witherable_1<TArray>);
+export const wilt = wiltDefault({ separate, traverse } as Witherable_A);
 
 export const range =
   (start: number) =>

@@ -5,7 +5,7 @@ import { applicativeIdentity } from '../Identity/instances';
 import { Just, Maybe, Nothing } from '../Maybe/definitions';
 import { compose, flip, identity } from '../helpers';
 import { Alternative_1, Alternative_2 } from './Alternative';
-import { Applicative_1, Applicative_2 } from './Applicative';
+import { Applicative_1, Applicative_2, Applicative_A } from './Applicative';
 import { Apply_1, lift2 } from './Apply';
 import {
   FoldLOnly_1,
@@ -14,6 +14,7 @@ import {
   FoldMapOnly_2,
   FoldROnly_1,
   FoldROnly_2,
+  FoldROnly_A,
   Foldable_1,
   Foldable_2,
   Foldable_A,
@@ -55,10 +56,10 @@ export interface SequenceOnly_O extends G.IdentifiedO {
 export interface Traversable_O extends Functor_O, Foldable_O, TraverseOnly_O, SequenceOnly_O {}
 
 export interface TraverseOnly_A extends G.IdentifiedA {
-  traverse: HelpersO['traverse'];
+  traverse: HelpersA['traverse'];
 }
 export interface SequenceOnly_A extends G.IdentifiedA {
-  sequence: HelpersO['sequence'];
+  sequence: HelpersA['sequence'];
 }
 export interface Traversable_A extends Functor_A, Foldable_A, TraverseOnly_A, SequenceOnly_A {}
 
@@ -116,6 +117,10 @@ interface Helpers1Applicative2<t extends G.Generic1, m extends G.Generic2> {
   ) => (ta: G.Type1<t, a>) => G.Type2<m, b, G.Type1<t, c>>;
   sequence: <a, b>(tmab: G.Type1<t, G.Type2<m, a, b>>) => G.Type2<m, a, G.Type1<t, b>>;
 }
+interface Helpers1ApplicativeA<t extends G.Generic1> {
+  traverse: <a, b>(f: (_: a) => ArrayLike<b>) => (ta: G.Type1<t, a>) => G.Type1<t, b>[];
+  sequence: <a>(tma: G.Type1<t, ArrayLike<a>>) => G.Type1<t, a>[];
+}
 interface Helpers2Applicative1<t extends G.Generic2, m extends G.Generic1> {
   traverse: <b, c>(
     f: (_: b) => G.Type1<m, c>
@@ -127,6 +132,10 @@ interface Helpers2Applicative2<t extends G.Generic2, m extends G.Generic2> {
     f: (_: c) => G.Type2<m, a, d>
   ) => <b>(tbc: G.Type2<t, b, c>) => G.Type2<m, a, G.Type2<t, b, d>>;
   sequence: <a, b, c>(tambc: G.Type2<t, a, G.Type2<m, b, c>>) => G.Type2<m, b, G.Type2<t, a, c>>;
+}
+interface Helpers2ApplicativeA<t extends G.Generic2> {
+  traverse: <b, c>(f: (_: b) => ArrayLike<c>) => <a>(tab: G.Type2<t, a, b>) => G.Type2<t, a, c>[];
+  sequence: <a, b>(tamb: G.Type2<t, a, ArrayLike<b>>) => G.Type2<t, a, b>[];
 }
 interface HelpersOApplicative1<m extends G.Generic1> {
   traverse: <a, b>(
@@ -147,6 +156,14 @@ interface HelpersOApplicative2<m extends G.Generic2> {
     T extends Record<keyof T, G.Type2<m, infer a, unknown>> ? a : never,
     { [k in keyof T]: T[k] extends G.Type2<m, unknown, infer b> ? b : never }
   >;
+}
+interface HelpersOApplicativeA {
+  traverse: <a, b>(
+    f: (_: a) => ArrayLike<b>
+  ) => <T extends Record<keyof T, a>>(ta: T) => Array<{ [k in keyof T]: b }>;
+  sequence: <T extends Record<keyof T, ArrayLike<unknown>>>(
+    tma: T
+  ) => Array<{ [k in keyof T]: T[k] extends ArrayLike<infer a> ? a : never }>;
 }
 type Sequenced_1<m extends G.Generic1, mas, as extends unknown[] = []> = mas extends []
   ? G.Type1<m, as>
@@ -180,28 +197,36 @@ interface HelpersAApplicative2<m extends G.Generic2> {
     <a, b>(tmab: ArrayLike<G.Type2<m, a, b>>): G.Type2<m, a, b[]>;
   };
 }
+interface HelpersAApplicativeA {
+  traverse: <a, b>(f: (_: a) => ArrayLike<b>) => (ta: ArrayLike<a>) => b[][];
+  sequence: <a>(tma: ArrayLike<ArrayLike<a>>) => a[][];
+}
 type Helper1Applicative<t extends G.Generic1> = {
   [k in keyof Helpers1Applicative1<never, never>]: {
     <m extends G.Generic1>(applicative: Applicative_1<m>): Helpers1Applicative1<t, m>[k];
     <m extends G.Generic2>(applicative: Applicative_2<m>): Helpers1Applicative2<t, m>[k];
+    (applicative: Applicative_A): Helpers1ApplicativeA<t>[k];
   };
 };
 type Helper2Applicative<t extends G.Generic2> = {
   [k in keyof Helpers2Applicative1<never, never>]: {
     <m extends G.Generic1>(applicative: Applicative_1<m>): Helpers2Applicative1<t, m>[k];
     <m extends G.Generic2>(applicative: Applicative_2<m>): Helpers2Applicative2<t, m>[k];
+    (applicative: Applicative_A): Helpers2ApplicativeA<t>[k];
   };
 };
 type HelperOApplicative = {
   [k in keyof HelpersOApplicative1<never>]: {
     <m extends G.Generic1>(applicative: Applicative_1<m>): HelpersOApplicative1<m>[k];
     <m extends G.Generic2>(applicative: Applicative_2<m>): HelpersOApplicative2<m>[k];
+    (applicative: Applicative_A): HelpersOApplicativeA[k];
   };
 };
 type HelperAApplicative = {
   [k in keyof HelpersAApplicative1<never>]: {
     <m extends G.Generic1>(applicative: Applicative_1<m>): HelpersAApplicative1<m>[k];
     <m extends G.Generic2>(applicative: Applicative_2<m>): HelpersAApplicative2<m>[k];
+    (applicative: Applicative_A): HelpersAApplicativeA[k];
   };
 };
 
@@ -309,6 +334,9 @@ export interface UnfoldROnly_1<f extends G.Generic1> {
 export interface UnfoldROnly_2<f extends G.Generic2> {
   unfoldr: <a, b, c>(f: (_: c) => Maybe<[b, c]>) => (b: c) => G.Type2<f, a, b>;
 }
+export interface UnfoldROnly_A {
+  unfoldr: <a, b>(f: (_: b) => Maybe<[a, b]>) => (b: b) => a[];
+}
 
 export const traverseDefaultFoldableUnfoldable: {
   <f extends G.Generic1>({
@@ -319,6 +347,7 @@ export const traverseDefaultFoldableUnfoldable: {
     foldr,
     unfoldr,
   }: FoldROnly_2<f> & UnfoldROnly_2<f>): Traversable_2<f>['traverse'];
+  ({ foldr, unfoldr }: FoldROnly_A & UnfoldROnly_A): Traversable_A['traverse'];
 } =
   <f extends G.Generic1>({
     foldr,

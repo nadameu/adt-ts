@@ -70,10 +70,15 @@ export {
 export { Eq, makeEqInstance } from './typeclasses/Eq';
 export {
   FilterMapOnly_1,
+  FilterMapOnly_A,
   FilterOnly_1,
+  FilterOnly_A,
   Filterable_1,
+  Filterable_A,
   PartitionMapOnly_1,
+  PartitionMapOnly_A,
   PartitionOnly_1,
+  PartitionOnly_A,
   compactByFilterMap,
   filterDefault,
   filterDefaultPartition,
@@ -139,7 +144,12 @@ export {
   liftM1,
   makeMonadInstance,
 } from './typeclasses/Monad';
-export { PipeKleisli_1, PipeKleisli_2 } from './typeclasses/Monad/pipeK';
+export { PipeKleisli_1, PipeKleisli_2, PipeKleisli_A } from './typeclasses/Monad/pipeK';
+export {
+  PipeKleisliValue_1,
+  PipeKleisliValue_2,
+  PipeKleisliValue_A,
+} from './typeclasses/Monad/pipeKValue';
 export {
   CatchErrorOnly_1,
   CatchErrorOnly_2,
@@ -208,6 +218,7 @@ export {
   TraverseOnly_O,
   UnfoldROnly_1,
   UnfoldROnly_2,
+  UnfoldROnly_A,
   foldMapDefaultByTraverse,
   makeTraversableInstance,
   mapDefaultByTraverse,
@@ -220,8 +231,11 @@ export {
 } from './typeclasses/Traversable';
 export {
   WiltOnly_1,
+  WiltOnly_A,
   WitherOnly_1,
+  WitherOnly_A,
   Witherable_1,
+  Witherable_A,
   filterMapByWither,
   partitionMapByWilt,
   traverseByWither,

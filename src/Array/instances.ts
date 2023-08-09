@@ -6,7 +6,7 @@ import {
   Bind_A,
   Compactable_A,
   Eq,
-  Filterable_1,
+  Filterable_A,
   Foldable_A,
   Functor_A,
   Monad_A,
@@ -14,7 +14,7 @@ import {
   Plus_A,
   Semigroup_A,
   Traversable_A,
-  Witherable_1,
+  Witherable_A,
 } from '../typeclasses';
 import {
   alt,
@@ -39,7 +39,6 @@ import {
   wilt,
   wither,
 } from './functions/original';
-import { TArray } from './internal';
 
 export const makeEqArray = <a>(eq: Eq<a>) =>
   ({
@@ -85,7 +84,7 @@ export const filterableArray = {
   partition,
   partitionMap,
   separate,
-} as Filterable_1<TArray>;
+} as Filterable_A;
 export const witherableArray = {
   compact,
   filter,
@@ -101,4 +100,4 @@ export const witherableArray = {
   traverse,
   wilt,
   wither,
-} as Witherable_1<TArray>;
+} as Witherable_A;

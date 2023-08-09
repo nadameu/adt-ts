@@ -22,6 +22,9 @@ export interface FoldROnly_1<f extends G.Generic1> extends G.Identified1<f> {
 export interface FoldMapOnly_1<f extends G.Generic1> extends G.Identified1<f> {
   foldMap: Helpers1<f>['foldMap'];
 }
+export interface FoldROnly_A extends G.IdentifiedA {
+  foldr: HelpersA['foldr'];
+}
 export interface Foldable_1<f extends G.Generic1>
   extends G.Identified1<f>,
     FoldLOnly_1<f>,
